@@ -10,8 +10,8 @@ class Profesor():
         result = self.cursor.callproc("get_profesores")
         return result
 
-    def get_profesor(self, id):
-        result = self.cursor.callproc("get_profesor", [id])
+    def get_profesor(self, dni):
+        result = self.cursor.callproc("get_profesor", [dni])
         return result
 
     def insert_profesor(self, dni : int, nombre : str, apellido : str, condicion : str, categoria : str, dedicacion : str, periodo_a_cargo : str):
