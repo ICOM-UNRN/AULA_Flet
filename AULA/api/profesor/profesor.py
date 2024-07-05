@@ -5,17 +5,19 @@ class Profesor():
     def __init__(self, conn : psycopg2.connect):
         self.conn = conn
         self.cursor = self.conn.cursor()
-    
+
     def get_profesores(self):
-        result = self.cursor.callproc("get_profesores")
+        result = self.cursor.callproc("public.get_profesores")
+        self.conn.commit()
         return result
 
-    def get_profesor(self, dni):
-        result = self.cursor.callproc("get_profesor", [dni])
+    def get_profesor(self, dni : int):
+        result = self.cursor.callproc("public.get_profesor", [dni])
+        self.conn.commit()
         return result
 
     def insert_profesor(self, dni : int, nombre : str, apellido : str, condicion : str, categoria : str, dedicacion : str, periodo_a_cargo : str):
-        self.cursor.callproc("insert_profesor", [dni, nombre, apellido, condicion, categoria, dedicacion, periodo_a_cargo])
+        self.cursor.callproc("public.insert_profesor", [dni, nombre, apellido, condicion, categoria, dedicacion, periodo_a_cargo])
         self.conn.commit()
         return True
 
@@ -30,9 +32,5 @@ if __name__ == "__main__":
         host=db_host,
         port=5432)
     profesor = Profesor(conn)
-    result = profesor.get_profesores()
+    result = profesor.get_profesor(dni= 12345678)
     print(result)
-    insert_profesor = profesor.insert_profesor(12345678, "tomas", "sautu", "prueba", "developer", "completa", "lo_que_haga_falta")
-    if insert_profesor:
-        result = profesor.get_profesores()
-        print(result)
