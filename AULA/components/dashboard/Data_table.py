@@ -3,6 +3,8 @@ from flet import *
 
 class DataTableCustom():
     def __init__(self, data_columns : list = [], data_rows : list = []):
+        self.table_columns : list = []
+        self.table_rows : list = []
         self.data_columns : list = data_columns
         self.data_rows : list = data_rows
         self.delete_icon : IconButton = IconButton(icons.DELETE, on_click=lambda e: print(f"Deleted: {e}"))
@@ -14,7 +16,7 @@ class DataTableCustom():
         self.rowsSelected : bool = False
 
     def __row_selected(self, e, func = None):
-        self.deselectAll()
+        self.deselectAll(e.control)
         e.control.selected = False if e.control.selected else True
 
         if e.control.selected:
@@ -41,13 +43,15 @@ class DataTableCustom():
         self.DataTableCustom.update()
         
     def selectAll(self):
-        for row in self.data_rows:
+        for row in self.table_rows:
             row.selected = True
             row.color = "#003E79"
             row.update()
 
-    def deselectAll(self):
-        for row in self.data_rows:
+    def deselectAll(self, except_row = None):
+        for row in self.table_rows:
+            if row == except_row:
+                continue
             row.selected = False
             row.color = "transparent"
             row.update()
@@ -61,7 +65,7 @@ class DataTableCustom():
             row.update()
 
     def have_rowsSelected(self):
-        rows_selected = [row for index, row in enumerate(self.data_rows) if row.selected]
+        rows_selected = [row for index, row in enumerate(self.table_rows) if row.selected]
         if len(rows_selected) > 0:
             return True, rows_selected   # Todos son True
         else:
@@ -94,7 +98,7 @@ class DataTableCustom():
 
     def setColums(self, headers: list[str]):
         for header in headers:
-            self.data_columns.append(
+            self.table_columns.append(
                 DataColumn(
                     label=Text(
                         value=header,
@@ -110,30 +114,36 @@ class DataTableCustom():
         cells = [DataCell(content=Text(value=row,weight="bold",size=16,color="#A6A6A6",expand=True,)) for row in list]
         return cells
 
-    def setRows(self, rows, especial_func):
+    def setRows(self, rows, especial_func = None):
         for row in rows:
-            self.data_rows.append(
+            self.table_rows.append(
                 DataRow(
                     on_select_changed= lambda e: self.__row_selected(e, especial_func),
                     cells=self.__createRow(row),
                 )
             )
-        self.__row_iterator = iter(self.data_rows)
+        self.__row_iterator = iter(self.table_rows)
 
     def deleteAll(self):
+        self.table_rows.clear()
         self.data_rows.clear()
         self.__row_iterator = None
         self.__nextRow = None
 
     def deleteSelected(self, rows):
         for row in rows:
-            self.data_rows.remove(row)
+            self.table_rows.remove(row)
+            self.data_rows.remove(row.cells.content.value)
             self.extra_info.pop(row.cells[0].content.value)
             self.__rowData.pop(row, None)
-        self.__row_iterator = iter(self.data_rows)
+        self.__row_iterator = iter(self.table_rows)
         self.__nextRow = self.__row_iterator
 
     def build(self):
+        if len(self.data_columns) > 0:
+            self.setColums(self.data_columns)
+        if len(self.data_rows) > 0:
+            self.setRows(self.data_rows)
         self.DataTableCustom= DataTable(
             width=INFINITE,
             border_radius=15,
@@ -148,7 +158,7 @@ class DataTableCustom():
             horizontal_lines=border.BorderSide(0.5, "#000000"),
             vertical_lines=border.BorderSide(0.5, "#000000"),
             show_bottom_border=True,
-            columns=self.data_columns,
-            rows=self.data_rows,
+            columns=self.table_columns,
+            rows=self.table_rows,
         )
         return self.DataTableCustom

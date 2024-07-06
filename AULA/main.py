@@ -1,4 +1,7 @@
 import flet as ft
+from components.dashboard.Dashboard import Dashboard
+from api.db import get_db
+from api.profesor.profesor import Profesor
 
 def main(page: ft.Page):
     page.title = "AULA - Administracion Unificada de Lugares Academicos"
@@ -7,8 +10,25 @@ def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.theme_mode = ft.ThemeMode.DARK
     
+    AULA_DB = get_db()
     
+    ###################################################################################
+    #                                  CAMBIO DE RUTAS                                #
+    ###################################################################################
     
+    def route_change(e):
+        route = e.route
+        if route == "/":
+            container_main_window.content = column_main_text
+            page.update()
+        elif route == "/profesores":
+            profesor = Profesor(conn= AULA_DB)
+            all_profesores = profesor.get_profesores()
+            dashboard_profesor = Dashboard(all_profesores)
+            container_main_window.content = dashboard_profesor
+            page.update()
+            
+            
     ###################################################################################
     #                                     HEADER                                      #
     ###################################################################################
@@ -76,13 +96,15 @@ def main(page: ft.Page):
         text="Ver Horarios",
         icon=ft.icons.CALENDAR_MONTH,
         height=50,
+        width=200,
         style=ft.ButtonStyle(
             shape=ft.RoundedRectangleBorder(
                 radius=ft.border_radius.all(5)
             ),
             color="#C4C4C4",
             bgcolor=ft.colors.with_opacity(0.25,"#505050"),
-        )
+        ),
+        on_click=lambda _: page.go('/profesores'),
     )
 
     column_main_text = ft.Column(
@@ -147,6 +169,8 @@ def main(page: ft.Page):
             row_header,
         ],
     )
+    page.on_route_change = route_change
+    page.go("/")
     page.add(main_stack)
 
 ft.app(main)
