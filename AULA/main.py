@@ -19,14 +19,28 @@ def main(page: ft.Page):
     def route_change(e):
         route = e.route
         if route == "/":
+            container_main_window.offset = ft.Offset(0, -0.05)
             container_main_window.content = column_main_text
             page.update()
         elif route == "/profesores":
+            container_main_window.offset = ft.Offset(0, 0)
             profesor = Profesor(conn= AULA_DB)
             all_profesores = profesor.get_profesores()
-            dashboard_profesor = Dashboard(all_profesores)
+            dashboard_profesor = Dashboard(
+                dasboard_data= all_profesores,
+                width= 600,
+                height= 600,
+                border_radius= 10,
+                bgcolor= "#E6E6E6",
+                padding= 10,
+                form_fields=["Search"],
+            )
             container_main_window.content = dashboard_profesor
             page.update()
+        elif route == "/materias":
+            pass
+        elif route == "/recursos":
+            pass
             
             
     ###################################################################################
@@ -131,7 +145,6 @@ def main(page: ft.Page):
     
     container_main_window = ft.Container(
         content=column_main_text,
-        offset=ft.Offset(0, -0.05),
         alignment=ft.alignment.center,
         padding=ft.padding.all(10),
     )
