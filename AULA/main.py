@@ -25,9 +25,9 @@ def main(page: ft.Page):
         elif route == "/profesores":
             container_main_window.offset = ft.Offset(0, 0)
             profesor = Profesor(conn= AULA_DB)
-            all_profesores = profesor.get_profesores()
+            data_all_profesores = profesor.get_profesores()
             dashboard_profesor = Dashboard(
-                dasboard_data= all_profesores,
+                dasboard_data= data_all_profesores,
                 width= 600,
                 height= 600,
                 border_radius= 10,

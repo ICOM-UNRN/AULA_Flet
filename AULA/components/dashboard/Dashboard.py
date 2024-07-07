@@ -70,6 +70,7 @@ class Dashboard(ft.Container):
         self.dashboard_data = dasboard_data
         self.form_fields = form_fields
         self.form_text_color = form_text_color
+        self.dashboard_search_input = ft.TextField(label="Search", col=1, color=self.form_text_color, height=50, on_change=self.__input_changed)
         self.data_table = DataTableCustom(
             data_columns = self.dashboard_data["columns"],
             data_rows= self.dashboard_data["rows"]
@@ -77,21 +78,20 @@ class Dashboard(ft.Container):
         self.content= ft.Column(
             scroll=ft.ScrollMode.HIDDEN,
             expand=True,
-            controls=ft.Row(
-                on_scroll=ft.ScrollMode.HIDDEN,
-                controls=[self.data_table.build()]
-            ),
+            controls=[
+                self.dashboard_search_input,
+                ft.Row(
+                    on_scroll=ft.ScrollMode.ALWAYS,
+                    controls=[self.data_table.build()]
+                ),
+            ],
         )
-        self.create_textfield()
 
-    def create_textfield(self):
-        temp = self.content.controls.copy()[0]
-        self.content.controls = []
-        for text in self.form_fields:
-            self.content.controls.append(ft.TextField(label=text, col=1, color=self.form_text_color, height=50))
-        self.content.controls.append(temp)
-            
-        ...
+    # TODO: Hacer que solo filtre las filas
+    def __input_changed(self, e):
+        # search_filter= e.control.value
+        # filtered_rows = list(filter(lambda x: search_filter in x, self.data_table.getRows()))
+        pass
 
 def main(page : ft.Page):
     page.title = "Dashboard" 

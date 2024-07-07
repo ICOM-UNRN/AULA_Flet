@@ -82,6 +82,9 @@ class DataTableCustom():
     def getRows(self):
         return self.data_rows
     
+    def getRows_instance(self):
+        return self.table_rows
+    
     def getColumns(self):
         return self.data_columns
 
