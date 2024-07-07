@@ -13,7 +13,7 @@ class Profesor():
         colums = [descr.name for descr in self.cursor.description]
         rows = [row for row in self.cursor.fetchall()]
         data = {
-            "colums" : colums,
+            "columns" : colums,
             "rows" : rows
         }
         return data
