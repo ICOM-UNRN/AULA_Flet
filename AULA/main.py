@@ -1,7 +1,17 @@
 import flet as ft
+from AULA.api.materia.materia import Materia
 from components.dashboard.Dashboard import Dashboard
 from api.db import get_db
+
+from api.asignacion.asignacion import Asignacion
+from api.aula.aula import Aula
+from api.edificio.edificio import Edificio
+from api.evento.evento import Evento
+from api.materia.materia import Materia
 from api.profesor.profesor import Profesor
+from api.profesor.profesor_por_materia import Profesor_por_materia
+from api.recurso.recurso import Recurso
+from api.recurso.recurso_por_aula import Recurso_por_aula
 
 def main(page: ft.Page):
     page.title = "AULA - Administracion Unificada de Lugares Academicos"
@@ -22,6 +32,81 @@ def main(page: ft.Page):
             container_main_window.offset = ft.Offset(0, -0.05)
             container_main_window.content = column_main_text
             page.update()
+        elif route == "/asignaciones":
+            container_main_window.offset = ft.Offset(0, 0)
+            asignacion = Asignacion(conn= AULA_DB)
+            data_all_asignaciones = asignacion.get_asignaciones()
+            dashboard_asignacion = Dashboard(
+                dasboard_data= data_all_asignaciones,
+                width= 600,
+                height= 600,
+                border_radius= 10,
+                bgcolor= "#E6E6E6",
+                padding= 10,
+                form_fields=["Search"],
+            )
+            container_main_window.content = dashboard_asignacion
+            page.update()
+        elif route == "/aulas":
+            container_main_window.offset = ft.Offset(0, 0)
+            aula = Aula(conn= AULA_DB)
+            data_all_aulas = aula.get_aulas()
+            dashboard_aula = Dashboard(
+                dasboard_data= data_all_aulas,
+                width= 600,
+                height= 600,
+                border_radius= 10,
+                bgcolor= "#E6E6E6",
+                padding= 10,
+                form_fields=["Search"],
+            )
+            container_main_window.content = dashboard_aula
+            page.update()
+        elif route == "/edificios":
+            container_main_window.offset = ft.Offset(0, 0)
+            edificio = Edificio(conn= AULA_DB)
+            data_all_edificios = edificio.get_edificios()
+            dashboard_edificio = Dashboard(
+                dasboard_data= data_all_edificios,
+                width= 600,
+                height= 600,
+                border_radius= 10,
+                bgcolor= "#E6E6E6",
+                padding= 10,
+                form_fields=["Search"],
+            )
+            container_main_window.content = dashboard_edificio
+            page.update()
+        elif route == "/eventos":
+            container_main_window.offset = ft.Offset(0, 0)
+            evento = Evento(conn= AULA_DB)
+            data_all_eventos = evento.get_eventos()
+            dashboard_evento = Dashboard(
+                dasboard_data= data_all_eventos,
+                width= 600,
+                height= 600,
+                border_radius= 10,
+                bgcolor= "#E6E6E6",
+                padding= 10,
+                form_fields=["Search"],
+            )
+            container_main_window.content = dashboard_evento
+            page.update()
+        elif route == "/materias":
+            container_main_window.offset = ft.Offset(0, 0)
+            materia = Materia(conn= AULA_DB)
+            data_all_materias = materia.get_materias()
+            dashboard_materia = Dashboard(
+                dasboard_data= data_all_materias,
+                width= 600,
+                height= 600,
+                border_radius= 10,
+                bgcolor= "#E6E6E6",
+                padding= 10,
+                form_fields=["Search"],
+            )
+            container_main_window.content = dashboard_materia
+            page.update()
         elif route == "/profesores":
             container_main_window.offset = ft.Offset(0, 0)
             profesor = Profesor(conn= AULA_DB)
@@ -37,10 +122,51 @@ def main(page: ft.Page):
             )
             container_main_window.content = dashboard_profesor
             page.update()
-        elif route == "/materias":
-            pass
+        elif route == "/profesores_por_materia":
+            container_main_window.offset = ft.Offset(0, 0)
+            profesor_por_materia = Profesor_por_materia(conn= AULA_DB)
+            data_all_profesores_por_materias = profesor_por_materia.get_profesores_por_materia()
+            dashboard_profesor_por_materia = Dashboard(
+                dasboard_data= data_all_profesores_por_materias,
+                width= 600,
+                height= 600,
+                border_radius= 10,
+                bgcolor= "#E6E6E6",
+                padding= 10,
+                form_fields=["Search"],
+            )
+            container_main_window.content = dashboard_profesor_por_materia
+            page.update()
         elif route == "/recursos":
-            pass
+            container_main_window.offset = ft.Offset(0, 0)
+            recurso = Recurso(conn= AULA_DB)
+            data_all_recursos = recurso.get_recursos()
+            dashboard_recurso = Dashboard(
+                dasboard_data= data_all_recursos,
+                width= 600,
+                height= 600,
+                border_radius= 10,
+                bgcolor= "#E6E6E6",
+                padding= 10,
+                form_fields=["Search"],
+            )
+            container_main_window.content = dashboard_recurso
+            page.update()
+        elif route == "/recursos_por_aula":
+            container_main_window.offset = ft.Offset(0, 0)
+            recurso_por_aula = Recurso_por_aula(conn= AULA_DB)
+            data_all_recursos_por_aulas = recurso_por_aula.get_recursos_por_aula()
+            dashboard_recurso_por_aula = Dashboard(
+                dasboard_data= data_all_recursos_por_aulas,
+                width= 600,
+                height= 600,
+                border_radius= 10,
+                bgcolor= "#E6E6E6",
+                padding= 10,
+                form_fields=["Search"],
+            )
+            container_main_window.content = dashboard_recurso_por_aula
+            page.update()
             
             
     ###################################################################################

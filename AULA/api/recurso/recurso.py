@@ -1,7 +1,7 @@
 import psycopg2
 import os
 
-class Recursos():
+class Recurso():
     def __init__(self, conn : psycopg2.connect):
         self.conn = conn
         self.cursor = self.conn.cursor()
