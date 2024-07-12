@@ -11,7 +11,8 @@ class Dashboard(ft.Container):
         dasboard_data : Dict[Literal['columns', 'rows'], List[Any]] = {'columns': [], 'rows': []},
         form_fields : list[str] = [],
         form_text_color : str = "#000000",
-        content: ft.Control | None = None,ref: ft.Ref | None = None,
+        content: ft.Control | None = None,
+        ref: ft.Ref | None = None,
         key: str | None = None,
         width: None | int | float = None,
         height: None | int | float = None,
@@ -76,12 +77,11 @@ class Dashboard(ft.Container):
             data_rows= self.dashboard_data["rows"]
         )
         self.content= ft.Column(
-            scroll=ft.ScrollMode.HIDDEN,
             expand=True,
             controls=[
                 self.dashboard_search_input,
                 ft.Row(
-                    on_scroll=ft.ScrollMode.ALWAYS,
+                    # scroll=ft.ScrollMode.HIDDEN,
                     controls=[self.data_table.build()]
                 ),
             ],

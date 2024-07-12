@@ -7,8 +7,6 @@ class Profesor():
         self.cursor = self.conn.cursor()
 
     def get_profesores(self):
-        # result = self.cursor.callproc("get_profesores")
-        # self.conn.commit()
         self.cursor.execute('SELECT * FROM profesor')
         colums = [descr.name for descr in self.cursor.description]
         rows = [row for row in self.cursor.fetchall()]
@@ -18,10 +16,16 @@ class Profesor():
         }
         return data
 
-    def get_profesor(self, dni : int):
-        result = self.cursor.callproc("get_profesor", [dni])
+    def get_profesor(self, id : int = None, dni : int = None, nombre : str = None, apellido : str = None, condicion : str = None, categoria : str = None, dedicacion : str = None, periodo_a_cargo : str = None):
+        self.cursor.callproc("get_profesor", [id, dni, nombre, apellido, condicion, categoria, dedicacion, periodo_a_cargo])
         self.conn.commit()
-        return result
+        colums = [descr.name for descr in self.cursor.description]
+        rows = [row for row in self.cursor.fetchall()]
+        data = {
+            "columns" : colums,
+            "rows" : rows
+        }
+        return data
 
     def insert_profesor(self, dni : int, nombre : str, apellido : str, condicion : str, categoria : str, dedicacion : str, periodo_a_cargo : str):
         self.cursor.callproc("insert_profesor", [dni, nombre, apellido, condicion, categoria, dedicacion, periodo_a_cargo])
@@ -39,5 +43,5 @@ if __name__ == "__main__":
         host=db_host,
         port=5432)
     profesor = Profesor(conn)
-    result = profesor.get_profesor(dni= 12345678)
+    result = profesor.get_profesor(nombre='Paola')
     print(result)
