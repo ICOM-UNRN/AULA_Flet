@@ -107,4 +107,17 @@ CREATE TABLE asignacion (
   UNIQUE (id_aula, dia, horario_comienzo)
 );
 
+-- Tabla de auditoría
+CREATE TABLE audit_log (
+    id SERIAL PRIMARY KEY,
+    log_time TIMESTAMP DEFAULT current_timestamp,
+    user_name TEXT,
+    database_name TEXT,
+    client_addr TEXT,
+    operation TEXT,
+    table_name TEXT,
+    record_id INTEGER,
+    old_data JSONB,
+    new_data JSONB
+);
 

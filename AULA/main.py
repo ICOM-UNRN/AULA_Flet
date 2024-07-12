@@ -1,10 +1,11 @@
 import flet as ft
 #from AULA.api.materia.materia import Materia
 from components.dashboard.Dashboard import Dashboard
+from components.RailBar.Railbar import RailBarCustom
 from api.db import get_db
-
-from api.asignacion.asignacion import Asignacion
 from api.aula.aula import Aula
+from api.materia.materia import Materia
+from api.asignacion.asignacion import Asignacion
 from api.edificio.edificio import Edificio
 from api.evento.evento import Evento
 from api.materia.materia import Materia
@@ -25,7 +26,12 @@ def main(page: ft.Page):
     ###################################################################################
     #                                  CAMBIO DE RUTAS                                #
     ###################################################################################
-    
+    def navigation_change(e):
+        destination = e.control.destinations[int(e.data)].label
+        if destination == "Inicio":
+            page.go("/")
+        else:
+            page.go(f"/{destination.lower()}")
     def route_change(e):
         route = e.route
         if route == "/":
@@ -38,8 +44,7 @@ def main(page: ft.Page):
             data_all_asignaciones = asignacion.get_asignaciones()
             dashboard_asignacion = Dashboard(
                 dasboard_data= data_all_asignaciones,
-                width= 600,
-                height= 600,
+                expand=True,
                 border_radius= 10,
                 bgcolor= "#E6E6E6",
                 padding= 10,
@@ -53,8 +58,7 @@ def main(page: ft.Page):
             data_all_aulas = aula.get_aulas()
             dashboard_aula = Dashboard(
                 dasboard_data= data_all_aulas,
-                width= 600,
-                height= 600,
+                expand=True,
                 border_radius= 10,
                 bgcolor= "#E6E6E6",
                 padding= 10,
@@ -68,8 +72,7 @@ def main(page: ft.Page):
             data_all_edificios = edificio.get_edificios()
             dashboard_edificio = Dashboard(
                 dasboard_data= data_all_edificios,
-                width= 600,
-                height= 600,
+                expand=True,
                 border_radius= 10,
                 bgcolor= "#E6E6E6",
                 padding= 10,
@@ -98,8 +101,7 @@ def main(page: ft.Page):
             data_all_materias = materia.get_materias()
             dashboard_materia = Dashboard(
                 dasboard_data= data_all_materias,
-                width= 600,
-                height= 600,
+                expand=True,
                 border_radius= 10,
                 bgcolor= "#E6E6E6",
                 padding= 10,
@@ -113,8 +115,7 @@ def main(page: ft.Page):
             data_all_profesores = profesor.get_profesores()
             dashboard_profesor = Dashboard(
                 dasboard_data= data_all_profesores,
-                width= 600,
-                height= 600,
+                expand=True,
                 border_radius= 10,
                 bgcolor= "#E6E6E6",
                 padding= 10,
@@ -128,8 +129,7 @@ def main(page: ft.Page):
             data_all_profesores_por_materias = profesor_por_materia.get_profesores_por_materia()
             dashboard_profesor_por_materia = Dashboard(
                 dasboard_data= data_all_profesores_por_materias,
-                width= 600,
-                height= 600,
+                expand=True,
                 border_radius= 10,
                 bgcolor= "#E6E6E6",
                 padding= 10,
@@ -143,8 +143,7 @@ def main(page: ft.Page):
             data_all_recursos = recurso.get_recursos()
             dashboard_recurso = Dashboard(
                 dasboard_data= data_all_recursos,
-                width= 600,
-                height= 600,
+                expand=True,
                 border_radius= 10,
                 bgcolor= "#E6E6E6",
                 padding= 10,
@@ -158,8 +157,7 @@ def main(page: ft.Page):
             data_all_recursos_por_aulas = recurso_por_aula.get_recursos_por_aula()
             dashboard_recurso_por_aula = Dashboard(
                 dasboard_data= data_all_recursos_por_aulas,
-                width= 600,
-                height= 600,
+                expand=True,
                 border_radius= 10,
                 bgcolor= "#E6E6E6",
                 padding= 10,
@@ -276,6 +274,35 @@ def main(page: ft.Page):
     )
     
     ###################################################################################
+    #                                   NAVEGACION                                    #
+    ###################################################################################
+    custom_rail_bar = RailBarCustom(
+        width=80,
+        on_change=lambda e: navigation_change(e),
+        rail_destinations=[
+            {
+                'label': 'Inicio',
+                'icon': ft.icons.HOME_OUTLINED,
+                'selected_icon': ft.icons.HOME
+            },
+            {
+                'label': 'Profesores',
+                'icon': ft.icons.PEOPLE_OUTLINE,
+                'selected_icon': ft.icons.PEOPLE
+            },
+            {
+                'label': 'Materias',
+                'icon': ft.icons.CLASS_OUTLINED,
+                'selected_icon': ft.icons.CLASS_
+            },
+            {
+                'label': 'Aulas',
+                'icon': ft.icons.MEETING_ROOM_OUTLINED,
+                'selected_icon': ft.icons.MEETING_ROOM
+            }
+        ]
+    )
+    ###################################################################################
     #                                   BACKGROUND                                    #
     ###################################################################################
     container_main_background_decorator = ft.Container(
@@ -293,23 +320,30 @@ def main(page: ft.Page):
         bottom=-200,
     )
     
-    container_main_background = ft.Container(
-        expand=True,
-        image_src="assets/Group_2.png",
-        image_fit=ft.ImageFit.FILL,
-    )
-    
     main_stack = ft.Stack(
         expand=True,
         controls=[
-            container_main_background,
             container_main_background_decorator,
             container_main_window,
             row_header,
         ],
     )
+    
+    main_container_page = ft.Container(
+        alignment=ft.alignment.center,
+        image_src="assets/Group_2.png",
+        image_fit=ft.ImageFit.FILL,
+        expand=True,
+        content=ft.Row(
+            controls=[
+                custom_rail_bar,
+                main_stack
+            ]
+        )
+    )
+    
     page.on_route_change = route_change
     page.go("/")
-    page.add(main_stack)
+    page.add(main_container_page)
 
 ft.app(main)
