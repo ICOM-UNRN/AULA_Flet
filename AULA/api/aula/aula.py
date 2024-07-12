@@ -22,6 +22,20 @@ class Aula():
         return result
 
     def insert_aula(self, edificio, nombre):
-        self.cursor.callproc("insert_aula", [edificio, nombre])
+        result = self.cursor.callproc("insert_aula", [edificio, nombre])
         self.conn.commit()
+        return result
+    
+    def update_aula(self, id, nombre = None, edificio = None):
+        result = self.cursor.callproc("update_aula", [id, nombre, edificio])
+        self.conn.commit()
+        if(result != 0):
+            return False
+        return True
+
+    def delete_aula(self, id):
+        result = self.cursor.callproc("delete_aula", [id])
+        self.conn.commit()
+        if(result != 0):
+            return False
         return True

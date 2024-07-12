@@ -21,6 +21,20 @@ class Recurso():
         return result
 
     def insert_recurso(self, id_recurso : int, nombre : str, descripción : str):
-        self.cursor.callproc("insert_recurso", [id_recurso, nombre, descripción])
+        result = self.cursor.callproc("insert_recurso", [id_recurso, nombre, descripción])
         self.conn.commit()
+        return result
+    
+    def update_recurso(self, id, nombre = None, descripcion = None):
+        result = self.cursor.callproc("update_recurso", [id, nombre, descripcion])
+        self.conn.commit()
+        if(result != 0):
+            return False
+        return True
+
+    def delete_recurso(self, id):
+        result = self.cursor.callproc("delete_recurso", [id])
+        self.conn.commit()
+        if(result != 0):
+            return False
         return True

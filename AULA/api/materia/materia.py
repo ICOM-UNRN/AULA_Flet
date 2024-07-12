@@ -21,6 +21,20 @@ class Materia():
         return result
 
     def insert_materia(self, codigo_guarani : str, carrera : str, nombre : str, anio : str, cuatrimestre : str, taxonomia : str, horas_semanales : str, comisiones : str ):
-        self.cursor.callproc("insert_materia", [codigo_guarani, carrera, nombre, anio, cuatrimestre, taxonomia, horas_semanales, comisiones])
+        result = self.cursor.callproc("insert_materia", [codigo_guarani, carrera, nombre, anio, cuatrimestre, taxonomia, horas_semanales, comisiones])
         self.conn.commit()
+        return result
+    
+    def update_materia(self, id, codigo_guarani = None, carrera = None, nombre = None, anio = None, cuatrimestre = None, taxonomia = None, horas_semanales = None, comisiones = None):
+        result = self.cursor.callproc("update_materia", [id, codigo_guarani, carrera, nombre, anio, cuatrimestre, taxonomia, horas_semanales, comisiones])
+        self.conn.commit()
+        if(result != 0):
+            return False
+        return True
+
+    def delete_materia(self, id):
+        result = self.cursor.callproc("delete_materia", [id])
+        self.conn.commit()
+        if(result != 0):
+            return False
         return True

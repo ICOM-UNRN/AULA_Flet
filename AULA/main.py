@@ -1,5 +1,5 @@
 import flet as ft
-from AULA.api.materia.materia import Materia
+#from AULA.api.materia.materia import Materia
 from components.dashboard.Dashboard import Dashboard
 from api.db import get_db
 

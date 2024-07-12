@@ -22,6 +22,20 @@ class Recurso_por_aula():
         return result
 
     def insert_recurso_por_aula(self, id_aula : int, id_recurso : int, cantidad : int):
-        self.cursor.callproc("insert_recurso_por_aula", [id_aula, id_recurso, cantidad])
+        result = self.cursor.callproc("insert_recurso_por_aula", [id_aula, id_recurso, cantidad])
         self.conn.commit()
+        return result
+    
+    def update_recurso_por_aula(self, id_aula, id_recurso, cantidad = None):
+        result = self.cursor.callproc("update_recurso_por_aula", [id_aula, id_recurso, cantidad])
+        self.conn.commit()
+        if(result != 0):
+            return False
+        return True
+
+    def delete_recurso_por_aula(self, id_aula, id_recurso):
+        result = self.cursor.callproc("delete_recurso_por_aula", [id_aula, id_recurso])
+        self.conn.commit()
+        if(result != 0):
+            return False
         return True

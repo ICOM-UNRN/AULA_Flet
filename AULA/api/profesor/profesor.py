@@ -24,8 +24,22 @@ class Profesor():
         return result
 
     def insert_profesor(self, dni : int, nombre : str, apellido : str, condicion : str, categoria : str, dedicacion : str, periodo_a_cargo : str):
-        self.cursor.callproc("insert_profesor", [dni, nombre, apellido, condicion, categoria, dedicacion, periodo_a_cargo])
+        result = self.cursor.callproc("insert_profesor", [dni, nombre, apellido, condicion, categoria, dedicacion, periodo_a_cargo])
         self.conn.commit()
+        return result
+
+    def update_profesor(self, id, documento = None, nombre = None, apellido = None, condicion = None, categoria = None, dedicacion = None, periodo_a_cargo = None):
+        result = self.cursor.callproc("update_profesor", [id, documento, nombre, apellido, condicion, categoria, dedicacion, periodo_a_cargo])
+        self.conn.commit()
+        if(result != 0):
+            return False
+        return True
+
+    def delete_profesor(self, id):
+        result = self.cursor.callproc("delete_profesor", [id])
+        self.conn.commit()
+        if(result != 0):
+            return False
         return True
 
 if __name__ == "__main__":

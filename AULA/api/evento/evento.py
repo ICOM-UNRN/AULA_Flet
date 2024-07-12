@@ -22,6 +22,20 @@ class Evento():
         return result
 
     def insert_evento(self, nombre, descripcion : str, comienzo, fin):
-        self.cursor.callproc("insert_evento", [nombre, descripcion, comienzo, fin])
+        result = self.cursor.callproc("insert_evento", [nombre, descripcion, comienzo, fin])
         self.conn.commit()
+        return result
+    
+    def update_evento(self, id, nombre = None, descripcion = None, comienzo = None, fin = None):
+        result = self.cursor.callproc("update_evento", [id, nombre, descripcion, comienzo, fin])
+        self.conn.commit()
+        if(result != 0):
+            return False
+        return True
+
+    def delete_evento(self, id):
+        result = self.cursor.callproc("delete_evento", [id])
+        self.conn.commit()
+        if(result != 0):
+            return False
         return True

@@ -22,6 +22,20 @@ class Edificio():
         return result
 
     def insert_edificio(self, nombre, direccion, altura):
-        self.cursor.callproc("insert_edificio", [nombre, direccion, altura])
+        result = self.cursor.callproc("insert_edificio", [nombre, direccion, altura])
         self.conn.commit()
+        return result
+    
+    def update_edificio(self, id, nombre = None, calle = None, altura = None):
+        result = self.cursor.callproc("update_edificio", [id, nombre, calle, altura])
+        self.conn.commit()
+        if(result != 0):
+            return False
+        return True
+
+    def delete_edificio(self, id):
+        result = self.cursor.callproc("delete_edificio", [id])
+        self.conn.commit()
+        if(result != 0):
+            return False
         return True
