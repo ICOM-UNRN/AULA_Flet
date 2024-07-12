@@ -25,3 +25,10 @@ class Asignacion():
         self.cursor.callproc("insert_asignacion", [aula, dia, comienzo, fin, materia, evento])
         self.conn.commit()
         return True
+    
+    def update_asignacion(self, aula, dia, comienzo, fin, materia, evento):
+        result = self.cursor.callproc("update_asignacion", [aula, dia, comienzo, fin, materia, evento])
+        self.conn.commit()
+        if(result != 0):
+            return False
+        return True
