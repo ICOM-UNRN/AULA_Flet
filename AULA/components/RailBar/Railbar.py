@@ -4,7 +4,7 @@ import flet as ft
 class RailBarCustom(ft.NavigationRail):
     def __init__(
         self,
-        rail_destinations : list[dict] = [],
+        rail_destinations : list[dict],
         ref: ft.Ref | None = None,
         width: None | int | float = None,
         height: None | int | float = None,
@@ -86,20 +86,8 @@ class RailBarCustom(ft.NavigationRail):
                 label=new_destination['label']
             )  for new_destination in self.rail_destinations
         ]
-        pass
-    
-    def __create_destinations(self):
-        if len(self.destinations) > 0:
-            for destination in self.rail_destinations:
-                new_destination = ft.NavigationRailDestination(
-                    icon=destination['icon'],
-                    selected_icon=destination['selected_icon'],
-                    label=destination['label']
-                )
-                self.destinations.append(destination)
-    def build(self):
-        self.__create_destinations()
-    
+
+
 def main(page: ft.Page):
     custom_rail_bar = RailBarCustom(
         expand=True,

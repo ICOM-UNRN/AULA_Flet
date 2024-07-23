@@ -1,4 +1,4 @@
-from typing import Any, List, Tuple, Dict, Literal
+from typing import Any, List, Tuple, Dict, Literal, Callable
 import flet as ft
 from flet_core.gradients import Gradient
 # from Data_table import DataTableCustom  # Para probar el archivo, descomentar esta linea
@@ -9,6 +9,7 @@ class Dashboard(ft.Container):
     def __init__(
         self,
         dasboard_data : Dict[Literal['columns', 'rows'], List[Any]] = {'columns': [], 'rows': []},
+        rows_func : Callable = None,
         form_fields : list[str] = [],
         form_text_color : str = "#000000",
         content: ft.Control | None = None,
@@ -43,7 +44,7 @@ class Dashboard(ft.Container):
         alignment: ft.Alignment | None = None,
         bgcolor: str | None = None,
         gradient: Gradient | None = None,
-        blend_mode: ft.BlendMode = ft.BlendMode.NONE,
+        blend_mode: ft.BlendMode = None,
         border: ft.Border | None = None,
         border_radius: None | int | float | ft.BorderRadius = None,
         image_src: str | None = None,
@@ -71,10 +72,12 @@ class Dashboard(ft.Container):
         self.dashboard_data = dasboard_data
         self.form_fields = form_fields
         self.form_text_color = form_text_color
+        self.rows_func = rows_func
         self.dashboard_search_input = ft.TextField(label="Search", col=1, color=self.form_text_color, height=50, on_change=self.__input_changed)
         self.data_table = DataTableCustom(
             data_columns = self.dashboard_data["columns"],
-            data_rows= self.dashboard_data["rows"]
+            data_rows= self.dashboard_data["rows"],
+            rows_func= self.rows_func
         )
         self.content= ft.Column(
             expand=True,

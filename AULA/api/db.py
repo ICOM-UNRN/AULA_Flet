@@ -1,7 +1,18 @@
-import psycopg2
-import os
+"""
+Archivo para realizar distintas acciones sobre
+la conexion de la base de datos.
 
-def get_db():
+Por ejemplo: Conectarse o cerrar la conexion
+"""
+import os
+import psycopg2
+
+
+def connect_to_db():
+    """
+    Funcion para conectarse con la base de datos seteada
+    en las variables de entorno.
+    """
     db_host = os.getenv("POSTGRES_HOST")
     db_pass = os.getenv("POSTGRES_PASSWORD")
     db_name = os.getenv("POSTGRES_DATABASE")
@@ -10,6 +21,20 @@ def get_db():
         user=db_user,
         password=db_pass,
         host=db_host,
-        port=5432)
+        port=5432
+    )
 
     return conn
+
+def close_connection(conn):
+    """
+    Funcion para cerrar la base de datos.
+    
+    Args:
+        conn: Conexion de la base de datos. Objeto de la clase psycopg2
+    """
+
+    try:
+        conn.close()
+    except Exception as e:
+        raise e

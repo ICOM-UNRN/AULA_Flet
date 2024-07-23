@@ -5,6 +5,7 @@ class DeleteModifyForm(ft.UserControl):
     def __init__(
         self,
         fields_labels : List[str],
+        fields_data : List[int | str | float] = [],
         controls: List[ft.Control] | None = None,
         ref: ft.Ref | None = None,
         key: str | None = None,
@@ -63,14 +64,35 @@ class DeleteModifyForm(ft.UserControl):
             clip_behavior
         )
         self.fields_labels : List[str] = fields_labels
-        self.fields : List[ft.TextField]
+        self.fields_controls : List[ft.TextField] = []
+        self.fields_data : List[int | str | float] = fields_data
 
-# TODO: Terminar de armar la logica para obtener los textos pasados y devolver un BottomSheet para la Modificacion y Baja de los registros.
+# Terminar de armar la logica para obtener los textos pasados y
+# devolver un BottomSheet para la Modificacion y Baja de los registros.
     def build(self):
+        """Funcion que construye el BottomSheet"""
         if len(self.fields_labels)>0:
-            for label in self.fields_labels:
-                self.fields.append(
+            for label, data in zip(self.fields_labels, self.fields_data):
+                self.fields_controls.append(
                     ft.TextField(
                         label= label,
+                        col={"md": 1},
+                        value=data
                     )
                 )
+        return self.fields_controls
+
+    def get_fields_controls(self):
+        """Returns a list of TextField controls"""
+        return self.fields_controls
+
+    def get_fields_labels(self):
+        """Returns a list of TextField labels"""
+        return self.fields_labels
+
+    def set_fields_data(self, data : List[int | str | float]):
+        self.fields_data = data
+    
+    def clear_fields(self):
+        self.fields_controls.clear()
+        self.fields_data.clear()

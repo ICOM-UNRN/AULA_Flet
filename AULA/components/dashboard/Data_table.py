@@ -1,12 +1,14 @@
+from typing import Callable
 from asyncio.windows_events import INFINITE
 from flet import *
 
 class DataTableCustom():
-    def __init__(self, data_columns : list = [], data_rows : list = []):
+    def __init__(self, data_columns : list = [], data_rows : list = [], rows_func : Callable = None):
         self.table_columns : list = []
         self.table_rows : list = []
         self.data_columns : list = data_columns
         self.data_rows : list = data_rows
+        self.rows_func : Callable = rows_func
         self.delete_icon : IconButton = IconButton(icons.DELETE, on_click=lambda e: print(f"Deleted: {e}"))
         self.__nextRow : DataRow = DataRow()
         self.__row_iterator= None
@@ -28,11 +30,11 @@ class DataTableCustom():
                 e.control.color = "transparent"
         
         if func is not None:
-           values = []
-           for cell in e.control.cells:
-               values.append(cell.content.value)
-           e.control.update()
-           func(values)
+            values = []
+            for cell in e.control.cells:
+                values.append(cell.content.value)
+            e.control.update()
+            func(values)
         e.control.update()
 
     def setVisible(self, value : bool):
@@ -117,11 +119,11 @@ class DataTableCustom():
         cells = [DataCell(content=Text(value=row,weight="bold",size=16,color="#A6A6A6",expand=True,)) for row in list]
         return cells
 
-    def setRows(self, rows, especial_func = None):
+    def setRows(self, rows):
         for row in rows:
             self.table_rows.append(
                 DataRow(
-                    on_select_changed= lambda e: self.__row_selected(e, especial_func),
+                    on_select_changed= lambda e: self.__row_selected(e, self.rows_func),
                     cells=self.__createRow(row),
                 )
             )
