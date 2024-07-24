@@ -6,7 +6,9 @@ Por ejemplo: Conectarse o cerrar la conexion
 """
 import os
 import psycopg2
-
+from dotenv import load_dotenv, dotenv_values 
+# loading variables from .env file
+load_dotenv() 
 
 def connect_to_db():
     """
