@@ -10,7 +10,7 @@ class DataTableCustom():
         self.data_rows : list = data_rows
         self.rows_func : Callable = rows_func
         self.delete_icon : IconButton = IconButton(icons.DELETE, on_click=lambda e: print(f"Deleted: {e}"))
-        self.__nextRow : DataRow = DataRow()
+        self.__nextRow : DataRow = DataRow(cells=[])
         self.__row_iterator= None
         self.__rowData : dict = {}
         self.extra_info : dict = {}

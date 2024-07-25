@@ -137,11 +137,11 @@ def main(page: ft.Page):
             dashboard_profesor = Dashboard(
                 dasboard_data= data_all_profesores,
                 rows_func=row_selected_func,
+                form_fields=["Search"],
                 expand=True,
                 border_radius= 10,
                 bgcolor= "#E6E6E6",
                 padding= 10,
-                form_fields=["Search"],
             )
             container_main_window.content = dashboard_profesor
             page.update()
@@ -298,46 +298,81 @@ def main(page: ft.Page):
     ###################################################################################
     #                                   NAVEGACION                                    #
     ###################################################################################
-    custom_rail_bar = RailBarCustom(
+    custom_rail_bar = ft.NavigationRail(
         width=80,
-        on_change=navigation_change,
+        on_change= navigation_change,
         group_alignment=0,
-        rail_destinations=[
-            {
-                'label': 'Inicio',
-                'icon': ft.icons.HOME_OUTLINED,
-                'selected_icon': ft.icons.HOME
-            },
-            {
-                'label': 'Profesores',
-                'icon': ft.icons.PEOPLE_OUTLINE,
-                'selected_icon': ft.icons.PEOPLE
-            },
-            {
-                'label': 'Materias',
-                'icon': ft.icons.CLASS_OUTLINED,
-                'selected_icon': ft.icons.CLASS_
-            },
-            {
-                'label': 'Aulas',
-                'icon': ft.icons.MEETING_ROOM_OUTLINED,
-                'selected_icon': ft.icons.MEETING_ROOM
-            },
-            {
-                'label': 'Eventos',
-                'icon': ft.icons.CALENDAR_MONTH_OUTLINED,
-                'selected_icon': ft.icons.CALENDAR_MONTH
-            },
-            {
-                'label': 'Recursos',
-                'icon': ft.icons.PRECISION_MANUFACTURING_OUTLINED,
-                'selected_icon': ft.icons.PRECISION_MANUFACTURING
-            },
-            {
-                'label': 'Edificios',
-                'icon': ft.icons.LOCATION_CITY_OUTLINED,
-                'selected_icon': ft.icons.LOCATION_CITY
-            },
+        destinations=[
+            ft.NavigationRailDestination(
+                icon_content=ft.Icon(ft.icons.HOME_OUTLINED),
+                selected_icon_content=ft.Icon(ft.icons.HOME),
+                label="Inicio",
+            ),
+            ft.NavigationRailDestination(
+                icon_content=ft.Icon(ft.icons.PEOPLE_OUTLINE),
+                selected_icon_content=ft.Icon(ft.icons.PEOPLE),
+                label="Profesores",
+            ),
+            ft.NavigationRailDestination(
+                icon_content=ft.Icon(ft.icons.CLASS_OUTLINED),
+                selected_icon_content=ft.Icon(ft.icons.CLASS_),
+                label="Materias",
+            ),
+            ft.NavigationRailDestination(
+                icon_content=ft.Icon(ft.icons.MEETING_ROOM_OUTLINED),
+                selected_icon_content=ft.Icon(ft.icons.MEETING_ROOM),
+                label="Aulas",
+            ),
+            ft.NavigationRailDestination(
+                icon_content=ft.Icon(ft.icons.CALENDAR_MONTH_OUTLINED),
+                selected_icon_content=ft.Icon(ft.icons.CALENDAR_MONTH),
+                label="Eventos",
+            ),
+            ft.NavigationRailDestination(
+                icon_content=ft.Icon(ft.icons.PRECISION_MANUFACTURING_OUTLINED),
+                selected_icon_content=ft.Icon(ft.icons.PRECISION_MANUFACTURING),
+                label="Recursos",
+            ),
+            ft.NavigationRailDestination(
+                icon_content=ft.Icon(ft.icons.LOCATION_CITY_OUTLINED),
+                selected_icon_content=ft.Icon(ft.icons.LOCATION_CITY),
+                label="Edificios",
+            ),
+            # {
+            #     'label': 'Inicio',
+            #     'icon': ft.icons.HOME_OUTLINED,
+            #     'selected_icon': ft.icons.HOME
+            # },
+            # {
+            #     'label': 'Profesores',
+            #     'icon': ft.icons.PEOPLE_OUTLINE,
+            #     'selected_icon': ft.icons.PEOPLE
+            # },
+            # {
+            #     'label': 'Materias',
+            #     'icon': ft.icons.CLASS_OUTLINED,
+            #     'selected_icon': ft.icons.CLASS_
+            # },
+            # {
+            #     'label': 'Aulas',
+            #     'icon': ft.icons.MEETING_ROOM_OUTLINED,
+            #     'selected_icon': ft.icons.MEETING_ROOM
+            # },
+            # {
+            #     'label': 'Eventos',
+            #     'icon': ft.icons.CALENDAR_MONTH_OUTLINED,
+            #     'selected_icon': ft.icons.CALENDAR_MONTH
+            # },
+            # {
+            #     'label': 'Recursos',
+            #     'icon': ft.icons.PRECISION_MANUFACTURING_OUTLINED,
+            #     'selected_icon': ft.icons.PRECISION_MANUFACTURING
+            # },
+            # {
+            #     'label': 'Edificios',
+            #     'icon': ft.icons.LOCATION_CITY_OUTLINED,
+            #     'selected_icon': ft.icons.LOCATION_CITY
+            # }
         ]
     )
     ###################################################################################
