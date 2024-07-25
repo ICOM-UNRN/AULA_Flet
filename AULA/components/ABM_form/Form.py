@@ -91,6 +91,12 @@ class DeleteModifyForm(ft.UserControl):
         return self.fields_labels
 
     def set_fields_data(self, data : List[int | str | float]):
+        """
+        Set the data of the fields.
+        
+        Args:
+            data (List[int | str | float]): The data to be set.
+        """
         self.fields_data = data
     
     def clear_fields(self):

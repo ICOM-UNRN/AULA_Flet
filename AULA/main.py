@@ -32,10 +32,17 @@ def main(page: ft.Page):
         else:
             page.go(f"/{destination.lower()}")
 
-    def row_selected_func(e):
+    def dismiss_bottom_sheet_func(_):
+        page.session.get("actual_bottom_sheet").clear_fields()
+        dashboard = page.session.get("actual_data_table")
+        dashboard.data_table.deselectAll()
+
+    def row_selected_func(data):
         delete_modify_form = page.session.get("actual_bottom_sheet")
-        delete_modify_form.set_fields_data(e)
+        delete_modify_form.set_fields_data(data)
         delete_modify_form.build()
+        id_field = delete_modify_form.get_fields_controls()[0]
+        id_field.read_only = True
         page.show_bottom_sheet(
             ft.BottomSheet(
                     ft.Container(
@@ -46,7 +53,7 @@ def main(page: ft.Page):
                         padding=ft.padding.only(top=10,left=10,right=10,bottom=20)
                     ),
                     dismissible= True,
-                    on_dismiss= lambda _ : page.session.get("actual_bottom_sheet").clear_fields()
+                    on_dismiss= dismiss_bottom_sheet_func
             )
         )
         page.update()
@@ -55,6 +62,7 @@ def main(page: ft.Page):
         if route == "/":
             container_main_window.offset = ft.Offset(0, -0.05)
             container_main_window.content = column_main_text
+            page.session.set("actual_bottom_sheet",None)
             page.update()
         elif route == "/asignaciones":
             container_main_window.offset = ft.Offset(0, 0)
@@ -69,11 +77,16 @@ def main(page: ft.Page):
                 form_fields=["Search"],
             )
             container_main_window.content = dashboard_asignacion
+            page.session.set("actual_bottom_sheet",dashboard_asignacion)
             page.update()
         elif route == "/aulas":
             container_main_window.offset = ft.Offset(0, 0)
             aula = Aula(conn= db)
             data_all_aulas = aula.get_aulas()
+            bottom_sheet_aulas = DeleteModifyForm(
+                fields_labels= data_all_aulas["columns"]
+            )
+            page.session.set("actual_bottom_sheet",bottom_sheet_aulas)
             dashboard_aula = Dashboard(
                 dasboard_data= data_all_aulas,
                 expand=True,
@@ -83,11 +96,16 @@ def main(page: ft.Page):
                 form_fields=["Search"],
             )
             container_main_window.content = dashboard_aula
+            page.session.set("actual_data_table", dashboard_aula)
             page.update()
         elif route == "/edificios":
             container_main_window.offset = ft.Offset(0, 0)
             edificio = Edificio(conn= db)
             data_all_edificios = edificio.get_edificios()
+            bottom_sheet_edificio = DeleteModifyForm(
+                fields_labels= data_all_edificios["columns"]
+            )
+            page.session.set("actual_bottom_sheet",bottom_sheet_edificio)
             dashboard_edificio = Dashboard(
                 dasboard_data= data_all_edificios,
                 expand=True,
@@ -97,11 +115,16 @@ def main(page: ft.Page):
                 form_fields=["Search"],
             )
             container_main_window.content = dashboard_edificio
+            page.session.set("actual_data_table", dashboard_edificio)
             page.update()
         elif route == "/eventos":
             container_main_window.offset = ft.Offset(0, 0)
             evento = Evento(conn= db)
             data_all_eventos = evento.get_eventos()
+            bottom_sheet_evento = DeleteModifyForm(
+                fields_labels= data_all_eventos["columns"]
+            )
+            page.session.set("actual_bottom_sheet",bottom_sheet_evento)
             dashboard_evento = Dashboard(
                 dasboard_data= data_all_eventos,
                 expand=True,
@@ -111,13 +134,19 @@ def main(page: ft.Page):
                 form_fields=["Search"],
             )
             container_main_window.content = dashboard_evento
+            page.session.set("actual_data_table",dashboard_evento)
             page.update()
         elif route == "/materias":
             container_main_window.offset = ft.Offset(0, 0)
             materia = Materia(conn= db)
             data_all_materias = materia.get_materias()
+            bottom_sheet_asignacion = DeleteModifyForm(
+                fields_labels= data_all_materias["columns"]
+            )
+            page.session.set("actual_bottom_sheet",bottom_sheet_asignacion)
             dashboard_materia = Dashboard(
                 dasboard_data= data_all_materias,
+                rows_func=row_selected_func,
                 expand=True,
                 border_radius= 10,
                 bgcolor= "#E6E6E6",
@@ -125,15 +154,16 @@ def main(page: ft.Page):
                 form_fields=["Search"],
             )
             container_main_window.content = dashboard_materia
+            page.session.set("actual_data_table", dashboard_materia)
             page.update()
         elif route == "/profesores":
             container_main_window.offset = ft.Offset(0, 0)
             profesor = Profesor(conn= db)
             data_all_profesores = profesor.get_profesores()
-            bottom_sheet_asignacion = DeleteModifyForm(
+            bottom_sheet_profesor = DeleteModifyForm(
                 fields_labels= data_all_profesores["columns"]
             )
-            page.session.set("actual_bottom_sheet",bottom_sheet_asignacion)
+            page.session.set("actual_bottom_sheet",bottom_sheet_profesor)
             dashboard_profesor = Dashboard(
                 dasboard_data= data_all_profesores,
                 rows_func=row_selected_func,
@@ -144,6 +174,7 @@ def main(page: ft.Page):
                 form_fields=["Search"],
             )
             container_main_window.content = dashboard_profesor
+            page.session.set("actual_data_table",dashboard_profesor)
             page.update()
         elif route == "/profesores_por_materia":
             container_main_window.offset = ft.Offset(0, 0)
@@ -158,11 +189,16 @@ def main(page: ft.Page):
                 form_fields=["Search"],
             )
             container_main_window.content = dashboard_profesor_por_materia
+            page.session.set("actual_data_table",dashboard_profesor_por_materia)
             page.update()
         elif route == "/recursos":
             container_main_window.offset = ft.Offset(0, 0)
             recurso = Recurso(conn= db)
             data_all_recursos = recurso.get_recursos()
+            bottom_sheet_recursos = DeleteModifyForm(
+                fields_labels= data_all_recursos["columns"]
+            )
+            page.session.set("actual_bottom_sheet",bottom_sheet_recursos)
             dashboard_recurso = Dashboard(
                 dasboard_data= data_all_recursos,
                 expand=True,
@@ -172,6 +208,7 @@ def main(page: ft.Page):
                 form_fields=["Search"],
             )
             container_main_window.content = dashboard_recurso
+            page.session.set("actual_data_table",dashboard_recurso)
             page.update()
         elif route == "/recursos_por_aula":
             container_main_window.offset = ft.Offset(0, 0)
@@ -186,6 +223,7 @@ def main(page: ft.Page):
                 form_fields=["Search"],
             )
             container_main_window.content = dashboard_recurso_por_aula
+            page.session.set("actual_data_table",dashboard_recurso_por_aula)
             page.update()
             
             
