@@ -29,7 +29,7 @@ class DataTableCustom():
             else:
                 e.control.color = "transparent"
         
-        if func is not None:
+        if (func is not None) and (e.control.selected):
             values = []
             for cell in e.control.cells:
                 values.append(cell.content.value)
