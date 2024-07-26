@@ -86,6 +86,10 @@ class DeleteModifyForm(ft.UserControl):
         """Returns a list of TextField controls"""
         return self.fields_controls
 
+    def get_fields_data(self):
+        """Returns a list of TextField data"""
+        return self.fields_data
+
     def get_fields_labels(self):
         """Returns a list of TextField labels"""
         return self.fields_labels

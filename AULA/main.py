@@ -36,6 +36,86 @@ def main(page: ft.Page):
         page.session.get("actual_bottom_sheet").clear_fields()
         dashboard = page.session.get("actual_data_table")
         dashboard.data_table.deselectAll()
+    
+    def update_func(_):
+        route = page.route
+        data = page.session.get("actual_bottom_sheet").get_fields_data()
+        if route == "/asignaciones":
+            asignacion = Asignacion(db)
+            asignacion.update_asignacion(id=data[0],aula=data[1],materia=data[2],evento=data[3],dia=data[4],comienzo=data[5],fin=data[6])
+            page.update()
+        elif route == "/aulas":
+            aula = Aula(db)
+            aula.update_aula(id=data[0],nombre=data[1],edificio=data[2])
+            page.update()
+        elif route == "/edificios":
+            edificio = Edificio(db)
+            edificio.update_edificio(id=data[0],nombre=data[1],calle=data[2],altura=data[3])
+            page.update()
+        elif route == "/eventos":
+            evento = Evento(db)
+            evento.update_evento(id=data[0],nombre=data[1],descripcion=data[2],comienzo=data[3],fin=data[4])
+            page.update()
+        elif route == "/materias":
+            materia = Materia(db)
+            materia.update_materia(id=data[0],codigo_guarani=data[1],carrera=data[2],nombre=data[3],anio=data[4],cuatrimestre=data[5],taxonomia=data[6],horas_semanales=data[7],comisiones=data[8])
+            page.update()
+        elif route == "/profesores":
+            profesor = Profesor(db)
+            profesor.update_profesor(id=data[0],documento=data[1],nombre=data[2],apellido=data[3],condicion=data[4],categoria=data[5],dedicacion=data[6],periodo_a_cargo=data[7])
+            page.update()
+        elif route == "/profesores_por_materia":
+            profesor_por_materia = Profesor_por_materia(db)
+            profesor_por_materia.update_profesor_por_materia(id_materia=data[0],id_profesor=data[1],alumnos_esperados=data[2],tipo_clase=data[3],archivo=data[4])
+            page.update()
+        elif route == "/recursos":
+            recurso = Recurso(db)
+            recurso.update_recurso(id=data[0],nombre=data[1],descripcion=data[2])
+            page.update()
+        elif route == "/recursos_por_aula":
+            recurso_por_aula=Recurso_por_aula(db)
+            recurso_por_aula.update_recurso_por_aula(id_aula=data[0],id_recurso=data[1],cantidad=data[2])
+            page.update()
+
+    def delete_func(_):
+        route = page.route
+        data = page.session.get("actual_bottom_sheet").get_fields_data()
+        if route == "/asignaciones":
+            asignacion = Asignacion(db)
+            asignacion.delete_asignacion(id=data[0])
+            page.update()
+        elif route == "/aulas":
+            aula = Aula(db)
+            aula.delete_aula(id=data[0])
+            page.update()
+        elif route == "/edificios":
+            edificio = Edificio(db)
+            edificio.delete_edificio(id=data[0])
+            page.update()
+        elif route == "/eventos":
+            evento = Evento(db)
+            evento.delete_evento(id=data[0])
+            page.update()
+        elif route == "/materias":
+            materia = Materia(db)
+            materia.delete_materia(id=data[0])
+            page.update()
+        elif route == "/profesores":
+            profesor = Profesor(db)
+            profesor.delete_profesor(id=data[0])
+            page.update()
+        elif route == "/profesores_por_materia":
+            profesor_por_materia = Profesor_por_materia(db)
+            profesor_por_materia.delete_profesor_por_materia(id=data[0])
+            page.update()
+        elif route == "/recursos":
+            recurso = Recurso(db)
+            recurso.delete_recurso(id=data[0])
+            page.update()
+        elif route == "/recursos_por_aula":
+            recurso_por_aula=Recurso_por_aula(db)
+            recurso_por_aula.delete_recurso_por_aula(id=data[0])
+            page.update()
 
     def row_selected_func(data):
         delete_modify_form = page.session.get("actual_bottom_sheet")
@@ -43,20 +123,34 @@ def main(page: ft.Page):
         delete_modify_form.build()
         id_field = delete_modify_form.get_fields_controls()[0]
         id_field.read_only = True
+        
+        textos_y_botones = delete_modify_form.get_fields_controls()
+        textos_y_botones.append(
+            ft.Row(
+                controls=[
+                    ft.ElevatedButton(text="Guardar cambios", bgcolor=ft.colors.AMBER_400, color=ft.colors.BLACK, icon=ft.icons.EDIT, on_click= update_func),
+                    ft.ElevatedButton(text="Eliminar", bgcolor=ft.colors.RED_400, color=ft.colors.BLACK, icon=ft.icons.DELETE, on_click= delete_func),
+                ]
+            )    
+        )
+        
         page.show_bottom_sheet(
             ft.BottomSheet(
                     ft.Container(
                         ft.Column(
                             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                            controls=delete_modify_form.get_fields_controls()
+                            controls= textos_y_botones,
+                            scroll=True,
                         ),
                         padding=ft.padding.only(top=10,left=10,right=10,bottom=20)
                     ),
                     dismissible= True,
-                    on_dismiss= dismiss_bottom_sheet_func
+                    on_dismiss= dismiss_bottom_sheet_func,
+                    is_scroll_controlled=True 
             )
         )
         page.update()
+
     def route_change(e):
         route = e.route
         if route == "/":
@@ -70,9 +164,10 @@ def main(page: ft.Page):
             data_all_asignaciones = asignacion.get_asignaciones()
             dashboard_asignacion = Dashboard(
                 dasboard_data= data_all_asignaciones,
+                rows_func=row_selected_func,
                 expand=True,
                 border_radius= 10,
-                bgcolor= "#E6E6E6",
+                bgcolor= "#3A3A3A",
                 padding= 10,
                 form_fields=["Search"],
             )
@@ -89,9 +184,10 @@ def main(page: ft.Page):
             page.session.set("actual_bottom_sheet",bottom_sheet_aulas)
             dashboard_aula = Dashboard(
                 dasboard_data= data_all_aulas,
+                rows_func=row_selected_func,
                 expand=True,
                 border_radius= 10,
-                bgcolor= "#E6E6E6",
+                bgcolor= "#3A3A3A",
                 padding= 10,
                 form_fields=["Search"],
             )
@@ -108,9 +204,10 @@ def main(page: ft.Page):
             page.session.set("actual_bottom_sheet",bottom_sheet_edificio)
             dashboard_edificio = Dashboard(
                 dasboard_data= data_all_edificios,
+                rows_func=row_selected_func,
                 expand=True,
                 border_radius= 10,
-                bgcolor= "#E6E6E6",
+                bgcolor= "#3A3A3A",
                 padding= 10,
                 form_fields=["Search"],
             )
@@ -127,9 +224,10 @@ def main(page: ft.Page):
             page.session.set("actual_bottom_sheet",bottom_sheet_evento)
             dashboard_evento = Dashboard(
                 dasboard_data= data_all_eventos,
+                rows_func=row_selected_func,
                 expand=True,
                 border_radius= 10,
-                bgcolor= "#E6E6E6",
+                bgcolor= "#3A3A3A",
                 padding= 10,
                 form_fields=["Search"],
             )
@@ -149,7 +247,7 @@ def main(page: ft.Page):
                 rows_func=row_selected_func,
                 expand=True,
                 border_radius= 10,
-                bgcolor= "#E6E6E6",
+                bgcolor= "#3A3A3A",
                 padding= 10,
                 form_fields=["Search"],
             )
@@ -170,7 +268,7 @@ def main(page: ft.Page):
                 form_fields=["Search"],
                 expand=True,
                 border_radius= 10,
-                bgcolor= "#E6E6E6",
+                bgcolor= "#3A3A3A",
                 padding= 10,
             )
             container_main_window.content = dashboard_profesor
@@ -180,11 +278,16 @@ def main(page: ft.Page):
             container_main_window.offset = ft.Offset(0, 0)
             profesor_por_materia = Profesor_por_materia(conn= db)
             data_all_profesores_por_materias = profesor_por_materia.get_profesores_por_materia()
+            bottom_sheet_profesore_por_materia = DeleteModifyForm(
+                fields_labels= data_all_profesores_por_materias["columns"]
+            )
+            page.session.set("actual_bottom_sheet",bottom_sheet_profesore_por_materia)
             dashboard_profesor_por_materia = Dashboard(
                 dasboard_data= data_all_profesores_por_materias,
+                rows_func=row_selected_func,
                 expand=True,
                 border_radius= 10,
-                bgcolor= "#E6E6E6",
+                bgcolor= "#3A3A3A",
                 padding= 10,
                 form_fields=["Search"],
             )
@@ -201,9 +304,10 @@ def main(page: ft.Page):
             page.session.set("actual_bottom_sheet",bottom_sheet_recursos)
             dashboard_recurso = Dashboard(
                 dasboard_data= data_all_recursos,
+                rows_func=row_selected_func,
                 expand=True,
                 border_radius= 10,
-                bgcolor= "#E6E6E6",
+                bgcolor= "#3A3A3A",
                 padding= 10,
                 form_fields=["Search"],
             )
@@ -214,11 +318,16 @@ def main(page: ft.Page):
             container_main_window.offset = ft.Offset(0, 0)
             recurso_por_aula = Recurso_por_aula(conn= db)
             data_all_recursos_por_aulas = recurso_por_aula.get_recursos_por_aula()
+            bottom_sheet_recurso_por_aula = DeleteModifyForm(
+                fields_labels= data_all_recursos_por_aulas["columns"]
+            )
+            page.session.set("actual_bottom_sheet",bottom_sheet_recurso_por_aula)
             dashboard_recurso_por_aula = Dashboard(
                 dasboard_data= data_all_recursos_por_aulas,
+                rows_func=row_selected_func,
                 expand=True,
                 border_radius= 10,
-                bgcolor= "#E6E6E6",
+                bgcolor= "#3A3A3A",
                 padding= 10,
                 form_fields=["Search"],
             )
@@ -238,6 +347,7 @@ def main(page: ft.Page):
         text_align=ft.TextAlign.CENTER,
         font_family="FabrikatNormalBlack",
     )
+    
     text_header_UNRN_description = ft.Text(
         value="Universidad Nacional\nde Río Negro",
         color="#FFFFFF",
@@ -337,7 +447,7 @@ def main(page: ft.Page):
     #                                   NAVEGACION                                    #
     ###################################################################################
     custom_rail_bar = ft.NavigationRail(
-        width=80,
+        width=100,
         on_change= navigation_change,
         group_alignment=0,
         destinations=[
@@ -357,9 +467,9 @@ def main(page: ft.Page):
                 label="Materias",
             ),
             ft.NavigationRailDestination(
-                icon_content=ft.Icon(ft.icons.MEETING_ROOM_OUTLINED),
-                selected_icon_content=ft.Icon(ft.icons.MEETING_ROOM),
-                label="Aulas",
+                icon_content=ft.Icon(ft.icons.WORK_HISTORY_OUTLINED),
+                selected_icon_content=ft.Icon(ft.icons.WORK_HISTORY),
+                label="Profesor por materia",
             ),
             ft.NavigationRailDestination(
                 icon_content=ft.Icon(ft.icons.CALENDAR_MONTH_OUTLINED),
@@ -367,9 +477,24 @@ def main(page: ft.Page):
                 label="Eventos",
             ),
             ft.NavigationRailDestination(
+                icon_content=ft.Icon(ft.icons.MEETING_ROOM_OUTLINED),
+                selected_icon_content=ft.Icon(ft.icons.MEETING_ROOM),
+                label="Aulas",
+            ),
+            ft.NavigationRailDestination(
+                icon_content=ft.Icon(ft.icons.EDIT_CALENDAR_OUTLINED),
+                selected_icon_content=ft.Icon(ft.icons.EDIT_CALENDAR),
+                label="Asignaciones",
+            ),
+            ft.NavigationRailDestination(
                 icon_content=ft.Icon(ft.icons.PRECISION_MANUFACTURING_OUTLINED),
                 selected_icon_content=ft.Icon(ft.icons.PRECISION_MANUFACTURING),
                 label="Recursos",
+            ),
+            ft.NavigationRailDestination(
+                icon_content=ft.Icon(ft.icons.WORKSPACES_OUTLINED),
+                selected_icon_content=ft.Icon(ft.icons.WORKSPACES),
+                label="Recursos por aula",
             ),
             ft.NavigationRailDestination(
                 icon_content=ft.Icon(ft.icons.LOCATION_CITY_OUTLINED),
