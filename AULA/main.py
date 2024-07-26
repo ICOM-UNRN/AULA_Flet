@@ -447,7 +447,7 @@ def main(page: ft.Page):
     #                                   NAVEGACION                                    #
     ###################################################################################
     custom_rail_bar = ft.NavigationRail(
-        width=80,
+        width=100,
         on_change= navigation_change,
         group_alignment=0,
         destinations=[
