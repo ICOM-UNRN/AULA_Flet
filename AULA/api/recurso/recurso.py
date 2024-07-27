@@ -20,8 +20,8 @@ class Recurso():
         result = self.cursor.callproc("get_recurso", [id_recurso])
         return result
 
-    def insert_recurso(self, id_recurso : int, nombre : str, descripción : str):
-        result = self.cursor.callproc("insert_recurso", [id_recurso, nombre, descripción])
+    def insert_recurso(self, nombre : str, descripcion : str):
+        result = self.cursor.callproc("insert_recurso", [nombre, descripcion])
         self.conn.commit()
         return result
     

@@ -72,14 +72,23 @@ class DeleteModifyForm(ft.UserControl):
     def build(self):
         """Funcion que construye el BottomSheet"""
         if len(self.fields_labels)>0:
-            for label, data in zip(self.fields_labels, self.fields_data):
-                self.fields_controls.append(
-                    ft.TextField(
-                        label= label,
-                        col={"md": 1},
-                        value=data
+            if len(self.fields_data)>0:
+                for label, data in zip(self.fields_labels, self.fields_data):
+                    self.fields_controls.append(
+                        ft.TextField(
+                            label= label,
+                            col={"md": 1},
+                            value=data
+                        )
                     )
-                )
+            else:
+                for label in self.fields_labels:
+                    self.fields_controls.append(
+                        ft.TextField(
+                            label= label,
+                            col={"md": 1}
+                        )
+                    )
         return self.fields_controls
 
     def get_fields_controls(self):
@@ -89,6 +98,15 @@ class DeleteModifyForm(ft.UserControl):
     def get_fields_data(self):
         """Returns a list of TextField data"""
         return self.fields_data
+    
+    def get_fields_actual_data(self):
+        """Returns a list of each control updated TextField data"""
+        result = []
+        for field in self.fields_controls:
+            if field.__class__ is ft.TextField:
+                result.append(field.value)      
+        return result
+
 
     def get_fields_labels(self):
         """Returns a list of TextField labels"""

@@ -10,7 +10,9 @@ class Dashboard(ft.Container):
         self,
         dasboard_data : Dict[Literal['columns', 'rows'], List[Any]] = {'columns': [], 'rows': []},
         rows_func : Callable = None,
+        button_add_func : Callable = None,
         form_fields : list[str] = [],
+        form_header_controls : list[ft.Control] = [],
         form_text_color : str = "#000000",
         content: ft.Control | None = None,
         ref: ft.Ref | None = None,
@@ -71,9 +73,12 @@ class Dashboard(ft.Container):
         self.expand = True
         self.dashboard_data = dasboard_data
         self.form_fields = form_fields
+        self.form_header_controls = form_header_controls
         self.form_text_color = form_text_color
         self.rows_func = rows_func
-        self.dashboard_search_input = ft.TextField(label="Search", col=1, color=self.form_text_color, height=50, on_change=self.__input_changed)
+        self.button_add_func = button_add_func
+        self.dashboard_search_input = ft.TextField(label="Search", col=1, color=self.form_text_color, height=50, expand=True, on_change=self.__input_changed)
+        self.dashboard_buttond_add_row = ft.IconButton(icon=ft.icons.ADD, on_click= self.button_add_func, width=50, height=50)
         self.data_table = DataTableCustom(
             data_columns = self.dashboard_data["columns"],
             data_rows= self.dashboard_data["rows"],
@@ -82,7 +87,7 @@ class Dashboard(ft.Container):
         self.content= ft.Column(
             expand=True,
             controls=[
-                self.dashboard_search_input,
+                ft.Row(controls=[self.dashboard_search_input, self.dashboard_buttond_add_row]),
                 ft.Row(
                     # scroll=ft.ScrollMode.HIDDEN,
                     controls=[self.data_table.build()]
