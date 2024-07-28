@@ -118,7 +118,7 @@ def leer_excel(nombre_archivo):
 
 
 def save_data_to_csv(filename, data):
-    with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
+    with open(filename, 'w', newline='', encoding='UTF-8') as csvfile:
         fieldnames = list(data[0].keys())
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
