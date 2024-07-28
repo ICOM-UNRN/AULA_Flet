@@ -44,9 +44,9 @@ class ItemList(UserControl):
         )
 
     def create_item_name_field(self):
-        return [TextField(
-            label="New Item Name", width=100, height=50, bgcolor=colors.WHITE, on_submit=self.add_item_handler
-        )]
+        return [
+            TextField(label="New Item Name", width=100, height=50, bgcolor=colors.WHITE, on_submit=self.add_item_handler),
+            ]
 
     def init_controls(self):
         self.controls = []
@@ -115,38 +115,31 @@ class ItemList(UserControl):
 
         # rearrange (i.e. drag drop from same list)
         if ((from_index is not None) and (to_index is not None)):
-            print("rearrange: ", to_index, from_index)
-            self.items.controls.insert(
-                to_index, self.items.controls.pop(from_index))
+            print("rearrange GENERAL: ", to_index, from_index)
+            self.items.controls.insert(to_index, self.items.controls.pop(from_index))
             self.set_indicator_opacity(swap_control, 0.0)
 
         # insert (drag from other list to middle of this list)
         elif (to_index is not None):
-            print("insert: ", to_index)
+            print("insert GENERAL: ", to_index)
             new_item = Item(self, item_texts)
             control_to_add.controls.append(new_item.view)
             self.items.controls.insert(to_index, control_to_add)
 
         # add new (drag from other list to end of this list, or use add item button)
         else:
-            print("add new: ", item_texts)
-            if ((item_texts is not None) and (item_texts == [])):
+            print("add new GENERAL: ", item_texts)
+            if ((item_texts is not None) and (item_texts != [])):
                 new_item = Item(self, item_texts)
-                print(f"{item_texts}||PLOPS")
             else:
-                print("PLOP")
                 aux = []
                 for i in range(0, len(self.item_name)):
                     aux.append(self.item_name[i].value)
-                    print(f"{aux}|-|{self.item_name[i].value}")
                     self.item_name[i].value = ""
                 new_item = Item(self, aux)
-                print(new_item.item_texts)
             control_to_add.controls.append(new_item.view)
             self.items.controls.append(control_to_add)
 
-
-        print("self.items: ", self.items.controls)
         self.view.update()
         self.page.update()
 
@@ -167,6 +160,7 @@ class ItemList(UserControl):
         from_index = l.index(src.content.data)
         l[to_index], l[from_index] = l[from_index], l[to_index]
         self.end_indicator.opacity = 0.0
+        self.view.update()
         self.page.update()
 
     def drag_will_accept(self, e):
@@ -246,10 +240,8 @@ class ItemList_Cell(ItemList):
 
     def add_item(self, item_texts: list = None, chosen_control: Draggable = None, swap_control: Draggable = None):
         controls_list = [x.controls[1] for x in self.items.controls]
-        to_index = controls_list.index(
-            swap_control) if swap_control in controls_list else None
-        from_index = controls_list.index(
-            chosen_control) if chosen_control in controls_list else None
+        to_index = controls_list.index(swap_control) if swap_control in controls_list else None
+        from_index = controls_list.index(chosen_control) if chosen_control in controls_list else None
         control_to_add = Column([
             Container(
                 bgcolor=colors.BLACK26,
@@ -260,12 +252,11 @@ class ItemList_Cell(ItemList):
                 opacity=0.0
             )
         ])
-
+        
         # rearrange (i.e. drag drop from same list)
         if ((from_index is not None) and (to_index is not None)):
             print("rearrange: ", to_index, from_index)
-            self.items.controls.insert(
-                to_index, self.items.controls.pop(from_index))
+            self.items.controls.insert(to_index, self.items.controls.pop(from_index))
             self.set_indicator_opacity(swap_control, 0.0)
 
         # insert (drag from other list to middle of this list)
@@ -319,9 +310,9 @@ class Item():
             content=DragTarget(
                 group="items",
                 content=self.card_item,
-                on_accept=self.drag_accept,
-                on_leave=self.drag_leave,
-                on_will_accept=self.drag_will_accept,
+                #on_accept=self.drag_accept,
+                #on_leave=self.drag_leave,
+                #on_will_accept=self.drag_will_accept,
             ),
             data=self
         )
@@ -365,7 +356,7 @@ def create_calendar_rows(rows, columns, page, color="white"):
 
 
 def main(page: ft.Page):
-    dias = ["_________", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
+    dias = [" ", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
     intervalos_horarios = create_calendar_hours_intervals(8, 23)
 
     creador = ItemList_Creator(page, "ItemList_creador")
@@ -400,5 +391,10 @@ def main(page: ft.Page):
             scroll=ScrollMode.ALWAYS,
             )
         )
+    
+    creador.add_item(["hola", "buenas", "bonjeur"])
+    creador.add_item(["Mate 2", "18 -> 17", "Victor Tilla"])
+    creador.add_item(["Fisica 3", "hoy -> mañana", "Juan Topo"])
+    creador.add_item(["ILEA", "nunca -> ayer", "Din Jarin"])
 
 ft.app(target=main)
