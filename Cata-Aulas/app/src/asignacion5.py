@@ -202,6 +202,65 @@ def asignar_materias_a_aulas(materias):
     return sugestion
 
 
+def escribir_sugestiones(sugestiones, archivo):
+    with open(archivo, 'w', newline='', encoding='ISO-8859-1') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['Materia', 'Profesor', 'Aula',
+                        'Dia', 'Hora inicio', 'Hora fin'])
+        for sugestion in sugestiones:
+            writer.writerow([sugestion['Materia'], sugestion['Profesor'],
+                            sugestion['Aula'], sugestion['Dia'], sugestion['Hora inicio'], sugestion['Hora fin']])
+
+
+def asignar_sugestiones_automatico(sugestiones, horarios_aulas):
+    # Ordenar sugerencias por "alumnos esperados" en orden descendente
+    sugerencias_ordenadas = sorted(sugestiones, key=lambda x: x.get(
+        'alumnos_esperados', 0), reverse=True)
+    print(sugerencias_ordenadas)
+
+    # Crear copias de las aulas disponibles
+    aulas_disponibles_copia = defaultdict(lambda: defaultdict(list))
+    for aula, dias in horarios_aulas.items():
+        for dia, horas in dias.items():
+            aulas_disponibles_copia[aula][dia] = list(horas)
+
+    asignadas = []
+    no_asignadas = []
+
+    for sugerencia in sugerencias_ordenadas:
+        materia = sugerencia['Materia']
+        profesor = sugerencia['Profesor']
+        dia = sugerencia['Dia']
+        hora_inicio = sugerencia['Hora inicio']
+        hora_fin = sugerencia['Hora fin']
+
+        aula_asignada = None
+
+        for aula, dias in aulas_disponibles_copia.items():
+            if dia in dias:
+                horas_disponibles = dias[dia]
+                if hora_inicio in horas_disponibles and hora_fin in horas_disponibles:
+                    aula_asignada = aula
+                    # Eliminar las horas ocupadas de la copia
+                    aulas_disponibles_copia[aula][dia].remove(hora_inicio)
+                    aulas_disponibles_copia[aula][dia].remove(hora_fin)
+                    break
+
+        if aula_asignada:
+            asignadas.append({
+                'Materia': materia,
+                'Profesor': profesor,
+                'Aula': aula_asignada,
+                'Dia': dia,
+                'Hora inicio': hora_inicio,
+                'Hora fin': hora_fin
+            })
+        else:
+            no_asignadas.append(sugerencia)
+
+    return asignadas, no_asignadas
+
+
 # Leer los archivos
 aulas = leer_aulas('Aulas.csv')
 materias = leer_materias('Materias.csv')
@@ -261,7 +320,11 @@ horarios_aulas = organizar_horarios_aulas(aulas)
 # print("Disponibilidad profe: ")
 # for aula in disponibilidad_profe:
 #     print(aula)
-test_asignar = asignar_materias_a_aulas(materias)
-for asignacion in test_asignar:
-    print(f"{asignacion['Materia']} | {asignacion['Profesor']} | {asignacion['Aula']} | {
-          asignacion['Dia']} | {asignacion['Hora inicio']} | {asignacion['Hora fin']}")
+
+# test_asignar = asignar_materias_a_aulas(materias)
+# for asignacion in test_asignar:
+#     print(f"{asignacion['Materia']} | {asignacion['Profesor']} | {asignacion['Aula']} | {
+#           asignacion['Dia']} | {asignacion['Hora inicio']} | {asignacion['Hora fin']}")
+
+# escribir_sugestiones(asignar_materias_a_aulas(materias), 'sugerencias.csv')
+# asignar_sugestiones_automatico(asignar_materias_a_aulas, horarios_aulas)
