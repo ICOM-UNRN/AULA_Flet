@@ -1,0 +1,23 @@
+dni,apellido,nombre,condicion,categoria,dedicacion,horarios_disponibles,materias
+16738637,LORENZO DE MAGOIA,MONICA DELIA,Interino,Profesor Adjunto,Simple,"LUN, 8-12, 14-18; MAR, 8-12, 14-18; MIE, 8-12, 14-18; JUE, 8-12, 14-18; VIE, 8-12, 14-18",['Inglés Técnico']
+25468943,BAEZ,LORENA LUISA,Interino,Ayudante de Primera,Simple,"LUN, 10-14, 16-20; MAR, 10-14, 16-20; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 10-14, 16-20","['Física General II', 'Física General I']"
+36171289,LAMPERTI,CATERINA,Interino,Profesor Adjunto,Parcial,"LUN, 8-12, 14-18; MAR, 8-12, 14-18; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 8-12, 14-18","['Física General II', 'Física General I', 'Matemática III']"
+31939152,MARIGUIN,Miguel,Interino,Profesor Adjunto,Simple,"LUN, 10-14, 16-20; MAR, 10-14, 16-20; MIE, 8-12, 14-18; JUE, 8-12, 14-18; VIE, 10-14, 16-20",['Programación I']
+29611678,VILUGRON,MARTIN RENE,Interino,Profesor Adjunto,Simple,"LUN, 8-12, 14-18; MAR, 10-14, 16-20; MIE, 10-14, 16-20; JUE, 8-12, 14-18; VIE, 8-12, 14-18",['Programación I']
+33529137,FERMIN,MAURO ALEJANDRO,Interino,Ayudante de Primera,Simple,"LUN, 10-14, 16-20; MAR, 8-12, 14-18; MIE, 8-12, 14-18; JUE, 10-14, 16-20; VIE, 10-14, 16-20",['Programación I']
+26240918,CALDO,JUAN PABLO,Interino,Ayudante de Primera,Simple,"LUN, 8-12, 14-18; MAR, 10-14, 16-20; MIE, 8-12, 14-18; JUE, 10-14, 16-20; VIE, 8-12, 14-18",['Electrónica Digital']
+21602115,DI BONIS,GASTON EDUARDO,Interino,Jefe de trabajos prácticos,Simple,"LUN, 10-14, 16-20; MAR, 8-12, 14-18; MIE, 10-14, 16-20; JUE, 8-12, 14-18; VIE, 10-14, 16-20",['Química']
+25885246,RUANO,RAFAEL FERNANDO,Interino,Jefe de trabajos prácticos,Simple,"LUN, 8-12, 14-18; MAR, 8-12, 14-18; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 10-14, 16-20",['Química']
+33948242,GIANA,FABIAN EDUARDO,Interino,Jefe de trabajos prácticos,Simple,"LUN, 8-12, 14-18; MAR, 10-14, 16-20; MIE, 10-14, 16-20; JUE, 8-12, 14-18; VIE, 10-14, 16-20",['Matemática III']
+23850390,RIBERI,VANINA ESTELA,Interino,Profesor Adjunto,Simple,"LUN, 10-14, 16-20; MAR, 8-12, 14-18; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 8-12, 14-18",['Seguridad Ambiental y Laboral']
+27024277,TEJERO,CARLOS GERMÁN,Interino,Profesor Adjunto,Simple,"LUN, 8-12, 14-18; MAR, 10-14, 16-20; MIE, 8-12, 14-18; JUE, 10-14, 16-20; VIE, 8-12, 14-18",['Sistemas Operativos I']
+23124017,GOMEZ,GUILLERMO ENRIQUE,Regular,Profesor Adjunto,Simple,"LUN, 10-14, 16-20; MAR, 10-14, 16-20; MIE, 10-14, 16-20; JUE, 8-12, 14-18; VIE, 8-12, 14-18",['Señales y Sistemas']
+33154815,CATALANO,IGNACIO ENRIQUE,Interino,Jefe de trabajos prácticos,Simple,"LUN, 8-12, 14-18; MAR, 8-12, 14-18; MIE, 8-12, 14-18; JUE, 10-14, 16-20; VIE, 10-14, 16-20",['Redes de Área Local y Extendida']
+17342171,AGÜERO,WALTER FABIAN,Interino,Profesor Adjunto,Parcial,"LUN, 10-14, 16-20; MAR, 10-14, 16-20; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 10-14, 16-20",['Inteligencia Artificial']
+27071960,TEIRA,DANIEL EDUARDO,Interino,Ayudante de Primera,Simple,"LUN, 10-14, 16-20; MAR, 10-14, 16-20; MIE, 10-14, 16-20; JUE, 8-12, 14-18; VIE, 8-12, 14-18",['Programación I']
+39403483,BERTOLO,NICOLÁS LUCIANO,Interino,Ayudante de Primera,Simple,"LUN, 8-12, 14-18; MAR, 8-12, 14-18; MIE, 8-12, 14-18; JUE, 10-14, 16-20; VIE, 10-14, 16-20",['Programación I']
+29659429,NOMDEDEU,IVAN PEDRO,Interino,Profesor Adjunto,Simple,"LUN, 10-14, 16-20; MAR, 10-14, 16-20; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 10-14, 16-20",['Programación I']
+35017382,ACHA,LAUTARO,Interino,Profesor Adjunto,Simple,"LUN, 8-12, 14-18; MAR, 8-12, 14-18; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 8-12, 14-18",['Electrónica Digital']
+35380729,SANTAYA,MARIANO,Interino,Ayudante de Primera,Simple,"LUN, 10-14, 16-20; MAR, 10-14, 16-20; MIE, 8-12, 14-18; JUE, 10-14, 16-20; VIE, 8-12, 14-18",['Análisis de Circuitos']
+32037075,LASCANO WARNES,GRETEL VICTORIA ,Interino,Profesor Adjunto,Simple,"LUN, 8-12, 14-18; MAR, 10-14, 16-20; MIE, 8-12, 14-18; JUE, 8-12, 14-18; VIE, 8-12, 14-18",['Análisis de Circuitos']
+32101016,DA FONSECA,MARÍA DE LOS ÁNGELE,Interino,Profesor Adjunto,Simple,"LUN, 10-14, 16-20; MAR, 8-12, 14-18; MIE, 10-14, 16-20; JUE, 8-12, 14-18; VIE, 10-14, 16-20",['Física General I']

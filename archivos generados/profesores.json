@@ -1,0 +1,269 @@
+[
+    {
+        "dni": 16738637,
+        "apellido": "LORENZO DE MAGOIA",
+        "nombre": "MONICA DELIA",
+        "condicion": "Interino",
+        "categoria": "Profesor Adjunto",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 8-12, 14-18; MAR, 8-12, 14-18; MIE, 8-12, 14-18; JUE, 8-12, 14-18; VIE, 8-12, 14-18",
+        "materias": [
+            "Ingl\u00e9s T\u00e9cnico"
+        ]
+    },
+    {
+        "dni": 25468943,
+        "apellido": "BAEZ",
+        "nombre": "LORENA LUISA",
+        "condicion": "Interino",
+        "categoria": "Ayudante de Primera",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 10-14, 16-20; MAR, 10-14, 16-20; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 10-14, 16-20",
+        "materias": [
+            "F\u00edsica General II",
+            "F\u00edsica General I"
+        ]
+    },
+    {
+        "dni": 36171289,
+        "apellido": "LAMPERTI",
+        "nombre": "CATERINA",
+        "condicion": "Interino",
+        "categoria": "Profesor Adjunto",
+        "dedicacion": "Parcial",
+        "horarios_disponibles": "LUN, 8-12, 14-18; MAR, 8-12, 14-18; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 8-12, 14-18",
+        "materias": [
+            "F\u00edsica General II",
+            "F\u00edsica General I",
+            "Matem\u00e1tica III"
+        ]
+    },
+    {
+        "dni": 31939152,
+        "apellido": "MARIGUIN",
+        "nombre": "Miguel",
+        "condicion": "Interino",
+        "categoria": "Profesor Adjunto",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 10-14, 16-20; MAR, 10-14, 16-20; MIE, 8-12, 14-18; JUE, 8-12, 14-18; VIE, 10-14, 16-20",
+        "materias": [
+            "Programaci\u00f3n I"
+        ]
+    },
+    {
+        "dni": 29611678,
+        "apellido": "VILUGRON",
+        "nombre": "MARTIN RENE",
+        "condicion": "Interino",
+        "categoria": "Profesor Adjunto",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 8-12, 14-18; MAR, 10-14, 16-20; MIE, 10-14, 16-20; JUE, 8-12, 14-18; VIE, 8-12, 14-18",
+        "materias": [
+            "Programaci\u00f3n I"
+        ]
+    },
+    {
+        "dni": 33529137,
+        "apellido": "FERMIN",
+        "nombre": "MAURO ALEJANDRO",
+        "condicion": "Interino",
+        "categoria": "Ayudante de Primera",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 10-14, 16-20; MAR, 8-12, 14-18; MIE, 8-12, 14-18; JUE, 10-14, 16-20; VIE, 10-14, 16-20",
+        "materias": [
+            "Programaci\u00f3n I"
+        ]
+    },
+    {
+        "dni": 26240918,
+        "apellido": "CALDO",
+        "nombre": "JUAN PABLO",
+        "condicion": "Interino",
+        "categoria": "Ayudante de Primera",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 8-12, 14-18; MAR, 10-14, 16-20; MIE, 8-12, 14-18; JUE, 10-14, 16-20; VIE, 8-12, 14-18",
+        "materias": [
+            "Electr\u00f3nica Digital"
+        ]
+    },
+    {
+        "dni": 21602115,
+        "apellido": "DI BONIS",
+        "nombre": "GASTON EDUARDO",
+        "condicion": "Interino",
+        "categoria": "Jefe de trabajos pr\u00e1cticos",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 10-14, 16-20; MAR, 8-12, 14-18; MIE, 10-14, 16-20; JUE, 8-12, 14-18; VIE, 10-14, 16-20",
+        "materias": [
+            "Qu\u00edmica"
+        ]
+    },
+    {
+        "dni": 25885246,
+        "apellido": "RUANO",
+        "nombre": "RAFAEL FERNANDO",
+        "condicion": "Interino",
+        "categoria": "Jefe de trabajos pr\u00e1cticos",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 8-12, 14-18; MAR, 8-12, 14-18; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 10-14, 16-20",
+        "materias": [
+            "Qu\u00edmica"
+        ]
+    },
+    {
+        "dni": 33948242,
+        "apellido": "GIANA",
+        "nombre": "FABIAN EDUARDO",
+        "condicion": "Interino",
+        "categoria": "Jefe de trabajos pr\u00e1cticos",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 8-12, 14-18; MAR, 10-14, 16-20; MIE, 10-14, 16-20; JUE, 8-12, 14-18; VIE, 10-14, 16-20",
+        "materias": [
+            "Matem\u00e1tica III"
+        ]
+    },
+    {
+        "dni": 23850390,
+        "apellido": "RIBERI",
+        "nombre": "VANINA ESTELA",
+        "condicion": "Interino",
+        "categoria": "Profesor Adjunto",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 10-14, 16-20; MAR, 8-12, 14-18; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 8-12, 14-18",
+        "materias": [
+            "Seguridad Ambiental y Laboral"
+        ]
+    },
+    {
+        "dni": 27024277,
+        "apellido": "TEJERO",
+        "nombre": "CARLOS GERM\u00c1N",
+        "condicion": "Interino",
+        "categoria": "Profesor Adjunto",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 8-12, 14-18; MAR, 10-14, 16-20; MIE, 8-12, 14-18; JUE, 10-14, 16-20; VIE, 8-12, 14-18",
+        "materias": [
+            "Sistemas Operativos I"
+        ]
+    },
+    {
+        "dni": 23124017,
+        "apellido": "GOMEZ",
+        "nombre": "GUILLERMO ENRIQUE",
+        "condicion": "Regular",
+        "categoria": "Profesor Adjunto",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 10-14, 16-20; MAR, 10-14, 16-20; MIE, 10-14, 16-20; JUE, 8-12, 14-18; VIE, 8-12, 14-18",
+        "materias": [
+            "Se\u00f1ales y Sistemas"
+        ]
+    },
+    {
+        "dni": 33154815,
+        "apellido": "CATALANO",
+        "nombre": "IGNACIO ENRIQUE",
+        "condicion": "Interino",
+        "categoria": "Jefe de trabajos pr\u00e1cticos",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 8-12, 14-18; MAR, 8-12, 14-18; MIE, 8-12, 14-18; JUE, 10-14, 16-20; VIE, 10-14, 16-20",
+        "materias": [
+            "Redes de \u00c1rea Local y Extendida"
+        ]
+    },
+    {
+        "dni": 17342171,
+        "apellido": "AG\u00dcERO",
+        "nombre": "WALTER FABIAN",
+        "condicion": "Interino",
+        "categoria": "Profesor Adjunto",
+        "dedicacion": "Parcial",
+        "horarios_disponibles": "LUN, 10-14, 16-20; MAR, 10-14, 16-20; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 10-14, 16-20",
+        "materias": [
+            "Inteligencia Artificial"
+        ]
+    },
+    {
+        "dni": 27071960,
+        "apellido": "TEIRA",
+        "nombre": "DANIEL EDUARDO",
+        "condicion": "Interino",
+        "categoria": "Ayudante de Primera",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 10-14, 16-20; MAR, 10-14, 16-20; MIE, 10-14, 16-20; JUE, 8-12, 14-18; VIE, 8-12, 14-18",
+        "materias": [
+            "Programaci\u00f3n I"
+        ]
+    },
+    {
+        "dni": 39403483,
+        "apellido": "BERTOLO",
+        "nombre": "NICOL\u00c1S LUCIANO",
+        "condicion": "Interino",
+        "categoria": "Ayudante de Primera",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 8-12, 14-18; MAR, 8-12, 14-18; MIE, 8-12, 14-18; JUE, 10-14, 16-20; VIE, 10-14, 16-20",
+        "materias": [
+            "Programaci\u00f3n I"
+        ]
+    },
+    {
+        "dni": 29659429,
+        "apellido": "NOMDEDEU",
+        "nombre": "IVAN PEDRO",
+        "condicion": "Interino",
+        "categoria": "Profesor Adjunto",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 10-14, 16-20; MAR, 10-14, 16-20; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 10-14, 16-20",
+        "materias": [
+            "Programaci\u00f3n I"
+        ]
+    },
+    {
+        "dni": 35017382,
+        "apellido": "ACHA",
+        "nombre": "LAUTARO",
+        "condicion": "Interino",
+        "categoria": "Profesor Adjunto",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 8-12, 14-18; MAR, 8-12, 14-18; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 8-12, 14-18",
+        "materias": [
+            "Electr\u00f3nica Digital"
+        ]
+    },
+    {
+        "dni": 35380729,
+        "apellido": "SANTAYA",
+        "nombre": "MARIANO",
+        "condicion": "Interino",
+        "categoria": "Ayudante de Primera",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 10-14, 16-20; MAR, 10-14, 16-20; MIE, 8-12, 14-18; JUE, 10-14, 16-20; VIE, 8-12, 14-18",
+        "materias": [
+            "An\u00e1lisis de Circuitos"
+        ]
+    },
+    {
+        "dni": 32037075,
+        "apellido": "LASCANO WARNES",
+        "nombre": "GRETEL VICTORIA ",
+        "condicion": "Interino",
+        "categoria": "Profesor Adjunto",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 8-12, 14-18; MAR, 10-14, 16-20; MIE, 8-12, 14-18; JUE, 8-12, 14-18; VIE, 8-12, 14-18",
+        "materias": [
+            "An\u00e1lisis de Circuitos"
+        ]
+    },
+    {
+        "dni": 32101016,
+        "apellido": "DA FONSECA",
+        "nombre": "MAR\u00cdA DE LOS \u00c1NGELE",
+        "condicion": "Interino",
+        "categoria": "Profesor Adjunto",
+        "dedicacion": "Simple",
+        "horarios_disponibles": "LUN, 10-14, 16-20; MAR, 8-12, 14-18; MIE, 10-14, 16-20; JUE, 8-12, 14-18; VIE, 10-14, 16-20",
+        "materias": [
+            "F\u00edsica General I"
+        ]
+    }
+]
