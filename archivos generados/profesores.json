@@ -20,8 +20,8 @@
         "dedicacion": "Simple",
         "horarios_disponibles": "LUN, 10-14, 16-20; MAR, 10-14, 16-20; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 10-14, 16-20",
         "materias": [
-            "F\u00edsica General II",
-            "F\u00edsica General I"
+            "F\u00edsica General I",
+            "F\u00edsica General II"
         ]
     },
     {
@@ -33,8 +33,8 @@
         "dedicacion": "Parcial",
         "horarios_disponibles": "LUN, 8-12, 14-18; MAR, 8-12, 14-18; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 8-12, 14-18",
         "materias": [
-            "F\u00edsica General II",
             "F\u00edsica General I",
+            "F\u00edsica General II",
             "Matem\u00e1tica III"
         ]
     },

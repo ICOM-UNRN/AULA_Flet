@@ -118,7 +118,7 @@ def leer_excel(nombre_archivo):
 
 
 def save_data_to_csv(filename, data):
-    with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
+    with open(filename, 'w', newline='', encoding='UTF-8') as csvfile:
         fieldnames = list(data[0].keys())
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -132,4 +132,4 @@ def save_data_to_json(filename, data):
 
 
 if __name__ == "__main__":
-    leer_excel(r'etc\dist2cuadH.xlsx')
+    leer_excel(r'Cata-Aulas/etc/dist2cuadH.xlsx')

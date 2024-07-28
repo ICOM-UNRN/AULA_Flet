@@ -1,8 +1,9 @@
+import re
 import flet as ft
 from components.dashboard.Dashboard import Dashboard
-from components.RailBar.Railbar import RailBarCustom
+# from components.RailBar.Railbar import RailBarCustom
 from components.ABM_form.Form import DeleteModifyForm
-from api.db import connect_to_db, close_connection
+from api.db import connect_to_db
 from api.aula.aula import Aula
 from api.materia.materia import Materia
 from api.asignacion.asignacion import Asignacion
@@ -21,6 +22,65 @@ def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
 
     db = connect_to_db()
+
+    ###################################################################################
+    #                                FUNC VER HORARIOS                                #
+    ###################################################################################
+
+    def close_search_bar_edifico(e):
+        text = f"{e.control.title.value}"
+        print(text)
+        search_bar_edificio.close_view(text)
+
+    def close_search_bar_aula(e):
+        text = f"{e.control.title.value}"
+        print(text)
+        search_bar_aula.close_view(text)
+
+    def close_search_bar_carrera(e):
+        text = f"{e.control.title.value}"
+        print(text)
+        search_bar_carrera.close_view(text)
+
+    def handle_change(e):
+        print(f"handle_change e.data: {e.data}")
+        if e.data == "":
+            print(listas_busquedas[e.control.data])
+            e.control.controls = listas_busquedas[e.control.data]
+            e.control.update()
+            return
+
+        result = [
+            value
+            for value in listas_busquedas[e.control.data]
+            if re.search(e.data, value.title.value, re.IGNORECASE)
+        ]
+        print(result)
+        e.control.controls = result
+        e.control.update()
+
+    def handle_submit(e):
+        print(f"handle_submit e.data: {e.data}")
+        if e.data == "":
+            print(listas_busquedas[e.control.data])
+            e.control.controls = listas_busquedas[e.control.data]
+            e.control.update()
+            return
+
+        result = [
+            value
+            for value in listas_busquedas[e.control.data]
+            if re.search(e.data, value.title.value, re.IGNORECASE)
+        ]
+        print(result)
+        if len(result) == 1:
+            e.control.close_view(result[0].title.value)
+        e.control.controls = result
+        e.control.update()
+
+    def handle_tap(e):
+        e.control.open_view()
+
 
     ###################################################################################
     #                                  CAMBIO DE RUTAS                                #
@@ -104,7 +164,7 @@ def main(page: ft.Page):
         elif route == "/recursos_por_aula":
             recurso_por_aula=Recurso_por_aula(db)
             recurso_por_aula.delete_recurso_por_aula(id=data[0])
-        
+
         route_change(page)
         page.close_bottom_sheet()
         page.update()
@@ -121,7 +181,7 @@ def main(page: ft.Page):
             aula.insert_aula(nombre=data[0], edificio=data[1])
         elif route == "/edificios":
             edificio = Edificio(db)
-            edificio.insert_edificio(nombre=data[0], calle=data[1], altura=data[2])
+            edificio.insert_edificio(nombre=data[0], direccion=data[1], altura=data[2])
         elif route == "/eventos":
             evento = Evento(db)
             evento.insert_evento(nombre=data[0], descripcion=data[1], comienzo=data[2], fin=data[3])
@@ -133,7 +193,7 @@ def main(page: ft.Page):
             profesor.insert_profesor(dni=data[0], nombre=data[1], apellido=data[2], condicion=data[3], categoria=data[4], dedicacion=data[5], periodo_a_cargo=data[6])
         elif route == "/profesores_por_materia":
             profesor_por_materia = Profesor_por_materia(db)
-            profesor_por_materia.insert_profesor_por_materia(id_materia=data[0], id_profesor=data[1], alumnos_esperados=data[2], tipo_clase=data[3], archivo=data[4])
+            profesor_por_materia.insert_profesor_por_materia(materia=data[0], profesor=data[1], cant_alumnos=data[2], tipo_clase=data[3], activo=data[4])
         elif route == "/recursos":
             recurso = Recurso(db)
             recurso.insert_recurso(nombre=data[0], descripcion=data[1])
@@ -147,9 +207,11 @@ def main(page: ft.Page):
     def add_row_func(_):
         form = page.session.get("actual_form")
         form.build()
+        types = get_types()
         textos_y_botones = form.get_fields_controls()
         if page.route != "/profesores_por_materia" and page.route != "/recursos_por_aula":
             textos_y_botones.pop(0) # remove id field
+            types.pop(0)
         textos_y_botones.append(
             ft.Row(
                 controls=[
@@ -208,6 +270,46 @@ def main(page: ft.Page):
             )
         )
         page.update()
+        
+    def get_filter_tuple(_type):
+        if _type == "number":
+            return [ft.KeyboardType.NUMBER,ft.NumbersOnlyInputFilter()]
+        elif _type == "textonly":
+            return [ft.KeyboardType.TEXT,ft.TextOnlyInputFilter()]
+        elif _type == "datetime":
+            return [None,ft.InputFilter(allow=True, regex_string=r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}", replacement_string="")]
+        elif _type == "date":
+            return [None,ft.InputFilter(allow=True, regex_string=r"\d{4}-\d{2}-\d{2}", replacement_string="")]
+        else:
+            return [None,None]
+
+    def get_types():
+        route = page.route
+        types = []
+        number = get_filter_tuple("number")
+        text = get_filter_tuple(None)
+        datetime = get_filter_tuple("datetime")
+        if route == "/asignaciones":
+            types = [number,number,number,number,text,number,number]
+        elif route == "/aulas":
+            types = [number,number,text]
+        elif route == "/edificios":
+            types = [number,text,text,number]
+        elif route == "/eventos":
+            types = [number,text,text,text,text]
+        elif route == "/materias":
+            types = [number,text,text,text,number,number,text,number,number]
+        elif route == "/profesores":
+            types = [number,number,text,text,text,text,text,text]
+        elif route == "/profesore por materia":
+            types = [number,number,number,text,text]
+        elif route == "/recursos":
+            types = [number,text,text]
+        elif route == "/recursos por aula":
+            types = [number,number,number]
+        return types
+        
+        
 
     def route_change(e):
         route = e.route
@@ -220,6 +322,11 @@ def main(page: ft.Page):
             container_main_window.offset = ft.Offset(0, 0)
             asignacion = Asignacion(conn= db)
             data_all_asignaciones = asignacion.get_asignaciones()
+            bottom_sheet_asignaciones = DeleteModifyForm(
+                fields_labels= data_all_asignaciones["columns"],
+                fields_types = get_types()
+            )
+            page.session.set("actual_form",bottom_sheet_asignaciones)
             dashboard_asignacion = Dashboard(
                 dasboard_data= data_all_asignaciones,
                 rows_func=row_selected_func,
@@ -231,14 +338,15 @@ def main(page: ft.Page):
                 form_fields=["Search"],
             )
             container_main_window.content = dashboard_asignacion
-            page.session.set("actual_form",dashboard_asignacion)
+            page.session.set("actual_data_table",dashboard_asignacion)
             page.update()
         elif route == "/aulas":
             container_main_window.offset = ft.Offset(0, 0)
             aula = Aula(conn= db)
             data_all_aulas = aula.get_aulas()
             bottom_sheet_aulas = DeleteModifyForm(
-                fields_labels= data_all_aulas["columns"]
+                fields_labels= data_all_aulas["columns"],
+                fields_types = get_types()
             )
             page.session.set("actual_form",bottom_sheet_aulas)
             dashboard_aula = Dashboard(
@@ -259,7 +367,8 @@ def main(page: ft.Page):
             edificio = Edificio(conn= db)
             data_all_edificios = edificio.get_edificios()
             bottom_sheet_edificio = DeleteModifyForm(
-                fields_labels= data_all_edificios["columns"]
+                fields_labels= data_all_edificios["columns"],
+                fields_types = get_types()
             )
             page.session.set("actual_form",bottom_sheet_edificio)
             dashboard_edificio = Dashboard(
@@ -280,7 +389,8 @@ def main(page: ft.Page):
             evento = Evento(conn= db)
             data_all_eventos = evento.get_eventos()
             bottom_sheet_evento = DeleteModifyForm(
-                fields_labels= data_all_eventos["columns"]
+                fields_labels= data_all_eventos["columns"],
+                fields_types = get_types()
             )
             page.session.set("actual_form",bottom_sheet_evento)
             dashboard_evento = Dashboard(
@@ -301,7 +411,8 @@ def main(page: ft.Page):
             materia = Materia(conn= db)
             data_all_materias = materia.get_materias()
             bottom_sheet_asignacion = DeleteModifyForm(
-                fields_labels= data_all_materias["columns"]
+                fields_labels= data_all_materias["columns"],
+                fields_types = get_types()
             )
             page.session.set("actual_form",bottom_sheet_asignacion)
             dashboard_materia = Dashboard(
@@ -322,7 +433,8 @@ def main(page: ft.Page):
             profesor = Profesor(conn= db)
             data_all_profesores = profesor.get_profesores()
             bottom_sheet_profesor = DeleteModifyForm(
-                fields_labels= data_all_profesores["columns"]
+                fields_labels= data_all_profesores["columns"],
+                fields_types = get_types()
             )
             page.session.set("actual_form",bottom_sheet_profesor)
             dashboard_profesor = Dashboard(
@@ -337,12 +449,13 @@ def main(page: ft.Page):
             container_main_window.content = dashboard_profesor
             page.session.set("actual_data_table",dashboard_profesor)
             page.update()
-        elif route == "/profesores_por_materia":
+        elif route == "/profesor por materia":
             container_main_window.offset = ft.Offset(0, 0)
             profesor_por_materia = Profesor_por_materia(conn= db)
             data_all_profesores_por_materias = profesor_por_materia.get_profesores_por_materia()
             bottom_sheet_profesor_por_materia = DeleteModifyForm(
-                fields_labels= data_all_profesores_por_materias["columns"]
+                fields_labels= data_all_profesores_por_materias["columns"],
+                fields_types = get_types()
             )
             page.session.set("actual_form",bottom_sheet_profesor_por_materia)
             dashboard_profesor_por_materia = Dashboard(
@@ -363,7 +476,8 @@ def main(page: ft.Page):
             recurso = Recurso(conn= db)
             data_all_recursos = recurso.get_recursos()
             bottom_sheet_recursos = DeleteModifyForm(
-                fields_labels= data_all_recursos["columns"]
+                fields_labels= data_all_recursos["columns"],
+                fields_types = get_types()
             )
             page.session.set("actual_form",bottom_sheet_recursos)
             dashboard_recurso = Dashboard(
@@ -379,12 +493,13 @@ def main(page: ft.Page):
             container_main_window.content = dashboard_recurso
             page.session.set("actual_data_table",dashboard_recurso)
             page.update()
-        elif route == "/recursos_por_aula":
+        elif route == "/recursos por aula":
             container_main_window.offset = ft.Offset(0, 0)
             recurso_por_aula = Recurso_por_aula(conn= db)
             data_all_recursos_por_aulas = recurso_por_aula.get_recursos_por_aula()
             bottom_sheet_recurso_por_aula = DeleteModifyForm(
-                fields_labels= data_all_recursos_por_aulas["columns"]
+                fields_labels= data_all_recursos_por_aulas["columns"],
+                fields_types = get_types()
             )
             page.session.set("actual_form",bottom_sheet_recurso_por_aula)
             dashboard_recurso_por_aula = Dashboard(
@@ -399,6 +514,11 @@ def main(page: ft.Page):
             )
             container_main_window.content = dashboard_recurso_por_aula
             page.session.set("actual_data_table",dashboard_recurso_por_aula)
+            page.update()
+        
+        elif route == "/ver_horarios":
+            container_main_window.offset = ft.Offset(0, 0)
+            container_main_window.content = container_vista_horarios
             page.update()
             
             
@@ -465,7 +585,7 @@ def main(page: ft.Page):
         weight=ft.FontWeight.NORMAL,
         font_family="FabrikatNormal",
     )
-    
+
     btn_main_horarios = ft.OutlinedButton(
         text="Ver Horarios",
         icon=ft.icons.CALENDAR_MONTH,
@@ -478,7 +598,7 @@ def main(page: ft.Page):
             color="#C4C4C4",
             bgcolor=ft.colors.with_opacity(0.25,"#505050"),
         ),
-        on_click=lambda _: page.go('/profesores'),
+        on_click=lambda _: page.go('/ver_horarios')
     )
 
     column_main_text = ft.Column(
@@ -497,6 +617,88 @@ def main(page: ft.Page):
             text_main_AULA_description,
             btn_main_horarios
         ]
+    )
+    
+    ###################################################################################
+    #                                  VER HORARIOS                                   #
+    ##################################  #################################################
+    
+    listas_busquedas = {
+        "search_bar_carrera":[
+            ft.ListTile(title=ft.Text("Ingenieria en Computacion"), on_click=close_search_bar_carrera)
+        ],
+        "search_bar_edificio":[
+            ft.ListTile(title=ft.Text("Anasagasti 2"), on_click=close_search_bar_edifico),
+            ft.ListTile(title=ft.Text("Tacuari"), on_click=close_search_bar_edifico),
+            ft.ListTile(title=ft.Text("Mitre"), on_click=close_search_bar_edifico)
+        ],
+        "search_bar_aula":[
+            ft.ListTile(title=ft.Text("Aula 1"), on_click=close_search_bar_aula),
+            ft.ListTile(title=ft.Text("Aula 2"), on_click=close_search_bar_aula),
+            ft.ListTile(title=ft.Text("Aula 3"), on_click=close_search_bar_aula)
+        ]
+    }
+    
+    btn_ordenar_auto = ft.ElevatedButton(text="Ordenar automaticamente", on_click=lambda _: print("Ordenar automaticamente [hacer funcion]"))
+    
+    search_bar_carrera = ft.SearchBar(
+        data="search_bar_carrera",
+        expand=True,
+        expand_loose=True,
+        divider_color=ft.colors.AMBER,
+        bar_hint_text="Carrera",
+        view_hint_text="Seleccione una carrera para filtrar los datos",
+        on_change=handle_change,
+        on_submit=handle_submit,
+        on_tap=handle_tap,
+        controls=listas_busquedas["search_bar_carrera"],
+    )
+
+    search_bar_aula = ft.SearchBar(
+        data="search_bar_aula",
+        expand=True,
+        expand_loose=True,
+        divider_color=ft.colors.AMBER,
+        bar_hint_text="Aula",
+        view_hint_text="Seleccione un aula para filtrar los datos",
+        on_change=handle_change,
+        on_submit=handle_submit,
+        on_tap=handle_tap,
+        controls=listas_busquedas["search_bar_aula"],
+    )
+
+    search_bar_edificio = ft.SearchBar(
+        data="search_bar_edificio",
+        expand=True,
+        expand_loose=True,
+        divider_color=ft.colors.AMBER,
+        bar_hint_text="Edificio",
+        view_hint_text="Seleccione un edificio para filtrar los datos",
+        on_change=handle_change,
+        on_submit=handle_submit,
+        on_tap=handle_tap,
+        controls=listas_busquedas["search_bar_edificio"],
+    )
+
+    columns_search_bars = ft.Column(
+        controls=[
+            ft.Row(controls=[search_bar_carrera, btn_ordenar_auto]),
+            ft.Row(controls=[search_bar_edificio, search_bar_aula])
+        ]
+    )
+
+    container_horarios = ft.Container(
+        expand=True,
+        bgcolor=ft.colors.GREY_800,
+    )
+
+    container_vista_horarios = ft.Container(
+        expand=True,
+        bgcolor="#3A3A3A",
+        content=ft.Column(
+            controls=[columns_search_bars,
+            container_horarios]
+        ),
     )
 
     ###################################################################################
@@ -643,7 +845,7 @@ def main(page: ft.Page):
             ]
         )
     )
-    
+
     page.on_route_change = route_change
     page.go("/")
     page.add(main_container_page)
