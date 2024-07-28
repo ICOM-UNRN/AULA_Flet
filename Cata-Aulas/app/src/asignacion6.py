@@ -252,11 +252,11 @@ def crear_sugerencia_asignacion(archivo_aulas, archivo_destino_aulas, archivo_ma
 def asignacion_helper(materias, horarios_profesores, horarios_aulas, edificio_predefinido):
     sugerencias = []
     for materia in materias:
-        print(f"Evaluando materia: {materia['nombre']} con profesores: {
-              materia['profesores']}")
+        # print(f"Evaluando materia: {materia['nombre']} con profesores: {
+        #       materia['profesores']}")
         profesores_separados = separar_profesores(materia['profesores'])
         for profesor_nombre in profesores_separados:
-            print(f"  Evaluando disponibilidad de profesor: {profesor_nombre}")
+            # print(f"  Evaluando disponibilidad de profesor: {profesor_nombre}")
             aulas_con_disponibilidad = verificar_disponibilidad(
                 profesor_nombre, horarios_profesores, horarios_aulas)
             if aulas_con_disponibilidad:
@@ -276,7 +276,7 @@ def asignacion_helper(materias, horarios_profesores, horarios_aulas, edificio_pr
                             'Hora fin': aula['Hora Fin:'],
                             'Edificio': aula_edificio
                         })
-                        print(f"    Asignación encontrada: {sugerencias[-1]}")
+                        # print(f"    Asignación encontrada: {sugerencias[-1]}")
                         break  # Salir del loop de aulas, pasar al siguiente profesor
             else:
                 print(f"    {profesor_nombre} | No hay aulas disponibles")

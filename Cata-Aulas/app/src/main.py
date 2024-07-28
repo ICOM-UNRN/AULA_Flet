@@ -23,7 +23,7 @@ def main():
         edificio.guardar_aulas_json("aulas.json")
 
         # Corre el programa de asignación de materias
-        subprocess.run(["python", "app/src/asignacion5.py"], check=True)
+        subprocess.run(["python", "app/src/asignacion6.py"], check=True)
 
     except Exception as e:
         print(f"Error: {e}")
