@@ -44,19 +44,19 @@ class ItemList(UserControl):
         )
 
     def create_item_name_field(self):
-        return TextField(
+        return [TextField(
             label="New Item Name", width=100, height=50, bgcolor=colors.WHITE, on_submit=self.add_item_handler
-        )
+        )]
 
     def init_controls(self):
-        self.controls = [
-            self.item_name,
-            TextButton("Add Item", icon=icons.ADD, on_click=self.add_item_handler),
-            TextButton("Delete Items on this list", icon=icons.DELETE_FOREVER, on_click=self.delete_items_handler),
-            TextButton("Modify item on this list", icon=icons.SCREEN_ROTATION_ALT, on_click=self.modify_items_handler),
-            self.items,
-            self.end_indicator
-        ]
+        self.controls = []
+        for i in self.item_name:
+            self.controls.append(i)
+        self.controls.append(TextButton("Add Item", icon=icons.ADD, on_click=self.add_item_handler))
+        self.controls.append(TextButton("Delete Items on this list", icon=icons.DELETE_FOREVER, on_click=self.delete_items_handler))
+        self.controls.append(TextButton("Modify item on this list", icon=icons.SCREEN_ROTATION_ALT, on_click=self.modify_items_handler))
+        self.controls.append(self.items)
+        self.controls.append(self.end_indicator)
 
     def build(self):
         self.view = Container(
@@ -100,10 +100,8 @@ class ItemList(UserControl):
 
     def add_item(self, item_texts: list = None, chosen_control: Draggable = None, swap_control: Draggable = None):
         controls_list = [x.controls[1] for x in self.items.controls]
-        to_index = controls_list.index(
-            swap_control) if swap_control in controls_list else None
-        from_index = controls_list.index(
-            chosen_control) if chosen_control in controls_list else None
+        to_index = controls_list.index(swap_control) if swap_control in controls_list else None
+        from_index = controls_list.index(chosen_control) if chosen_control in controls_list else None
         control_to_add = Column([
             Container(
                 bgcolor=colors.BLACK26,
@@ -132,16 +130,18 @@ class ItemList(UserControl):
         # add new (drag from other list to end of this list, or use add item button)
         else:
             print("add new: ", item_texts)
-            if ((item_texts is not None) and (item_texts != [])):
+            if ((item_texts is not None) and (item_texts == [])):
                 new_item = Item(self, item_texts)
                 print(f"{item_texts}||PLOPS")
             else:
                 print("PLOP")
                 aux = []
-                for i in self.item_name:
-                    aux.append(i.value)
-                    i.value = ""
+                for i in range(0, len(self.item_name)):
+                    aux.append(self.item_name[i].value)
+                    print(f"{aux}|-|{self.item_name[i].value}")
+                    self.item_name[i].value = ""
                 new_item = Item(self, aux)
+                print(new_item.item_texts)
             control_to_add.controls.append(new_item.view)
             self.items.controls.append(control_to_add)
 
@@ -193,28 +193,33 @@ class ItemList(UserControl):
         self.update()
 
 class ItemList_Days(ItemList):
+    def create_item_name_field(self):
+        return [Text("")]
+    
     def init_controls(self):
         self.controls = [
             self.items,
             self.end_indicator
         ]
-        self.item_name = Text("")
 
 class ItemList_Creator(ItemList):
     def create_item_name_field(self):
         aux = []
-        aux.append(TextField(label="New Item Field 1", width=100, height=50, bgcolor=colors.WHITE))
-        aux.append(TextField(label="New Item Field 2", width=100, height=50, bgcolor=colors.WHITE))
-        aux.append(TextField(label="New Item Field 3", width=100, height=50, bgcolor=colors.WHITE))
+        aux.append(TextField(label="Materia", width=100, height=50, bgcolor=colors.WHITE))
+        aux.append(TextField(label="Horario", width=100, height=50, bgcolor=colors.WHITE))
+        aux.append(TextField(label="Profesor", width=100, height=50, bgcolor=colors.WHITE))
+        aux.append(TextField(label="Tipo de clase", width=100, height=50, bgcolor=colors.WHITE))
         return aux
 
     def init_controls(self):
-        self.controls = [
-            Container(Column(self.create_item_name_field(), spacing=5), width=200),
-            TextButton("Add Item", icon=icons.ADD, on_click=self.add_item_handler),
-            self.items,
-            self.end_indicator
-        ]
+        self.controls = []
+        self.controls.append(self.item_name[0])
+        self.controls.append(self.item_name[1])
+        self.controls.append(self.item_name[2])
+        self.controls.append(self.item_name[3])
+        self.controls.append(TextButton("Add Item", icon=icons.ADD, on_click=self.add_item_handler))
+        self.controls.append(self.items)
+        self.controls.append(self.end_indicator)
 
 class ItemList_Remover(ItemList):
     def init_controls(self):
@@ -239,12 +244,51 @@ class ItemList_Cell(ItemList):
             self.end_indicator
         ]
 
+    def add_item(self, item_texts: list = None, chosen_control: Draggable = None, swap_control: Draggable = None):
+        controls_list = [x.controls[1] for x in self.items.controls]
+        to_index = controls_list.index(
+            swap_control) if swap_control in controls_list else None
+        from_index = controls_list.index(
+            chosen_control) if chosen_control in controls_list else None
+        control_to_add = Column([
+            Container(
+                bgcolor=colors.BLACK26,
+                border_radius=border_radius.all(30),
+                height=3,
+                alignment=alignment.center_right,
+                width=100,
+                opacity=0.0
+            )
+        ])
+
+        # rearrange (i.e. drag drop from same list)
+        if ((from_index is not None) and (to_index is not None)):
+            print("rearrange: ", to_index, from_index)
+            self.items.controls.insert(
+                to_index, self.items.controls.pop(from_index))
+            self.set_indicator_opacity(swap_control, 0.0)
+
+        # insert (drag from other list to middle of this list)
+        elif (to_index is not None):
+            print("insert: ", to_index)
+            new_item = Item(self, item_texts)
+            control_to_add.controls.append(new_item.view)
+            self.items.controls.insert(to_index, control_to_add)
+
+        # add new (drag from other list to end of this list, or use add item button)
+        else:
+            print("create")
+            new_item = Item(self, item_texts)
+            control_to_add.controls.append(new_item.view)
+            self.items.controls.append(control_to_add)
+
 class Item():
     def __init__(self, list: ItemList, item_texts: list = []):
+        textos = ["Materia","Horario","Profesor","Tipo"]
         if (item_texts is None) or (item_texts == []):
-            item_texts = [""] * 8
-        elif len(item_texts) < 8:
-            item_texts += [""] * (8 - len(item_texts))
+            item_texts = [""] * len(textos)
+        elif len(item_texts) < len(textos):
+            item_texts += [""] * (len(textos) - len(item_texts))
         
         self.list = list
         self.item_texts = item_texts
@@ -256,18 +300,20 @@ class Item():
                         Icon(name=icons.HOURGLASS_BOTTOM),
                         Text(value=f"{self.item_texts[0]}"),
                     ]),
-                    Text(value=f"Field 2: {self.item_texts[1]}", size=10),
-                    Text(value=f"Field 3: {self.item_texts[2]}", size=10),
+                    Text(value=f"{textos[1]}: {self.item_texts[1]}", size=10),
+                    Text(value=f"{textos[2]}: {self.item_texts[2]}", size=10),
+                    Text(value=f"{textos[3]}: {self.item_texts[3]}", size=10),
                 ],
                     alignment="start",
                 ),
+                height=120,
                 width=100,
                 padding=7,
-                height=100,
             ),
             elevation=0,
             data=self.list
         )
+
         self.view = Draggable(
             group="items",
             content=DragTarget(
@@ -294,6 +340,7 @@ class Item():
     def set_indicator_opacity(self, opacity):
         self.list.set_indicator_opacity(self.view, opacity)
 
+
 def create_calendar_hours_intervals(inicio : int, final : int):
     columna = []
     for i in range(inicio, final):
@@ -303,14 +350,14 @@ def create_calendar_hours_intervals(inicio : int, final : int):
 def create_calendar_table_headers_first_row(headers : list):
     encabezados = []
     for i in headers:
-        encabezados.append(ft.DataColumn(ft.Text(f"{i}")))
+        encabezados.append(ft.DataColumn(ft.Text(f"{i}", color="black", text_align=ft.TextAlign.RIGHT)))
     return encabezados
 
 def create_calendar_rows(rows, columns, page, color="white"):
     filas = []
     for i in range(0, len(rows)):
         celdas = []
-        celdas.append(ft.DataCell(ft.Text(f"{rows[i]}")))
+        celdas.append(ft.DataCell(ft.Text(f"{rows[i]}", color="black", bgcolor="grey")))
         for j in range(1, len(columns)):
             celdas.append(ft.DataCell(ItemList_Cell(page, f"A{i}{j}", color)))
         filas.append(ft.DataRow(cells=celdas))
@@ -318,7 +365,7 @@ def create_calendar_rows(rows, columns, page, color="white"):
 
 
 def main(page: ft.Page):
-    dias = ["_________", "_Lunes_", "_Martes_", "_Miercoles_", "_Jueves_", "_Viernes_", "_Sabado_", "_Domingo_"]
+    dias = ["_________", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
     intervalos_horarios = create_calendar_hours_intervals(8, 23)
 
     creador = ItemList_Creator(page, "ItemList_creador")
@@ -336,6 +383,8 @@ def main(page: ft.Page):
                             data_row_min_height = 130,
                             data_row_max_height = float("inf"),
                             bgcolor='#ffffff',
+                            column_spacing=5,
+                            heading_row_color= colors.GREY_300
                             ),
                     ],
                     scroll=ScrollMode.ADAPTIVE,
