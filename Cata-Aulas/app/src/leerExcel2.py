@@ -132,4 +132,4 @@ def save_data_to_json(filename, data):
 
 
 if __name__ == "__main__":
-    leer_excel(r'etc\dist2cuadH.xlsx')
+    leer_excel(r'Cata-Aulas/etc/dist2cuadH.xlsx')

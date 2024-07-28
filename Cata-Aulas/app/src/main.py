@@ -27,7 +27,9 @@ def mover_archivos_a_carpeta(carpeta_destino):
 def main():
     try:
         # Ejecutar leerExcel.py usando subprocess
-        subprocess.run(["python", "app/src/leerExcel2.py"], check=True)
+        subprocess.run(
+            ["python", r"Cata-Aulas\app\src\leerExcel2.py"], check=True
+        )
 
         # Crear el edificio
         edificio = Edificio("Anasagasti II")
@@ -45,7 +47,9 @@ def main():
         edificio.guardar_aulas_json("aulas.json")
 
         # Corre el programa de asignación de materias
-        subprocess.run(["python", "app/src/asignacion6.py"], check=True)
+        subprocess.run(
+            ["python", r"Cata-Aulas\app\src\asignacion6.py"], check=True
+        )
 
         # Llamar a la función para mover los archivos
         mover_archivos_a_carpeta('archivos generados')
