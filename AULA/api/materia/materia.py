@@ -44,7 +44,7 @@ class Materia():
             print(f"Error al obtener materia: {e}")
             return None
 
-    def insert_materia(self, codigo_guarani: str, carrera: str, nombre: str, anio: str, cuatrimestre: str, taxonomia: str, horas_semanales: str, alumnos_esperados: int, comisiones: str):
+    def insert_materia(self, codigo_guarani: str, carrera: str, nombre: str, anio: str, cuatrimestre: str, taxonomia: str, horas_semanales: str, comisiones: str, alumnos_esperados: int):
         try:
             result = self.cursor.callproc("insert_materia", [
                                           codigo_guarani, carrera, nombre, anio, cuatrimestre, taxonomia, horas_semanales, alumnos_esperados, comisiones])
@@ -54,7 +54,7 @@ class Materia():
             print(f"Error al insertar materia: {e}")
             return None
 
-    def update_materia(self, codigo_guarani: str, carrera: str, nombre: str, anio: str, cuatrimestre: str, taxonomia: str, horas_semanales: str, alumnos_esperados: int, comisiones: str):
+    def update_materia(self, codigo_guarani: str, carrera: str, nombre: str, anio: str, cuatrimestre: str, taxonomia: str, horas_semanales: str, comisiones: str, alumnos_esperados: int):
         try:
             result = self.cursor.callproc("update_materia", [
                                           id, codigo_guarani, carrera, nombre, anio, cuatrimestre, taxonomia, horas_semanales, alumnos_esperados, comisiones])
