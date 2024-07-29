@@ -1,7 +1,7 @@
 dni,apellido,nombre,condicion,categoria,dedicacion,horarios_disponibles,materias
 16738637,LORENZO DE MAGOIA,MONICA DELIA,Interino,Profesor Adjunto,Simple,"LUN, 8-12, 14-18; MAR, 8-12, 14-18; MIE, 8-12, 14-18; JUE, 8-12, 14-18; VIE, 8-12, 14-18",['Inglés Técnico']
 25468943,BAEZ,LORENA LUISA,Interino,Ayudante de Primera,Simple,"LUN, 10-14, 16-20; MAR, 10-14, 16-20; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 10-14, 16-20","['Física General I', 'Física General II']"
-36171289,LAMPERTI,CATERINA,Interino,Profesor Adjunto,Parcial,"LUN, 8-12, 14-18; MAR, 8-12, 14-18; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 8-12, 14-18","['Física General I', 'Física General II', 'Matemática III']"
+36171289,LAMPERTI,CATERINA,Interino,Profesor Adjunto,Parcial,"LUN, 8-12, 14-18; MAR, 8-12, 14-18; MIE, 10-14, 16-20; JUE, 10-14, 16-20; VIE, 8-12, 14-18","['Física General I', 'Matemática III', 'Física General II']"
 31939152,MARIGUIN,Miguel,Interino,Profesor Adjunto,Simple,"LUN, 10-14, 16-20; MAR, 10-14, 16-20; MIE, 8-12, 14-18; JUE, 8-12, 14-18; VIE, 10-14, 16-20",['Programación I']
 29611678,VILUGRON,MARTIN RENE,Interino,Profesor Adjunto,Simple,"LUN, 8-12, 14-18; MAR, 10-14, 16-20; MIE, 10-14, 16-20; JUE, 8-12, 14-18; VIE, 8-12, 14-18",['Programación I']
 33529137,FERMIN,MAURO ALEJANDRO,Interino,Ayudante de Primera,Simple,"LUN, 10-14, 16-20; MAR, 8-12, 14-18; MIE, 8-12, 14-18; JUE, 10-14, 16-20; VIE, 10-14, 16-20",['Programación I']

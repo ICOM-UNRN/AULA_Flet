@@ -2,6 +2,7 @@ import psycopg2
 import sys
 import subprocess
 import os
+from AULA.api.asignacion import Asignacion
 
 # Datos de conexión a PostgreSQL
 POSTGRES_HOST = "ep-super-mouse-a4hq4rqf-pooler.us-east-1.aws.neon.tech"
@@ -16,7 +17,7 @@ sys.stdout.reconfigure(encoding='UTF-8')
 try:
     # Ejecutar main.py usando subprocess
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    main_script = os.path.join(current_dir, 'main.py')
+    main_script = os.path.join(current_dir, 'catador.py')
 
     subprocess.run(["python", main_script], check=True)
 
@@ -24,8 +25,6 @@ try:
     conexion = psycopg2.connect(host=POSTGRES_HOST, port=POSTGRES_PORT,
                                 user=POSTGRES_USUARIO, password=POSTGRES_CONTRASEÑA, database=BASE_DE_DATOS)
     print("¡Conectado a la base de datos PostgreSQL!")
-
-    from AULA.api import Asignacion
 
     asignacion = Asignacion(conexion)
 
