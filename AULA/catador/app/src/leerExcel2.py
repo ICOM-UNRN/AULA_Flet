@@ -1,18 +1,19 @@
 import pandas as pd
 import csv
 import json
+from catador import *
+
+# Diccionarios para almacenar datos procesados
+carreras_data = {}
+profesores_data = {}
+materias_data = {}
+materias_set = set()
 
 
 def leer_excel(nombre_archivo):
     try:
         # Leer el archivo Excel
         df = pd.read_excel(nombre_archivo)
-
-        # Diccionarios para almacenar datos procesados
-        carreras_data = {}
-        profesores_data = {}
-        materias_data = {}
-        materias_set = set()  # Conjunto para evitar duplicados de materias
 
         # Procesar cada fila del DataFrame
         for index, row in df.iterrows():
@@ -108,6 +109,9 @@ def leer_excel(nombre_archivo):
         save_data_to_json("profesores.json", profesores_list)
         save_data_to_csv("materias.csv", materias_list)
         save_data_to_json("materias.json", materias_list)
+
+        # Llamar a la función para mover los archivos
+        mover_archivos_a_carpeta('archivos generados')
 
     except pd.errors.EmptyDataError:
         print("El archivo Excel está vacío.")
