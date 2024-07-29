@@ -47,6 +47,12 @@ class Asignacion():
             "insert_asignacion", [aula, dia, comienzo, fin, materia, evento])
         self.conn.commit()
         return result
+    
+    def insert_asignacion_card(self, aula, materia, dia, hora_inicio, hora_fin):
+        result = self.cursor.callproc(
+            "insert_asignacion_card", [aula, materia, dia, hora_inicio, hora_fin])
+        self.conn.commit()
+        return result
 
     def update_asignacion(self, id, aula=None, materia=None, evento=None, dia=None, comienzo=None, fin=None):
         if evento == "":
