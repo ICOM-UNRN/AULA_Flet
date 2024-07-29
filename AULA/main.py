@@ -29,16 +29,24 @@ def main(page: ft.Page):
     ###################################################################################
     #                                FUNC VER HORARIOS                                #
     ###################################################################################
-    def obtener_asignaciones_materias_formateadas():
+    def obtener_asignaciones_materias_formateadas() -> dict:
         asignaciones = Asignacion(db).get_materias_eventos_asignados()
         datos = asignaciones["rows"]
-        lista_formateada = []
+        dicc_semana = {
+            "Lunes": [],
+            "Martes": [],
+            "Miercoles": [],
+            "Jueves": [],
+            "Viernes": [],
+            "Sabado": [],
+            "Domingo": [],
+        }
         for linea in datos:
             delta_horario = linea[6] - (linea[5])
             while delta_horario > 0:
-                lista_formateada.append([linea[0],linea[1], f"{linea[5]+(delta_horario-1)} a {linea[5]+delta_horario}", linea[3]])
+                dicc_semana[linea[4]].append([linea[0],linea[1], linea[5]+(delta_horario-1), linea[5]+delta_horario, linea[3]])
                 delta_horario -= 1
-        return lista_formateada
+        return dicc_semana
     def crear_visualizacion_horarios():
         dias = [" ", "Lunes", "Martes", "Miercoles",
                 "Jueves", "Viernes", "Sabado", "Domingo"]
@@ -80,6 +88,9 @@ def main(page: ft.Page):
             ],
         )
 
+        
+
+        column_visualizer.control[1].controls[0].rows[0].cells[1].content.add_item()
         container_horarios.content = column_visualizer
         if not page.window.maximized:
                 page.window.width = 1600
