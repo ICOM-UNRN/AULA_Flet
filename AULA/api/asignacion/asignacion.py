@@ -43,8 +43,12 @@ class Asignacion():
         return result
 
     def update_asignacion(self, id, aula=None, materia=None, evento=None, dia=None, comienzo=None, fin=None):
+        if evento == "":
+            evento = None
+        if materia == "":
+            materia = None
         result = self.cursor.callproc(
-            "update_asignacion", [id, aula, dia, comienzo, fin, materia, evento])
+            "update_asignacion", [id, aula, materia, evento, dia, comienzo, fin])
         self.conn.commit()
         if (result != 0):
             return False
