@@ -21,8 +21,14 @@ class Asignacion():
         self.conn.commit()
         return result
 
-    def get_materias_eventos_asignados(self):
-        self.cursor.callproc("get_materias_eventos_asignados")
+    def get_materias_eventos_asignados(self, carrera, edificio, aula):
+        if carrera == "":
+            carrera = None
+        if edificio == "":
+            edificio = None
+        if aula == "":
+            aula = None
+        self.cursor.callproc("get_materias_eventos_asignados", [carrera, edificio, aula])
         self.conn.commit()
         colums = [descr.name for descr in self.cursor.description]
         rows = [row for row in self.cursor.fetchall()]

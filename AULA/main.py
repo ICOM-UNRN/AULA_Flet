@@ -29,8 +29,8 @@ def main(page: ft.Page):
     ###################################################################################
     #                                FUNC VER HORARIOS                                #
     ###################################################################################
-    def obtener_asignaciones_materias_formateadas() -> dict:
-        asignaciones = Asignacion(db).get_materias_eventos_asignados()
+    def obtener_asignaciones_materias_formateadas(carrera, edificio, aula) -> dict:
+        asignaciones = Asignacion(db).get_materias_eventos_asignados(carrera, edificio, aula)
         datos = asignaciones["rows"]
         dicc_semana = {
             "Lunes": [],
@@ -48,13 +48,13 @@ def main(page: ft.Page):
                 delta_horario -= 1
         return dicc_semana
     
-    def crear_visualizacion_horarios():
+    def crear_visualizacion_horarios(carrera, edificio, aula):
         dias = [" ", "Lunes", "Martes", "Miercoles",
                 "Jueves", "Viernes", "Sabado", "Domingo"]
         intervalos_horarios = create_calendar_hours_intervals(8, 24)
 
         # listado con la siguiente estructura [aula, materia, {comienzo} , {fin}, profesores]
-        materias_asignadas = obtener_asignaciones_materias_formateadas()
+        materias_asignadas = obtener_asignaciones_materias_formateadas(carrera, edificio, aula)
 
         creador = ItemList_Creator(page, "ItemList_creador")
         removedor = ItemList_Remover(page, "ItemList_removedor")
@@ -153,6 +153,7 @@ def main(page: ft.Page):
         print(result)
         e.control.controls = result
         e.control.update()
+        crear_visualizacion_horarios(search_bar_carrera.value, search_bar_edificio.value, search_bar_aula.value)
 
     def handle_submit(e):
         print(f"handle_submit e.data: {e.data}")
@@ -170,9 +171,11 @@ def main(page: ft.Page):
         print(result)
         if len(result) == 1:
             e.control.close_view(result[0].title.value)
+
         e.control.controls = result
         e.control.update()
-
+        crear_visualizacion_horarios(search_bar_carrera.value, search_bar_edificio.value, search_bar_aula.value)
+            
     def handle_tap(e):
         e.control.open_view()
 
@@ -644,7 +647,7 @@ def main(page: ft.Page):
             load_search_bars()
             container_main_window.offset = ft.Offset(0, 0)
             container_main_window.content = container_vista_horarios
-            crear_visualizacion_horarios()
+            crear_visualizacion_horarios(None, None, None)
             page.update()
 
     ###################################################################################
