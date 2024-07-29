@@ -1,3 +1,4 @@
+import os
 import psycopg2
 from api.materia.materia import Materia
 from api.profesor.profesor import Profesor
@@ -10,7 +11,6 @@ import json
 
 
 def main():
-    # Configura la conexión a la base de datos
     conn = psycopg2.connect(
         dbname="verceldb",
         user="default",
@@ -19,7 +19,6 @@ def main():
         port="5432"
     )
 
-    # Crear instancias de las clases
     materia_db = Materia(conn)
     profesor_db = Profesor(conn)
     aula_db = Aula(conn)
@@ -27,19 +26,18 @@ def main():
     asignacion_db = Asignacion(conn)
 
     try:
-        # Obtener los datos necesarios
         aulas = aula_db.get_aulas()['rows']
         materias = materia_db.get_materias()['rows']
         profesores = profesor_db.get_profesores()['rows']
-        # print(f"Aulas: {aulas}")
-        # print(f"Materias: {materias}")
-        # print(f"Profesores: {profesores}")
 
-        # Convertir tuplas a diccionarios usando los nombres de las columnas
+        # Depuración: Verifica los datos obtenidos
+        # print("Aulas:", aulas)
+        # print("Materias:", materias)
+        # print("Profesores:", profesores)
+
         columnas_profesores = profesor_db.get_profesores()['columns']
         profesores = [dict(zip(columnas_profesores, profesor))
                       for profesor in profesores]
-        # print(f"Profesores (diccionarios): {profesores}")
 
         columnas_aulas = aula_db.get_aulas()['columns']
         aulas = [dict(zip(columnas_aulas, aula)) for aula in aulas]
@@ -48,22 +46,27 @@ def main():
         materias = [dict(zip(columnas_materias, materia))
                     for materia in materias]
 
-        # Organizar horarios
+        # Depuración: Imprimir los diccionarios
+        # print("Profesores Diccionario:", profesores)
+        # print("Aulas Diccionario:", aulas)
+        # print("Materias Diccionario:", materias)
+
         horarios_disponibles_profesores = organizar_horarios_profesores(
             profesores)
         horarios_disponibles_aulas = organizar_horarios_aulas(aulas)
 
-        # Reordenar materias por alumnos esperados
         materias_reordenadas = reordenar_materias_por_alumnos(materias)
 
-        # Asignar materias a aulas
         sugerencias_helper = asignacion_helper(
             materias_reordenadas, horarios_disponibles_profesores, horarios_disponibles_aulas, 'Anasagasti II'
         )
 
-        # Escribir sugerencias en un archivo
         escribir_sugerencias(sugerencias_helper, 'Sugerencias.csv')
         print("Asignación automática completada. Las sugerencias se han guardado en 'Sugerencias.csv'.")
+
+        # Guardar asignaciones en la base de datos
+        guardar_asignaciones_db(sugerencias_helper, asignacion_db)
+        print("Asignaciones guardadas en la base de datos.")
 
     except Exception as e:
         print(f"Error en la ejecución: {e}")
@@ -83,9 +86,6 @@ def organizar_horarios_profesores(profesores):
         if 'horarios_disponibles' not in profesor:
             raise KeyError(
                 "Cada diccionario de profesor debe tener la clave 'horarios_disponibles'.")
-
-
-def organizar_horarios_profesores(profesores):
 
     horarios_disponibles = defaultdict(lambda: defaultdict(list))
     for profesor in profesores:
@@ -109,7 +109,7 @@ def organizar_horarios_profesores(profesores):
                             f"{hora_inicio}-{hora_fin}")
         except Exception as e:
             print(f"Error al procesar horarios del profesor {
-                profesor['nombre']}: {e}")
+                  profesor['nombre']}: {e}")
 
         nombre_completo = f"{profesor['nombre']} {profesor['apellido']}"
         horarios_disponibles[nombre_completo] = profesor_horarios
@@ -163,14 +163,11 @@ def verificar_disponibilidad(profesor_nombre, horarios_profesores, horarios_aula
 
 
 def reordenar_materias_por_alumnos(materias):
-    # Suponiendo que cada materia tiene un campo 'alumnos_esperados' que indica el número de alumnos.
     try:
-        # Ordena las materias por el campo 'alumnos_esperados' en orden descendente.
         materias_reordenadas = sorted(materias, key=lambda materia: materia.get(
             'alumnos_esperados', 0), reverse=True)
     except Exception as e:
         print(f"Error al reordenar materias por número de alumnos: {e}")
-        # En caso de error, devuelve la lista original sin cambios
         materias_reordenadas = materias
 
     return materias_reordenadas
@@ -179,6 +176,11 @@ def reordenar_materias_por_alumnos(materias):
 def asignacion_helper(materias, horarios_profesores, horarios_aulas, edificio_predefinido):
     sugerencias = []
     for materia in materias:
+        if 'profesores' not in materia:
+            print(f"Advertencia: La clave 'profesores' no está en el diccionario de materia: {
+                  materia}")
+            continue
+
         profesores_separados = separar_profesores(materia['profesores'])
         for profesor_nombre in profesores_separados:
             aulas_con_disponibilidad = verificar_disponibilidad(
@@ -200,7 +202,7 @@ def asignacion_helper(materias, horarios_profesores, horarios_aulas, edificio_pr
                             'Hora inicio': aula['Hora Inicio'],
                             'Hora fin': aula['Hora Fin']
                         })
-                        break  # Salir del loop de aulas, pasar al siguiente profesor
+                        break
             else:
                 print(f"    {profesor_nombre} | No hay aulas disponibles")
     return sugerencias
@@ -223,6 +225,20 @@ def escribir_sugerencias(sugerencias, archivo):
                 sugerencia.get('Hora inicio', ''),
                 sugerencia.get('Hora fin', '')
             ])
+
+
+def guardar_asignaciones_db(sugerencias, asignacion_db):
+    for sugerencia in sugerencias:
+        aula = sugerencia['Aula']
+        dia = sugerencia['Dia']
+        comienzo = sugerencia['Hora inicio']
+        fin = sugerencia['Hora fin']
+        materia = sugerencia['Materia']
+        evento = None  # Ajusta según tu lógica
+
+        # Insertar asignación en la base de datos
+        asignacion_db.insert_asignacion(
+            aula, dia, comienzo, fin, materia, evento)
 
 
 if __name__ == "__main__":

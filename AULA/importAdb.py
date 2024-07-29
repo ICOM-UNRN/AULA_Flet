@@ -5,7 +5,9 @@ from api.profesor.profesor import Profesor
 from api.profesor.profesor_por_materia import Profesor_por_materia
 import psycopg2
 import re
+import sys
 
+sys.stdout.reconfigure(encoding='ISO-8859-1')
 # Conexión a la base de datos
 
 

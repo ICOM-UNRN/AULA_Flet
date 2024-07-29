@@ -1,8 +1,9 @@
 import psycopg2
 
+
 class Asignacion():
-    def __init__(self, conn : psycopg2.connect):
-        self.conn : psycopg2.connect = conn
+    def __init__(self, conn: psycopg2.connect):
+        self.conn: psycopg2.connect = conn
         self.cursor = self.conn.cursor()
 
     def get_asignaciones(self):
@@ -10,8 +11,8 @@ class Asignacion():
         colums = [descr.name for descr in self.cursor.description]
         rows = [row for row in self.cursor.fetchall()]
         data = {
-            "columns" : colums,
-            "rows" : rows
+            "columns": colums,
+            "rows": rows
         }
         return data
 
@@ -26,30 +27,32 @@ class Asignacion():
         colums = [descr.name for descr in self.cursor.description]
         rows = [row for row in self.cursor.fetchall()]
         data = {
-            "columns" : colums,
-            "rows" : rows
+            "columns": colums,
+            "rows": rows
         }
         return data
 
-    def insert_asignacion(self, aula, dia, comienzo, fin, materia = None, evento = None):
+    def insert_asignacion(self, aula, dia, comienzo, fin, materia=None, evento=None):
         if evento == "":
             evento = None
         if materia == "":
             materia = None
-        result = self.cursor.callproc("insert_asignacion", [aula, dia, comienzo, fin, materia, evento])
+        result = self.cursor.callproc(
+            "insert_asignacion", [aula, dia, comienzo, fin, materia, evento])
         self.conn.commit()
         return result
-    
-    def update_asignacion(self, id, aula = None, materia = None, evento = None, dia = None, comienzo = None, fin = None):
-        result = self.cursor.callproc("update_asignacion", [id, aula, dia, comienzo, fin, materia, evento])
+
+    def update_asignacion(self, id, aula=None, materia=None, evento=None, dia=None, comienzo=None, fin=None):
+        result = self.cursor.callproc(
+            "update_asignacion", [id, aula, dia, comienzo, fin, materia, evento])
         self.conn.commit()
-        if(result != 0):
+        if (result != 0):
             return False
         return True
 
     def delete_asignacion(self, id):
         result = self.cursor.callproc("delete_asignacion", [id])
         self.conn.commit()
-        if(result != 0):
+        if (result != 0):
             return False
         return True

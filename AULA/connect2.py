@@ -47,7 +47,7 @@ try:
 
     print("Asignaciones:", asignaciones)
     # print("Materias:", materias)
-    # print("Profesores:", profesores)
+    print("Profesores:", profesores)
     print("Edificios:", edificios)
     print("Aulas:", aulas)
 
