@@ -1,7 +1,4 @@
 import psycopg2
-import os
-from zope.interface import document
-
 
 class Profesor():
     def __init__(self, conn: psycopg2.connect):
