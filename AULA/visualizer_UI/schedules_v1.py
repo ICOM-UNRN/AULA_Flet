@@ -132,7 +132,7 @@ class ItemList(UserControl):
                 opacity=0.0
             )
         ])
-        
+
         # rearrange (i.e. drag drop from same list)
         if ((from_index is not None) and (to_index is not None)):
             print("rearrange: ", to_index, from_index)
@@ -148,7 +148,7 @@ class ItemList(UserControl):
 
         # add new (drag from other list to end of this list, or use add item button)
         else:
-            print("create")
+            # print("create")
             new_item = Item(self, item_texts, color)
             control_to_add.controls.append(new_item.view)
             self.items.controls.append(control_to_add)
