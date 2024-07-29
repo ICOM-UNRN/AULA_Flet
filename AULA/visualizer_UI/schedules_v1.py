@@ -341,7 +341,7 @@ class ItemList_Cell(ItemList):
 
 class Item():
     def __init__(self, list: ItemList, item_texts: list = [], color: ft.colors = ""):
-        textos = ["Materia","Horario","Profesor","Tipo"]
+        textos = ["Aula","Materia","Horario","Profesor"]
         if (item_texts is None) or (item_texts == []):
             item_texts = [""] * len(textos)
         elif len(item_texts) < len(textos):
@@ -364,7 +364,7 @@ class Item():
                 ],
                     alignment="start",
                 ),
-                height=120,
+                height=150,
                 width=100,
                 padding=7,
             ),
