@@ -50,16 +50,23 @@ def main():
         if isinstance(materias, dict) and 'columns' in materias and 'rows' in materias:
             columnas_materias = materias['columns']
             columnas_profesores_por_materia = profesores_por_materia['columns']
+            profesores_materia = []
             for materia in materias['rows']:
                 materia_dict = dict(zip(columnas_materias, materia))
                 materia_id = materia_dict.get('id')
-                profesores_materia = [
-                    p[columnas_profesores_por_materia.index('id_profesor')]
-                    for p in profesores_por_materia['rows']
-                    if p[columnas_profesores_por_materia.index('id_materia')] == materia_id
-                ]
-                materia_dict['profesores'] = profesores_materia
+                # Acceder a profesores por materia
+                for p in profesores_por_materia['rows']:
+                    if p[columnas_profesores_por_materia.index('id_materia')] == materia_id:
+                        profesor_en_db = profesor_db.get_profesor(
+                            id=p[columnas_profesores_por_materia.index('id_profesor')])
+                        profesor_en_db_columns = profesor_en_db["columns"]
+                        nombre_profesor = profesor_en_db['rows'][0][profesor_en_db_columns.index(
+                            'nombre')]
+                        profesores_materia.append(nombre_profesor)
+                materia_dict['profesores'] = profesores_materia.copy()
                 materias2.append(materia_dict)
+                profesores_materia.clear()
+            materias = materias2
             materias = materias2
         else:
             print(f"Advertencia: Formato inesperado de materias: {
