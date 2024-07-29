@@ -22,6 +22,10 @@ class Asignacion():
         return result
 
     def insert_asignacion(self, aula, dia, comienzo, fin, materia = None, evento = None):
+        if evento == "":
+            evento = None
+        if materia == "":
+            materia = None
         result = self.cursor.callproc("insert_asignacion", [aula, dia, comienzo, fin, materia, evento])
         self.conn.commit()
         return result

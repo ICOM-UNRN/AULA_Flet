@@ -418,7 +418,7 @@ def create_calendar_rows(rows, columns, page, color="white"):
         celdas = []
         celdas.append(ft.DataCell(ft.Text(f"{row}", expand=True,color=colors.BLACK, bgcolor=colors.GREY_50)))
         for j in range(1, len(columns)):
-            celdas.append(ft.DataCell(ItemList_Cell(page, f"A-{"{:02d}".format(i)}-{"{:02d}".format(j)}", color)))
+            celdas.append(ft.DataCell(ItemList_Cell(page, f"A-{'{:02d}'.format(i)}-{'{:02d}'.format(j)}", color)))
         filas.append(ft.DataRow(cells=celdas))
     return filas
 
