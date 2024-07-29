@@ -1,5 +1,4 @@
 import psycopg2
-import os
 
 class Asignacion():
     def __init__(self, conn : psycopg2.connect):
@@ -20,6 +19,17 @@ class Asignacion():
         result = self.cursor.callproc("get_asignacion", [aula])
         self.conn.commit()
         return result
+
+    def get_materias_eventos_asignados(self):
+        self.cursor.callproc("get_materias_eventos_asignados")
+        self.conn.commit()
+        colums = [descr.name for descr in self.cursor.description]
+        rows = [row for row in self.cursor.fetchall()]
+        data = {
+            "columns" : colums,
+            "rows" : rows
+        }
+        return data
 
     def insert_asignacion(self, aula, dia, comienzo, fin, materia = None, evento = None):
         if evento == "":

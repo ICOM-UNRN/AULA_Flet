@@ -1,5 +1,4 @@
 import psycopg2
-import os
 
 
 class Aula:
@@ -22,19 +21,19 @@ class Aula:
         self.conn.commit()
         return result
 
-    def insert_aula(self, nombre, capacidad_maxima, edificio, disponibilidad):
+    def insert_aula(self, nombre, edificio, capacidad):
         try:
             self.cursor.callproc(
-                "insert_aula", [nombre, capacidad_maxima, edificio, disponibilidad])
+                "insert_aula", [nombre, edificio, capacidad])
             self.conn.commit()
         except Exception as e:
             print(f"Error al insertar aula: {e}")
             self.conn.rollback()
 
-    def update_aula(self, id, nombre=None, capacidad_maxima=None, edificio=None, disponibilidad=None):
+    def update_aula(self, id, nombre=None, edificio=None, capacidad=None):
         try:
             self.cursor.callproc(
-                "update_aula", [id, nombre, capacidad_maxima, edificio, disponibilidad])
+                "update_aula", [id, nombre, edificio, capacidad])
             self.conn.commit()
         except Exception as e:
             print(f"Error al actualizar aula: {e}")

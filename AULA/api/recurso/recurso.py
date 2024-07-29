@@ -1,5 +1,4 @@
 import psycopg2
-import os
 
 class Recurso():
     def __init__(self, conn : psycopg2.connect):

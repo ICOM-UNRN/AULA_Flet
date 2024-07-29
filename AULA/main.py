@@ -160,7 +160,7 @@ def main(page: ft.Page):
             asignacion.update_asignacion(id=data[0],aula=data[1],materia=data[2],evento=data[3],dia=data[4],comienzo=data[5],fin=data[6])
         elif route == "/aulas":
             aula = Aula(db)
-            aula.update_aula(id=data[0],nombre=data[1],edificio=data[2])
+            aula.update_aula(id=data[0],nombre=data[2],edificio=data[1],capacidad=data[3])
         elif route == "/edificios":
             edificio = Edificio(db)
             edificio.update_edificio(id=data[0],nombre=data[1],calle=data[2],altura=data[3])
@@ -231,7 +231,7 @@ def main(page: ft.Page):
             asignacion.insert_asignacion(data[0], data[3], data[4], data[5], data[1], data[2])
         elif route == "/aulas":
             aula = Aula(db)
-            aula.insert_aula(data[0],data[1])
+            aula.insert_aula(data[1],data[0],data[2])
         elif route == "/edificios":
             edificio = Edificio(db)
             edificio.insert_edificio(nombre=data[0], direccion=data[1], altura=data[2])
@@ -343,7 +343,7 @@ def main(page: ft.Page):
         if route == "/asignaciones":
             types = [number,number,number,number,text,number,number]
         elif route == "/aulas":
-            types = [number,number,text]
+            types = [number,number,text,number]
         elif route == "/edificios":
             types = [number,text,text,number]
         elif route == "/eventos":
