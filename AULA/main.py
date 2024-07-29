@@ -27,15 +27,12 @@ def main(page: ft.Page):
     #                                FUNC VER HORARIOS                                #
     ###################################################################################
     def load_search_bars():
-        listas_busquedas["search_bar_carrera"] = []
-        listas_busquedas["search_bar_edificio"] = []
-        listas_busquedas["search_bar_aula"] = []
         carreras = Materia(db).get_carreras()["rows"]
         edificios = Edificio(db).get_edificios()["rows"]
         aulas = Aula(db).get_aulas()["rows"]
         
         for carrera in carreras:
-            listas_busquedas["search_bar_carrera"].append(ft.ListTile(title=ft.Text(carrera[0]), on_click=close_search_bar_edifico))
+            listas_busquedas["search_bar_carrera"].append(ft.ListTile(title=ft.Text(carrera[0]), on_click=close_search_bar_carrera))
         for edificio in edificios:
             listas_busquedas["search_bar_edificio"].append(ft.ListTile(title=ft.Text(edificio[1]), on_click=close_search_bar_edifico))
         for aula in aulas:
@@ -529,6 +526,9 @@ def main(page: ft.Page):
             page.update()
         
         elif route == "/ver_horarios":
+            listas_busquedas["search_bar_carrera"].clear()
+            listas_busquedas["search_bar_edificio"].clear()
+            listas_busquedas["search_bar_aula"].clear()
             load_search_bars()
             container_main_window.offset = ft.Offset(0, 0)
             container_main_window.content = container_vista_horarios
@@ -558,9 +558,6 @@ def main(page: ft.Page):
     
     row_header = ft.Row(
         spacing=10,
-        top=0,
-        left=20,
-        expand=True,
         alignment=ft.MainAxisAlignment.CENTER,
         vertical_alignment=ft.CrossAxisAlignment.CENTER,
         controls=[
@@ -619,6 +616,7 @@ def main(page: ft.Page):
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         controls=[
+            row_header,
             text_main_sede_andina,
             ft.Container(
                 content=text_main_AULA,
@@ -797,7 +795,6 @@ def main(page: ft.Page):
         controls=[
             container_main_background_decorator,
             container_main_window,
-            row_header,
         ],
     )
 
