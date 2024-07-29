@@ -1,5 +1,6 @@
 import json
 import csv
+import unicodedata
 from collections import defaultdict
 import psycopg2
 from api.materia.materia import Materia
@@ -66,8 +67,6 @@ def main():
                 materia_dict['profesores'] = profesores_materia.copy()
                 materias2.append(materia_dict)
                 profesores_materia.clear()
-            materias = materias2
-            materias = materias2
         else:
             print(f"Advertencia: Formato inesperado de materias: {
                   type(materias)}")
@@ -117,6 +116,13 @@ def depurar_materias(materias):
         else:
             print(f"Advertencia: Se esperaba un diccionario, pero se obtuvo {
                   type(materia)}")
+
+
+def normalizar_nombre(nombre):
+    """Normaliza el nombre eliminando acentos y caracteres especiales."""
+    nombre_normalizado = unicodedata.normalize(
+        'NFKD', nombre).encode('ASCII', 'ignore').decode('ASCII')
+    return nombre_normalizado
 
 
 def organizar_horarios_profesores(profesores):
@@ -216,7 +222,9 @@ def separar_profesores(profesores):
 def verificar_disponibilidad(profesor_nombre, horarios_profesores, horarios_aulas):
     aula_con_disponibilidad = []
 
-    if profesor_nombre not in horarios_profesores:
+    profesor_nombre_normalizado = normalizar_nombre(profesor_nombre)
+
+    if profesor_nombre_normalizado not in [normalizar_nombre(n) for n in horarios_profesores.keys()]:
         print(f"Advertencia: El profesor {
               profesor_nombre} no tiene horarios disponibles.")
         return aula_con_disponibilidad
@@ -248,14 +256,26 @@ def verificar_disponibilidad(profesor_nombre, horarios_profesores, horarios_aula
 
 
 def reordenar_materias_por_alumnos(materias):
+    """
+    Reordena la lista de materias por el número de alumnos esperados en orden descendente.
+    """
     try:
-        materias_reordenadas = sorted(materias, key=lambda materia: materia.get(
-            'alumnos_esperados', 0), reverse=True)
+        if not isinstance(materias, list):
+            raise TypeError("El parámetro 'materias' debe ser una lista.")
+
+        # Verificar que cada elemento en la lista es un diccionario
+        for materia in materias:
+            if not isinstance(materia, dict):
+                raise TypeError(
+                    "Cada elemento en la lista de materias debe ser un diccionario.")
+
+        materias_reordenadas = sorted(materias, key=lambda materia: int(
+            materia.get('alumnos_esperados', 0)), reverse=True)
+        return materias_reordenadas
+
     except Exception as e:
         print(f"Error al reordenar materias por número de alumnos: {e}")
-        materias_reordenadas = materias
-
-    return materias_reordenadas
+        return materias
 
 
 def asignacion_helper(materias, horarios_profesores, horarios_aulas, edificio_predefinido):
