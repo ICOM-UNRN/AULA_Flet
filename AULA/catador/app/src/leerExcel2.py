@@ -8,6 +8,8 @@ carreras_data = {}
 profesores_data = {}
 materias_data = {}
 materias_set = set()
+# Lista para almacenar asignaciones de profesores por materia
+profesor_por_materia_data = []
 
 
 def leer_excel(nombre_archivo):
@@ -83,6 +85,15 @@ def leer_excel(nombre_archivo):
                 "apellido": apellido_profesor
             })
 
+            # Agregar asignación de profesor por materia
+            profesor_por_materia_data.append({
+                "materia": materia_key[0],  # Codigo Guarani como ID de materia
+                "profesor": dni_profesor,
+                "cant_alumnos": alumnos_esperados,
+                "tipo_clase": tipo_clase,
+                "activo": True  # Puedes ajustar según el criterio deseado
+            })
+
         # Convertir diccionarios a listas
         carreras_list = [{"carrera": k, "codigo_guarani": v}
                          for k, v in carreras_data.items()]
@@ -109,6 +120,8 @@ def leer_excel(nombre_archivo):
         save_data_to_json("profesores.json", profesores_list)
         save_data_to_csv("materias.csv", materias_list)
         save_data_to_json("materias.json", materias_list)
+        save_data_to_json("profesor_por_materia.json",
+                          profesor_por_materia_data)
 
     except pd.errors.EmptyDataError:
         print("El archivo Excel está vacío.")

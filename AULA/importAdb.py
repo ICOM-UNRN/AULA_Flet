@@ -2,6 +2,7 @@ import json
 import os
 from api.materia.materia import Materia
 from api.profesor.profesor import Profesor
+from api.profesor.profesor_por_materia import Profesor_por_materia
 import psycopg2
 import re
 
@@ -47,10 +48,6 @@ def importar_materias(materia_db, archivo_materias):
         with open(archivo_materias, 'r', encoding='utf-8') as file:
             materias = json.load(file)
             for materia in materias:
-                # # Remover todo texto que no sea un número de cuatrimestre
-                # cuatrimestre = re.sub(r'\D', '', materia['cuatrimestre'])
-                # # Convertir cuatrimestre a entero
-                # cuatrimestre = int(cuatrimestre) if cuatrimestre else 0
                 cuatrimestre = int(materia['cuatrimestre'][13:])
 
                 materia_db.insert_or_update_materia(
@@ -69,6 +66,55 @@ def importar_materias(materia_db, archivo_materias):
         print(f"Error al importar materias: {e}")
 
 
+def importar_profesor_por_materia(profesor_por_materia_db, archivo_profesor_por_materia, materia_db, profesor_db):
+    try:
+        with open(archivo_profesor_por_materia, 'r', encoding='utf-8') as file:
+            asignaciones = json.load(file)
+
+            # Obtener todos los IDs de materias y profesores
+            materias = materia_db.get_materias()['rows']
+            profesores = profesor_db.get_profesores()['rows']
+
+            materia_id_map = {materia[1]: materia[0]
+                              for materia in materias}  # {codigo_guarani: id}
+            profesor_id_map = {profesor[1]: profesor[0]
+                               for profesor in profesores}  # {dni: id}
+
+            for asignacion in asignaciones:
+                materia_codigo_guarani = asignacion['materia']
+                profesor_dni = asignacion['profesor']
+
+                materia_id = materia_id_map.get(materia_codigo_guarani)
+                profesor_id = profesor_id_map.get(profesor_dni)
+
+                if materia_id is None:
+                    print(f"Materia con código {
+                          materia_codigo_guarani} no encontrada.")
+                    continue
+
+                if profesor_id is None:
+                    print(f"Profesor con DNI {profesor_dni} no encontrado.")
+                    continue
+
+                # Convertir 'activo' a booleano si es necesario
+                activo = asignacion['activo']
+                if isinstance(activo, str):
+                    activo = activo.lower() in ['true', '1']
+
+                profesor_por_materia_db.insert_profesor_por_materia(
+                    materia_id,
+                    profesor_id,
+                    # Asegurarse de que sea un entero
+                    int(asignacion['cant_alumnos']),
+                    asignacion['tipo_clase'],
+                    activo
+                )
+
+        print("Importación de asignaciones profesor por materia completada.")
+    except Exception as e:
+        print(f"Error al importar asignaciones profesor por materia: {e}")
+
+
 def main():
     conn = connect_db()
     if conn is None:
@@ -76,12 +122,17 @@ def main():
 
     profesor_db = Profesor(conn)
     materia_db = Materia(conn)
+    profesor_por_materia_db = Profesor_por_materia(conn)
 
     archivo_profesores = 'AULA/archivos_generados/profesores.json'
     archivo_materias = 'AULA/archivos_generados/materias.json'
+    archivo_profesor_por_materia = 'AULA/archivos_generados/profesor_por_materia.json'
 
     importar_profesores(profesor_db, archivo_profesores)
     importar_materias(materia_db, archivo_materias)
+    importar_profesor_por_materia(
+        profesor_por_materia_db, archivo_profesor_por_materia, materia_db, profesor_db
+    )
 
     conn.close()
 
