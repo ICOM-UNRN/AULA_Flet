@@ -33,15 +33,15 @@ def main():
         edificio_id = next(
             edificio[0] for edificio in edificios if edificio[1] == edificio_nombre)
 
-        # Insertar aulas sin el campo 'disponibilidad'
+        # Insertar aulas
         aulas = [
-            {"nombre": f"Aula {i+1}", "capacidad_maxima": 30, "edificio": edificio_id}
+            {"nombre": f"Aula {i+1}", "capacidad": 30, "edificio": edificio_id}
             for i in range(7)
         ]
 
         for aula in aulas:
             aula_db.insert_aula(
-                aula["nombre"], aula["capacidad_maxima"], aula["edificio"])
+                aula["nombre"], aula["capacidad"], aula["edificio"])
 
         print("Aulas y edificios inicializados exitosamente.")
 

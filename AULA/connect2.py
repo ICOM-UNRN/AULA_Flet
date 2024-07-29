@@ -25,10 +25,10 @@ sys.stdout.reconfigure(encoding='UTF-8')
 try:
     # Ejecutar main.py usando subprocess
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    main_script = os.path.join(os.path.dirname(
-        'AULA/catador/app/src/'), 'catador.py')
+    # main_script = os.path.join(os.path.dirname(
+    #     'AULA/catador/app/src/'), 'catador.py')
 
-    subprocess.run(["python", main_script], check=True)
+    # subprocess.run(["python", main_script], check=True)
 
     print("¡Conectado a la base de datos PostgreSQL!")
 
