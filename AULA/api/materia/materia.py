@@ -15,6 +15,16 @@ class Materia():
             "rows" : rows
         }
         return data
+    
+    def get_carreras(self):
+        self.cursor.execute('select distinct carrera from materia;')
+        colums = [descr.name for descr in self.cursor.description]
+        rows = [row for row in self.cursor.fetchall()]
+        data = {
+            "columns" : colums,
+            "rows" : rows
+        }
+        return data
 
     def get_materia(self, codigo_guarani):
         result = self.cursor.callproc("get_materia", [codigo_guarani])

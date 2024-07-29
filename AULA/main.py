@@ -26,6 +26,17 @@ def main(page: ft.Page):
     ###################################################################################
     #                                FUNC VER HORARIOS                                #
     ###################################################################################
+    def load_search_bars():
+        carreras = Materia(db).get_carreras()["rows"]
+        edificios = Edificio(db).get_edificios()["rows"]
+        aulas = Aula(db).get_aulas()["rows"]
+        
+        for carrera in carreras:
+            listas_busquedas["search_bar_carrera"].append(ft.ListTile(title=ft.Text(carrera[0]), on_click=close_search_bar_carrera))
+        for edificio in edificios:
+            listas_busquedas["search_bar_edificio"].append(ft.ListTile(title=ft.Text(edificio[1]), on_click=close_search_bar_edifico))
+        for aula in aulas:
+            listas_busquedas["search_bar_aula"].append(ft.ListTile(title=ft.Text(aula[2]), on_click=close_search_bar_aula))
 
     def close_search_bar_edifico(e):
         text = f"{e.control.title.value}"
@@ -119,7 +130,7 @@ def main(page: ft.Page):
             materia.update_materia(id=data[0],codigo_guarani=data[1],carrera=data[2],nombre=data[3],anio=data[4],cuatrimestre=data[5],taxonomia=data[6],horas_semanales=data[7],comisiones=data[8])
         elif route == "/profesores":
             profesor = Profesor(db)
-            profesor.update_profesor(id=data[0],documento=data[1],nombre=data[2],apellido=data[3],condicion=data[4],categoria=data[5],dedicacion=data[6],periodo_a_cargo=data[7])
+            profesor.update_profesor(data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7],data[8])
         elif route == "/profesores_por_materia":
             profesor_por_materia = Profesor_por_materia(db)
             profesor_por_materia.update_profesor_por_materia(id_materia=data[0],id_profesor=data[1],alumnos_esperados=data[2],tipo_clase=data[3],archivo=data[4])
@@ -175,10 +186,10 @@ def main(page: ft.Page):
         data = bottom_sheet.get_fields_actual_data()
         if route == "/asignaciones":
             asignacion = Asignacion(db)
-            asignacion.insert_asignacion(aula=data[0], materia=data[1], evento=data[2], dia=data[3], comienzo=data[4], fin=data[5])
+            asignacion.insert_asignacion(data[0], data[3], data[4], data[5], data[1], data[2])
         elif route == "/aulas":
             aula = Aula(db)
-            aula.insert_aula(nombre=data[0], edificio=data[1])
+            aula.insert_aula(data[1],data[0])
         elif route == "/edificios":
             edificio = Edificio(db)
             edificio.insert_edificio(nombre=data[0], direccion=data[1], altura=data[2])
@@ -190,7 +201,7 @@ def main(page: ft.Page):
             materia.insert_materia(codigo_guarani=data[0], carrera=data[1], nombre=data[2], anio=data[3], cuatrimestre=data[4], taxonomia=data[5], horas_semanales=data[6], comisiones=data[7])
         elif route == "/profesores":
             profesor = Profesor(db)
-            profesor.insert_profesor(dni=data[0], nombre=data[1], apellido=data[2], condicion=data[3], categoria=data[4], dedicacion=data[5], periodo_a_cargo=data[6])
+            profesor.insert_profesor(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7])
         elif route == "/profesores_por_materia":
             profesor_por_materia = Profesor_por_materia(db)
             profesor_por_materia.insert_profesor_por_materia(materia=data[0], profesor=data[1], cant_alumnos=data[2], tipo_clase=data[3], activo=data[4])
@@ -207,11 +218,9 @@ def main(page: ft.Page):
     def add_row_func(_):
         form = page.session.get("actual_form")
         form.build()
-        types = get_types()
         textos_y_botones = form.get_fields_controls()
         if page.route != "/profesores_por_materia" and page.route != "/recursos_por_aula":
             textos_y_botones.pop(0) # remove id field
-            types.pop(0)
         textos_y_botones.append(
             ft.Row(
                 controls=[
@@ -517,6 +526,10 @@ def main(page: ft.Page):
             page.update()
         
         elif route == "/ver_horarios":
+            listas_busquedas["search_bar_carrera"].clear()
+            listas_busquedas["search_bar_edificio"].clear()
+            listas_busquedas["search_bar_aula"].clear()
+            load_search_bars()
             container_main_window.offset = ft.Offset(0, 0)
             container_main_window.content = container_vista_horarios
             page.update()
@@ -545,9 +558,6 @@ def main(page: ft.Page):
     
     row_header = ft.Row(
         spacing=10,
-        top=0,
-        left=20,
-        expand=True,
         alignment=ft.MainAxisAlignment.CENTER,
         vertical_alignment=ft.CrossAxisAlignment.CENTER,
         controls=[
@@ -606,6 +616,7 @@ def main(page: ft.Page):
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         controls=[
+            row_header,
             text_main_sede_andina,
             ft.Container(
                 content=text_main_AULA,
@@ -624,19 +635,9 @@ def main(page: ft.Page):
     ##################################  #################################################
     
     listas_busquedas = {
-        "search_bar_carrera":[
-            ft.ListTile(title=ft.Text("Ingenieria en Computacion"), on_click=close_search_bar_carrera)
-        ],
-        "search_bar_edificio":[
-            ft.ListTile(title=ft.Text("Anasagasti 2"), on_click=close_search_bar_edifico),
-            ft.ListTile(title=ft.Text("Tacuari"), on_click=close_search_bar_edifico),
-            ft.ListTile(title=ft.Text("Mitre"), on_click=close_search_bar_edifico)
-        ],
-        "search_bar_aula":[
-            ft.ListTile(title=ft.Text("Aula 1"), on_click=close_search_bar_aula),
-            ft.ListTile(title=ft.Text("Aula 2"), on_click=close_search_bar_aula),
-            ft.ListTile(title=ft.Text("Aula 3"), on_click=close_search_bar_aula)
-        ]
+        "search_bar_carrera":[],
+        "search_bar_edificio":[],
+        "search_bar_aula":[]
     }
     
     btn_ordenar_auto = ft.ElevatedButton(text="Ordenar automaticamente", on_click=lambda _: print("Ordenar automaticamente [hacer funcion]"))
@@ -769,41 +770,6 @@ def main(page: ft.Page):
                 selected_icon_content=ft.Icon(ft.icons.LOCATION_CITY),
                 label="Edificios",
             ),
-            # {
-            #     'label': 'Inicio',
-            #     'icon': ft.icons.HOME_OUTLINED,
-            #     'selected_icon': ft.icons.HOME
-            # },
-            # {
-            #     'label': 'Profesores',
-            #     'icon': ft.icons.PEOPLE_OUTLINE,
-            #     'selected_icon': ft.icons.PEOPLE
-            # },
-            # {
-            #     'label': 'Materias',
-            #     'icon': ft.icons.CLASS_OUTLINED,
-            #     'selected_icon': ft.icons.CLASS_
-            # },
-            # {
-            #     'label': 'Aulas',
-            #     'icon': ft.icons.MEETING_ROOM_OUTLINED,
-            #     'selected_icon': ft.icons.MEETING_ROOM
-            # },
-            # {
-            #     'label': 'Eventos',
-            #     'icon': ft.icons.CALENDAR_MONTH_OUTLINED,
-            #     'selected_icon': ft.icons.CALENDAR_MONTH
-            # },
-            # {
-            #     'label': 'Recursos',
-            #     'icon': ft.icons.PRECISION_MANUFACTURING_OUTLINED,
-            #     'selected_icon': ft.icons.PRECISION_MANUFACTURING
-            # },
-            # {
-            #     'label': 'Edificios',
-            #     'icon': ft.icons.LOCATION_CITY_OUTLINED,
-            #     'selected_icon': ft.icons.LOCATION_CITY
-            # }
         ]
     )
     ###################################################################################
@@ -829,7 +795,6 @@ def main(page: ft.Page):
         controls=[
             container_main_background_decorator,
             container_main_window,
-            row_header,
         ],
     )
 
