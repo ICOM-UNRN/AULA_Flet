@@ -70,6 +70,23 @@ class Profesor():
             print(f"Error al eliminar profesor: {e}")
             return False
 
+    def insert_or_update_profesor(self, dni, apellido, nombre, condicion, categoria, dedicacion, horarios_disponibles):
+        try:
+            self.cursor.execute('''
+                INSERT INTO profesor (dni, apellido, nombre, condicion, categoria, dedicacion, horarios_disponibles)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (dni) DO UPDATE
+                SET apellido = EXCLUDED.apellido,
+                    nombre = EXCLUDED.nombre,
+                    condicion = EXCLUDED.condicion,
+                    categoria = EXCLUDED.categoria,
+                    dedicacion = EXCLUDED.dedicacion,
+                    horarios_disponibles = EXCLUDED.horarios_disponibles
+            ''', (dni, apellido, nombre, condicion, categoria, dedicacion, horarios_disponibles))
+            self.conn.commit()
+        except Exception as e:
+            print(f"Error al insertar o actualizar profesor: {e}")
+
 
 if __name__ == "__main__":
     db_host = os.getenv("POSTGRES_HOST")

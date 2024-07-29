@@ -77,6 +77,25 @@ class Materia():
             print(f"Error al eliminar materia: {e}")
             return False
 
+    def insert_or_update_materia(self, codigo_guarani: str, carrera: str, nombre: str, anio: str, cuatrimestre: str, taxonomia: str, horas_semanales: str, alumnos_esperados: int, comisiones: str):
+        try:
+            self.cursor.execute('''
+                INSERT INTO materia (codigo_guarani, carrera, nombre, anio, cuatrimestre, taxonomia, horas_semanales, alumnos_esperados, comisiones)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (codigo_guarani) DO UPDATE
+                SET carrera = EXCLUDED.carrera,
+                    nombre = EXCLUDED.nombre,
+                    anio = EXCLUDED.anio,
+                    cuatrimestre = EXCLUDED.cuatrimestre,
+                    taxonomia = EXCLUDED.taxonomia,
+                    horas_semanales = EXCLUDED.horas_semanales,
+                    alumnos_esperados = EXCLUDED.alumnos_esperados,
+                    comisiones = EXCLUDED.comisiones
+            ''', (codigo_guarani, carrera, nombre, anio, cuatrimestre, taxonomia, horas_semanales, alumnos_esperados, comisiones))
+            self.conn.commit()
+        except Exception as e:
+            print(f"Error al insertar o actualizar materia: {e}")
+
 
 if __name__ == "__main__":
     db_host = os.getenv("POSTGRES_HOST")
