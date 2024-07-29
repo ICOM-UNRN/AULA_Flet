@@ -3,6 +3,7 @@ import os
 from api.materia.materia import Materia
 from api.profesor.profesor import Profesor
 import psycopg2
+import re
 
 # Conexión a la base de datos
 
@@ -46,12 +47,18 @@ def importar_materias(materia_db, archivo_materias):
         with open(archivo_materias, 'r', encoding='utf-8') as file:
             materias = json.load(file)
             for materia in materias:
+                # # Remover todo texto que no sea un número de cuatrimestre
+                # cuatrimestre = re.sub(r'\D', '', materia['cuatrimestre'])
+                # # Convertir cuatrimestre a entero
+                # cuatrimestre = int(cuatrimestre) if cuatrimestre else 0
+                cuatrimestre = int(materia['cuatrimestre'][13:])
+
                 materia_db.insert_or_update_materia(
                     materia['codigo_guarani'],
                     materia['carrera'],
                     materia['nombre'],
                     materia['anio'],
-                    materia['cuatrimestre'],
+                    cuatrimestre,
                     materia['taxonomia'],
                     materia['horas_semanales'],
                     materia['alumnos_esperados'],
