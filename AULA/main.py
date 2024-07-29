@@ -3,6 +3,7 @@ import flet as ft
 from components.dashboard.Dashboard import Dashboard
 # from components.RailBar.Railbar import RailBarCustom
 from components.ABM_form.Form import DeleteModifyForm
+from visualizer_UI.schedules_v1 import create_calendar_table_headers_first_row,create_calendar_rows,create_calendar_hours_intervals,ItemList_Creator,ItemList_Remover,ItemList_Modifier
 from api.db import connect_to_db
 from api.aula.aula import Aula
 from api.materia.materia import Materia
@@ -26,11 +27,55 @@ def main(page: ft.Page):
     ###################################################################################
     #                                FUNC VER HORARIOS                                #
     ###################################################################################
+
+    def crear_visualizacion_horarios():
+        dias = [" ", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
+        intervalos_horarios = create_calendar_hours_intervals(8, 23)
+
+        creador = ItemList_Creator(page, "ItemList_creador")
+        removedor = ItemList_Remover(page, "ItemList_removedor")
+        modificador = ItemList_Modifier(page, "ItemList_modoficador")
+
+        column_visualizer = ft.Column(
+            expand= True,
+            alignment= "start",
+            scroll= ft.ScrollMode.ALWAYS,
+            controls=[
+                ft.Row(
+                    vertical_alignment="start",
+                    scroll= ft.ScrollMode.ALWAYS,
+                    expand=True,
+                    controls=[
+                        ft.Column(controls=[creador, removedor, modificador]),
+                        ft.Column(
+                            scroll=ft.ScrollMode.ADAPTIVE,
+                            expand=True,
+                            alignment="start",
+                            controls=[
+                                ft.DataTable(
+                                    columns=create_calendar_table_headers_first_row(dias),
+                                    rows=create_calendar_rows(intervalos_horarios, dias, page),
+                                    data_row_min_height = 130,
+                                    data_row_max_height = float("inf"),
+                                    bgcolor='#3A3A3A',
+                                    column_spacing=5,
+                                    expand=True,
+                                    heading_row_color= ft.colors.GREY_300
+                                ),
+                            ],
+                        )
+                    ],
+                )
+            ],
+        )
+        
+        container_horarios.content = column_visualizer
+
     def load_search_bars():
         carreras = Materia(db).get_carreras()["rows"]
         edificios = Edificio(db).get_edificios()["rows"]
         aulas = Aula(db).get_aulas()["rows"]
-        
+
         for carrera in carreras:
             listas_busquedas["search_bar_carrera"].append(ft.ListTile(title=ft.Text(carrera[0]), on_click=close_search_bar_carrera))
         for edificio in edificios:
@@ -108,7 +153,7 @@ def main(page: ft.Page):
         dashboard = page.session.get("actual_data_table")
         dashboard.data_table.deselectAll()
         page.close_bottom_sheet()
-    
+
     def update_func(_):
         route = page.route
         bottom_sheet = page.session.get("actual_form")
@@ -140,7 +185,7 @@ def main(page: ft.Page):
         elif route == "/recursos_por_aula":
             recurso_por_aula=Recurso_por_aula(db)
             recurso_por_aula.update_recurso_por_aula(id_aula=data[0],id_recurso=data[1],cantidad=data[2])
-        
+
         route_change(page)
         page.close_bottom_sheet()
         page.update()
@@ -168,13 +213,13 @@ def main(page: ft.Page):
             profesor.delete_profesor(id=data[0])
         elif route == "/profesores_por_materia":
             profesor_por_materia = Profesor_por_materia(db)
-            profesor_por_materia.delete_profesor_por_materia(id=data[0])
+            profesor_por_materia.delete_profesor_por_materia(id_materia=data[0], id_profesor=data[1])
         elif route == "/recursos":
             recurso = Recurso(db)
             recurso.delete_recurso(id=data[0])
         elif route == "/recursos_por_aula":
             recurso_por_aula=Recurso_por_aula(db)
-            recurso_por_aula.delete_recurso_por_aula(id=data[0])
+            recurso_por_aula.delete_recurso_por_aula(id_aula=data[0], id_recurso=data[1])
 
         route_change(page)
         page.close_bottom_sheet()
@@ -227,7 +272,7 @@ def main(page: ft.Page):
                     ft.ElevatedButton(text="Guardar", bgcolor=ft.colors.BLUE_400, color=ft.colors.BLACK, icon=ft.icons.SAVE, on_click= insert_func),
                     ft.ElevatedButton(text="Cancelar", bgcolor=ft.colors.RED_400, color=ft.colors.BLACK, icon=ft.icons.CANCEL, on_click= dismiss_bottom_sheet_func),
                 ]
-            )    
+            )
         )
         page.show_bottom_sheet(
             ft.BottomSheet(
@@ -241,7 +286,7 @@ def main(page: ft.Page):
                     ),
                     dismissible= True,
                     on_dismiss= dismiss_bottom_sheet_func,
-                    is_scroll_controlled=True 
+                    is_scroll_controlled=True
             )
         )
         page.update()
@@ -252,7 +297,7 @@ def main(page: ft.Page):
         delete_modify_form.build()
         id_field = delete_modify_form.get_fields_controls()[0]
         id_field.read_only = True
-        
+
         textos_y_botones = delete_modify_form.get_fields_controls()
         textos_y_botones.append(
             ft.Row(
@@ -260,9 +305,9 @@ def main(page: ft.Page):
                     ft.ElevatedButton(text="Guardar cambios", bgcolor=ft.colors.AMBER_400, color=ft.colors.BLACK, icon=ft.icons.EDIT, on_click= update_func),
                     ft.ElevatedButton(text="Eliminar", bgcolor=ft.colors.RED_400, color=ft.colors.BLACK, icon=ft.icons.DELETE, on_click= delete_func),
                 ]
-            )    
+            )
         )
-        
+
         page.show_bottom_sheet(
             ft.BottomSheet(
                     ft.Container(
@@ -275,11 +320,11 @@ def main(page: ft.Page):
                     ),
                     dismissible= True,
                     on_dismiss= dismiss_bottom_sheet_func,
-                    is_scroll_controlled=True 
+                    is_scroll_controlled=True
             )
         )
         page.update()
-        
+
     def get_filter_tuple(_type):
         if _type == "number":
             return [ft.KeyboardType.NUMBER,ft.NumbersOnlyInputFilter()]
@@ -309,7 +354,7 @@ def main(page: ft.Page):
         elif route == "/materias":
             types = [number,text,text,text,number,number,text,number,number]
         elif route == "/profesores":
-            types = [number,number,text,text,text,text,text,text]
+            types = [number,number,text,text,text,text,text,text,text]
         elif route == "/profesore por materia":
             types = [number,number,number,text,text]
         elif route == "/recursos":
@@ -317,8 +362,8 @@ def main(page: ft.Page):
         elif route == "/recursos por aula":
             types = [number,number,number]
         return types
-        
-        
+
+
 
     def route_change(e):
         route = e.route
@@ -457,6 +502,7 @@ def main(page: ft.Page):
             )
             container_main_window.content = dashboard_profesor
             page.session.set("actual_data_table",dashboard_profesor)
+            page.window.width = 1000
             page.update()
         elif route == "/profesor por materia":
             container_main_window.offset = ft.Offset(0, 0)
@@ -524,17 +570,18 @@ def main(page: ft.Page):
             container_main_window.content = dashboard_recurso_por_aula
             page.session.set("actual_data_table",dashboard_recurso_por_aula)
             page.update()
-        
+
         elif route == "/ver_horarios":
             listas_busquedas["search_bar_carrera"].clear()
             listas_busquedas["search_bar_edificio"].clear()
             listas_busquedas["search_bar_aula"].clear()
             load_search_bars()
             container_main_window.offset = ft.Offset(0, 0)
+            crear_visualizacion_horarios()
             container_main_window.content = container_vista_horarios
             page.update()
-            
-            
+
+
     ###################################################################################
     #                                     HEADER                                      #
     ###################################################################################
@@ -546,7 +593,7 @@ def main(page: ft.Page):
         text_align=ft.TextAlign.CENTER,
         font_family="FabrikatNormalBlack",
     )
-    
+
     text_header_UNRN_description = ft.Text(
         value="Universidad Nacional\nde Río Negro",
         color="#FFFFFF",
@@ -555,7 +602,7 @@ def main(page: ft.Page):
         text_align=ft.TextAlign.CENTER,
         font_family="DelaGothicOne",
     )
-    
+
     row_header = ft.Row(
         spacing=10,
         alignment=ft.MainAxisAlignment.CENTER,
@@ -565,11 +612,11 @@ def main(page: ft.Page):
             text_header_UNRN_description
         ]
     )
-    
+
     ###################################################################################
     #                              MAIN TEXT AND BUTTON                               #
     ###################################################################################
-    
+
     text_main_sede_andina = ft.Text(
         value="SEDE ANDINA",
         color="#FFFFFF",
@@ -578,7 +625,7 @@ def main(page: ft.Page):
         text_align=ft.TextAlign.CENTER,
         font_family="FabrikatNormal",
     )
-    
+
     text_main_AULA = ft.Text(
         value="AULA",
         color="#EB2141",
@@ -587,7 +634,7 @@ def main(page: ft.Page):
         text_align=ft.TextAlign.CENTER,
         font_family="FabrikatNormal",
     )
-    
+
     text_main_AULA_description = ft.Text(
         value="Administración Unificada\nde Lugares Académicos",
         color="#C4C4C4",
@@ -629,19 +676,22 @@ def main(page: ft.Page):
             btn_main_horarios
         ]
     )
-    
+
     ###################################################################################
     #                                  VER HORARIOS                                   #
-    ##################################  #################################################
-    
+    ###################################################################################
+
     listas_busquedas = {
         "search_bar_carrera":[],
         "search_bar_edificio":[],
         "search_bar_aula":[]
     }
-    
-    btn_ordenar_auto = ft.ElevatedButton(text="Ordenar automaticamente", on_click=lambda _: print("Ordenar automaticamente [hacer funcion]"))
-    
+
+    btn_ordenar_auto = ft.ElevatedButton(
+        text="Ordenar automaticamente",
+        on_click=lambda _: print("Ordenar automaticamente [hacer funcion]")
+    )
+
     search_bar_carrera = ft.SearchBar(
         data="search_bar_carrera",
         expand=True,
@@ -695,7 +745,8 @@ def main(page: ft.Page):
 
     container_vista_horarios = ft.Container(
         expand=True,
-        bgcolor="#3A3A3A",
+        bgcolor=ft.colors.with_opacity(0.75,"#3A3A3A"),
+        padding=10,
         content=ft.Column(
             controls=[columns_search_bars,
             container_horarios]

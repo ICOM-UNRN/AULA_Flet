@@ -29,9 +29,17 @@ class ItemList(UserControl):
         self.page = page
         self.list_name = list_name
         self.list_color = color
-        self.items = Column(controls=[], tight=True, spacing=5, wrap=True, run_spacing=10, width=250)
+        self.items = Column(
+            controls=[],
+            tight=True,
+            spacing=5,
+            wrap=True,
+            run_spacing=10,
+            width=250
+        )
         self.end_indicator = self.create_end_indicator()
         self.item_name = self.create_item_name_field()
+        self.view = ft.Container()
         self.init_controls()
 
     def create_end_indicator(self):
@@ -45,8 +53,14 @@ class ItemList(UserControl):
 
     def create_item_name_field(self):
         return [
-            TextField(label="New Item Name", width=100, height=50, bgcolor=colors.WHITE, on_submit=self.add_item_handler),
-            ]
+            TextField(
+                label="New Item Name",
+                width=100,
+                height=50,
+                bgcolor=colors.WHITE,
+                on_submit=self.add_item_handler
+            ),
+        ]
 
     def init_controls(self):
         self.controls = []
@@ -185,7 +199,7 @@ class ItemList(UserControl):
 class ItemList_Days(ItemList):
     def create_item_name_field(self):
         return [Text("")]
-    
+
     def init_controls(self):
         self.controls = [
             self.items,
@@ -200,7 +214,7 @@ class ItemList_Creator(ItemList):
         aux.append(TextField(label="Profesor", width=250, height=50, bgcolor=colors.WHITE))
         aux.append(TextField(label="Tipo de clase", width=250, height=50, bgcolor=colors.WHITE))
         return aux
-    
+
     def init_controls(self):
         self.controls = []
         self.controls.append(self.item_name[0])
@@ -394,15 +408,15 @@ def create_calendar_hours_intervals(inicio : int, final : int):
 
 def create_calendar_table_headers_first_row(headers : list):
     encabezados = []
-    for i in headers:
-        encabezados.append(ft.DataColumn(ft.Text(f"{i}", color=colors.BLACK, text_align=ft.TextAlign.RIGHT, bgcolor="")))
+    for header in headers:
+        encabezados.append(ft.DataColumn(label=ft.Text(f"{header}", color=colors.BLACK, bgcolor="",expand=True)))
     return encabezados
 
 def create_calendar_rows(rows, columns, page, color="white"):
     filas = []
-    for i in range(0, len(rows)):
+    for i, row in enumerate(rows):
         celdas = []
-        celdas.append(ft.DataCell(ft.Text(f"{rows[i]}", color=colors.BLACK, bgcolor=colors.GREY_50)))
+        celdas.append(ft.DataCell(ft.Text(f"{row}", expand=True,color=colors.BLACK, bgcolor=colors.GREY_50)))
         for j in range(1, len(columns)):
             celdas.append(ft.DataCell(ItemList_Cell(page, f"A-{"{:02d}".format(i)}-{"{:02d}".format(j)}", color)))
         filas.append(ft.DataRow(cells=celdas))
@@ -429,7 +443,7 @@ def main(page: ft.Page):
                             rows=create_calendar_rows(intervalos_horarios,dias,page),
                             data_row_min_height = 130,
                             data_row_max_height = float("inf"),
-                            bgcolor='#ffffff',
+                            bgcolor='#3A3A3A',
                             column_spacing=5,
                             heading_row_color= colors.GREY_300
                             ),
@@ -474,6 +488,6 @@ def main(page: ft.Page):
         #     else:
         #         print(j.content.value)
         print("-----------------------")
-    
 
-ft.app(target=main)
+if __name__ == "__main__":
+    ft.app(target=main)

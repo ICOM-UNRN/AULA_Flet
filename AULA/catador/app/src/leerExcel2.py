@@ -129,11 +129,9 @@ def save_data_to_csv(filename, data):
         for row in data:
             writer.writerow(row)
 
-
 def save_data_to_json(filename, data):
     with open(filename, 'w', encoding='utf-8') as jsonfile:
         json.dump(data, jsonfile, indent=4)
-
 
 if __name__ == "__main__":
     leer_excel(r'AULA\catador\etc\dist2cuadH.xlsx')
