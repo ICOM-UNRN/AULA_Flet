@@ -19,7 +19,7 @@ def leer_excel(nombre_archivo):
         for index, row in df.iterrows():
             codigo_guarani = row['Código Guaraní']
             nombre_materia = row['Materia']
-            año = row['Año']
+            anio = row['Año']
             cuatrimestre = row['Cuatrimestre']
             taxonomia = row['Taxonomía']
             horas_semanales = row['Horas Semanales']
@@ -58,13 +58,13 @@ def leer_excel(nombre_archivo):
             profesores_data[dni_profesor]["materias"].add(nombre_materia)
 
             # Procesar datos para materias, evitando duplicados
-            materia_key = (codigo_guarani, nombre_materia, año, cuatrimestre)
+            materia_key = (codigo_guarani, nombre_materia, anio, cuatrimestre)
             if materia_key not in materias_set:
                 materia_data = {
                     "codigo_guarani": codigo_guarani,
                     "nombre": nombre_materia,
                     "carrera": carrera,
-                    "año": año,
+                    "anio": anio,
                     "cuatrimestre": cuatrimestre,
                     "taxonomia": taxonomia,
                     "horas_semanales": horas_semanales,

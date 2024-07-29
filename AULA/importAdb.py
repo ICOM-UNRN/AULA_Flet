@@ -1,7 +1,7 @@
 import json
 import os
-from db.materia import Materia
-from db.profesor import Profesor
+from api.materia.materia import Materia
+from api.profesor.profesor import Profesor
 import psycopg2
 
 # Conexión a la base de datos
@@ -70,8 +70,8 @@ def main():
     profesor_db = Profesor(conn)
     materia_db = Materia(conn)
 
-    archivo_profesores = 'path/to/profesores.json'
-    archivo_materias = 'path/to/materias.json'
+    archivo_profesores = 'AULA/archivos_generados/profesores.json'
+    archivo_materias = 'AULA/archivos_generados/materias.json'
 
     importar_profesores(profesor_db, archivo_profesores)
     importar_materias(materia_db, archivo_materias)
