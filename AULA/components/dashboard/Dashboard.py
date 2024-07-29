@@ -86,10 +86,11 @@ class Dashboard(ft.Container):
         )
         self.content= ft.Column(
             expand=True,
+            scroll=ft.ScrollMode.AUTO,
             controls=[
                 ft.Row(controls=[self.dashboard_search_input, self.dashboard_buttond_add_row]),
                 ft.Row(
-                    # scroll=ft.ScrollMode.HIDDEN,
+                    #scroll=ft.ScrollMode.AUTO,
                     controls=[self.data_table.build()]
                 ),
             ],
