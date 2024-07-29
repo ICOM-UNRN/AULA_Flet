@@ -37,14 +37,12 @@ def main(page: ft.Page):
         modificador = ItemList_Modifier(page, "ItemList_modoficador")
 
         column_visualizer = ft.Column(
-            expand= True,
             alignment= "start",
             scroll= ft.ScrollMode.ALWAYS,
             controls=[
                 ft.Row(
                     vertical_alignment="start",
                     scroll= ft.ScrollMode.ALWAYS,
-                    expand=True,
                     controls=[
                         ft.Column(controls=[creador, removedor, modificador]),
                         ft.Column(
@@ -59,7 +57,6 @@ def main(page: ft.Page):
                                     data_row_max_height = float("inf"),
                                     bgcolor='#3A3A3A',
                                     column_spacing=5,
-                                    expand=True,
                                     heading_row_color= ft.colors.GREY_300
                                 ),
                             ],
@@ -234,7 +231,7 @@ def main(page: ft.Page):
             asignacion.insert_asignacion(data[0], data[3], data[4], data[5], data[1], data[2])
         elif route == "/aulas":
             aula = Aula(db)
-            aula.insert_aula(data[1],data[0])
+            aula.insert_aula(data[0],data[1])
         elif route == "/edificios":
             edificio = Edificio(db)
             edificio.insert_edificio(nombre=data[0], direccion=data[1], altura=data[2])
