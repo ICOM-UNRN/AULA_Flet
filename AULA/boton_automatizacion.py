@@ -3,27 +3,29 @@ from api.materia.materia import Materia
 from api.profesor.profesor import Profesor
 from api.aula.aula import Aula
 from api.edificio.edificio import Edificio
+from api.asignacion.asignacion import Asignacion
 from collections import defaultdict
 import csv
 
 
 def main():
+    # Configura la conexión a la base de datos
+    conn = psycopg2.connect(
+        dbname="verceldb",
+        user="default",
+        password="vseaL4xSbR3Q",
+        host="ep-super-mouse-a4hq4rqf-pooler.us-east-1.aws.neon.tech",
+        port="5432"
+    )
+
+    # Crear instancias de las clases
+    materia_db = Materia(conn)
+    profesor_db = Profesor(conn)
+    aula_db = Aula(conn)
+    edificio_db = Edificio(conn)
+    asignacion_db = Asignacion(conn)
+
     try:
-        # Configura la conexión a la base de datos
-        conn = psycopg2.connect(
-            dbname="verceldb",
-            user="default",
-            password="vseaL4xSbR3Q",
-            host="ep-super-mouse-a4hq4rqf-pooler.us-east-1.aws.neon.tech",
-            port="5432"
-        )
-
-        # Crear instancias de las clases
-        materia_db = Materia(conn)
-        profesor_db = Profesor(conn)
-        aula_db = Aula(conn)
-        edificio_db = Edificio(conn)
-
         # Obtener los datos necesarios
         aulas = aula_db.get_aulas()['rows']
         materias = materia_db.get_materias()['rows']
@@ -59,35 +61,28 @@ def main():
         print("Asignación automática completada. Las sugerencias se han guardado en 'Sugerencias.csv'.")
 
     except Exception as e:
-        print(f"Error en la conexión o ejecución: {e}")
+        print(f"Error en la ejecución: {e}")
+
     finally:
         if conn:
             conn.close()
-
-
-def reordenar_materias_por_alumnos(materias):
-    return sorted(materias, key=lambda x: x.get('alumnos_esperados', 0) or 0, reverse=True)
 
 
 def organizar_horarios_profesores(profesores):
     horarios_disponibles = defaultdict(lambda: defaultdict(list))
     for profesor in profesores:
         profesor_horarios = defaultdict(list)
-        str_copia_horarios_disponibles = profesor.get(
-            'horarios_disponibles', '')
-        if str_copia_horarios_disponibles:
-            for bloque_dia_horas in str_copia_horarios_disponibles.split(';'):
-                dia_horas = bloque_dia_horas.strip().split(',')
-                dia = dia_horas[0].strip()
-                for horas_rango in dia_horas[1:]:
-                    horas = horas_rango.strip().split('-')
-                    if len(horas) == 2:
-                        hora_inicio = int(horas[0].strip())
-                        hora_fin = int(horas[1].strip())
-                        profesor_horarios[dia].append(
-                            f"{hora_inicio}-{hora_fin}")
-        nombre_completo = f"{profesor.get('nombre', '')} {
-            profesor.get('apellido', '')}"
+        str_copia_horarios_disponibles = profesor['horarios_disponibles']
+        for bloque_dia_horas in str_copia_horarios_disponibles.split(';'):
+            dia_horas = bloque_dia_horas.strip().split(',')
+            dia = dia_horas[0].strip()
+            for horas_rango in dia_horas[1:]:
+                horas = horas_rango.strip().split('-')
+                if len(horas) == 2:
+                    hora_inicio = int(horas[0].strip())
+                    hora_fin = int(horas[1].strip())
+                    profesor_horarios[dia].append(f"{hora_inicio}-{hora_fin}")
+        nombre_completo = f"{profesor['nombre']} {profesor['apellido']}"
         horarios_disponibles[nombre_completo] = profesor_horarios
     return horarios_disponibles
 
@@ -95,14 +90,12 @@ def organizar_horarios_profesores(profesores):
 def organizar_horarios_aulas(aulas):
     horarios_disponibles_aulas = defaultdict(lambda: defaultdict(list))
     for aula in aulas:
-        disponibilidad_aula = aula.get('disponibilidad', {})
-        if isinstance(disponibilidad_aula, dict):
-            for dia, disponibilidad_horaria in disponibilidad_aula.items():
-                if isinstance(disponibilidad_horaria, list):
-                    for hora, disponible in enumerate(disponibilidad_horaria, start=8):
-                        if disponible:
-                            horarios_disponibles_aulas[aula['nombre']][dia].append(f"{
-                                                                                   hora}")
+        disponibilidad_aula = aula['disponibilidad']
+        for dia, disponibilidad_horaria in disponibilidad_aula.items():
+            for hora, disponible in enumerate(disponibilidad_horaria, start=8):
+                if disponible:
+                    horarios_disponibles_aulas[aula['nombre']][dia].append(f"{
+                                                                           hora}")
     return horarios_disponibles_aulas
 
 
@@ -126,7 +119,7 @@ def verificar_disponibilidad(profesor_nombre, horarios_profesores, horarios_aula
         horas_separadas = separar_horas(horas_disponibles)
         for hora_inicio, hora_fin in horas_separadas:
             for aula, aulas_disponibles in horarios_aulas.items():
-                if dia in aulas_disponibles:
+                for dia, horas in aulas_disponibles.items():
                     horas_aula = [int(horas)
                                   for horas in aulas_disponibles[dia]]
                     if hora_inicio in horas_aula and hora_fin in horas_aula:
@@ -139,8 +132,7 @@ def verificar_disponibilidad(profesor_nombre, horarios_profesores, horarios_aula
 def asignacion_helper(materias, horarios_profesores, horarios_aulas, edificio_predefinido):
     sugerencias = []
     for materia in materias:
-        profesores_separados = separar_profesores(
-            materia.get('profesores', ''))
+        profesores_separados = separar_profesores(materia['profesores'])
         for profesor_nombre in profesores_separados:
             aulas_con_disponibilidad = verificar_disponibilidad(
                 profesor_nombre, horarios_profesores, horarios_aulas)
@@ -151,9 +143,9 @@ def asignacion_helper(materias, horarios_profesores, horarios_aulas, edificio_pr
                         (a['edificio'] for a in aulas if a['nombre'] == aula_nombre), None)
                     if aula_edificio == edificio_predefinido:
                         sugerencias.append({
-                            'Carrera': materia.get('carrera', ''),
-                            'Codigo Guarani': materia.get('codigo_guarani', ''),
-                            'Materia': materia.get('nombre', ''),
+                            'Carrera': materia['carrera'],
+                            'Codigo Guarani': materia['codigo_guarani'],
+                            'Materia': materia['nombre'],
                             'Profesor': profesor_nombre,
                             'Edificio': aula_edificio,
                             'Aula': aula['Aula:'],

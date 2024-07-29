@@ -1,6 +1,5 @@
 import psycopg2
 import os
-from zope.interface import document
 
 
 class Profesor():
