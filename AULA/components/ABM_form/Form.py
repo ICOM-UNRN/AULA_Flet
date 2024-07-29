@@ -91,7 +91,8 @@ class DeleteModifyForm(ft.UserControl):
                         ft.TextField(
                             label= label,
                             col={"md": 1},
-                            keyboard_type=_type
+                            keyboard_type=_type[0],
+                            input_filter=_type[1]
                         )
                     )
         return self.fields_controls
