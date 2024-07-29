@@ -35,15 +35,13 @@ def main():
 
         # Insertar aulas
         aulas = [
-            {"nombre": f"Aula {i+1}", "capacidad_maxima": 30,
-             "edificio": edificio_id,  # Usar el ID del edificio
-             "disponibilidad": '{"lunes": ["08-10", "10-12"], "martes": ["08-10"]}'}
+            {"edificio": edificio_id, "nombre": f"Aula {i+1}", "capacidad": 30}
             for i in range(7)
         ]
 
         for aula in aulas:
-            aula_db.insert_aula(
-                aula["nombre"], aula["capacidad_maxima"], aula["edificio"], aula["disponibilidad"])
+            aula_db.insert_aula(aula["edificio"],
+                                aula["nombre"], aula["capacidad"])
 
         print("Aulas y edificios inicializados exitosamente.")
 

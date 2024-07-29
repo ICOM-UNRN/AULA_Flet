@@ -1,0 +1,184 @@
+[
+    {
+        "materia": "B5638",
+        "profesor": 16738637,
+        "cant_alumnos": 40,
+        "tipo_clase": "Te\u00f3rico/Pr\u00e1ctio",
+        "activo": true
+    },
+    {
+        "materia": "B6002",
+        "profesor": 25468943,
+        "cant_alumnos": 73,
+        "tipo_clase": "Pr\u00e1ctico",
+        "activo": true
+    },
+    {
+        "materia": "B6002",
+        "profesor": 36171289,
+        "cant_alumnos": 73,
+        "tipo_clase": "Te\u00f3rico",
+        "activo": true
+    },
+    {
+        "materia": "B6003",
+        "profesor": 31939152,
+        "cant_alumnos": 120,
+        "tipo_clase": "Te\u00f3rico/Pr\u00e1ctio",
+        "activo": true
+    },
+    {
+        "materia": "B6003",
+        "profesor": 29611678,
+        "cant_alumnos": 80,
+        "tipo_clase": "Te\u00f3rico",
+        "activo": true
+    },
+    {
+        "materia": "B6003",
+        "profesor": 33529137,
+        "cant_alumnos": 100,
+        "tipo_clase": "Pr\u00e1ctico",
+        "activo": true
+    },
+    {
+        "materia": "B6004",
+        "profesor": 26240918,
+        "cant_alumnos": 120,
+        "tipo_clase": "Pr\u00e1ctico",
+        "activo": true
+    },
+    {
+        "materia": "B6005",
+        "profesor": 21602115,
+        "cant_alumnos": 100,
+        "tipo_clase": "Te\u00f3rico",
+        "activo": true
+    },
+    {
+        "materia": "B6005",
+        "profesor": 25885246,
+        "cant_alumnos": 100,
+        "tipo_clase": "Pr\u00e1ctico",
+        "activo": true
+    },
+    {
+        "materia": "B6010",
+        "profesor": 36171289,
+        "cant_alumnos": 10,
+        "tipo_clase": "Te\u00f3rico",
+        "activo": true
+    },
+    {
+        "materia": "B6010",
+        "profesor": 33948242,
+        "cant_alumnos": 30,
+        "tipo_clase": "Pr\u00e1ctico",
+        "activo": true
+    },
+    {
+        "materia": "B6011",
+        "profesor": 36171289,
+        "cant_alumnos": 12,
+        "tipo_clase": "Te\u00f3rico",
+        "activo": true
+    },
+    {
+        "materia": "B6011",
+        "profesor": 25468943,
+        "cant_alumnos": 12,
+        "tipo_clase": "Pr\u00e1ctico",
+        "activo": true
+    },
+    {
+        "materia": "B6017",
+        "profesor": 23850390,
+        "cant_alumnos": 30,
+        "tipo_clase": "Te\u00f3rico/Pr\u00e1ctio",
+        "activo": true
+    },
+    {
+        "materia": "B6018",
+        "profesor": 27024277,
+        "cant_alumnos": 19,
+        "tipo_clase": "Te\u00f3rico",
+        "activo": true
+    },
+    {
+        "materia": "B6019",
+        "profesor": 23124017,
+        "cant_alumnos": 20,
+        "tipo_clase": "Te\u00f3rico",
+        "activo": true
+    },
+    {
+        "materia": "B6020",
+        "profesor": 33154815,
+        "cant_alumnos": 20,
+        "tipo_clase": "Pr\u00e1ctico",
+        "activo": true
+    },
+    {
+        "materia": "B6025",
+        "profesor": 17342171,
+        "cant_alumnos": 10,
+        "tipo_clase": "Te\u00f3rico/Pr\u00e1ctio",
+        "activo": true
+    },
+    {
+        "materia": "B6003",
+        "profesor": 27071960,
+        "cant_alumnos": 47,
+        "tipo_clase": "Pr\u00e1ctico",
+        "activo": true
+    },
+    {
+        "materia": "B6003",
+        "profesor": 39403483,
+        "cant_alumnos": 80,
+        "tipo_clase": "Pr\u00e1ctico",
+        "activo": true
+    },
+    {
+        "materia": "B6003",
+        "profesor": 29659429,
+        "cant_alumnos": 80,
+        "tipo_clase": "Te\u00f3rico",
+        "activo": true
+    },
+    {
+        "materia": "B6004",
+        "profesor": 35017382,
+        "cant_alumnos": 185,
+        "tipo_clase": "Te\u00f3rico",
+        "activo": true
+    },
+    {
+        "materia": "B6012",
+        "profesor": 35380729,
+        "cant_alumnos": 30,
+        "tipo_clase": "Pr\u00e1ctico",
+        "activo": true
+    },
+    {
+        "materia": "B6012",
+        "profesor": 32037075,
+        "cant_alumnos": 30,
+        "tipo_clase": "Te\u00f3rico",
+        "activo": true
+    },
+    {
+        "materia": "B6002",
+        "profesor": 32101016,
+        "cant_alumnos": 73,
+        "tipo_clase": "Te\u00f3rico",
+        "activo": true
+    },
+    {
+        "materia": "B6002",
+        "profesor": 25468943,
+        "cant_alumnos": 73,
+        "tipo_clase": "Pr\u00e1ctico",
+        "activo": true
+    }
+]
