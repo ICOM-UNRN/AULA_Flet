@@ -1,5 +1,4 @@
 import psycopg2
-import os
 
 class Profesor_por_materia():
     def __init__(self, conn : psycopg2.connect):
