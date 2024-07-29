@@ -52,7 +52,7 @@ def main():
         )
 
         # Llamar a la función para mover los archivos
-        mover_archivos_a_carpeta('archivos generados')
+        mover_archivos_a_carpeta('AULA/archivos_generados')
 
     except Exception as e:
         print(f"Error: {e}")

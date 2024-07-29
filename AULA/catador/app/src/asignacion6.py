@@ -295,8 +295,6 @@ def asignacion_automatica(archivo_aulas_a_usar, archivo_materias_a_usar):
         materias_reordenadas, horarios_disponibles_profesores, horarios_disponibles_aulas, 'Anasagasti II')
     escribir_sugerencias(sugerencias_helper, 'Sugerencias.csv')
     print("Asignación automática completada. Las sugerencias se han guardado en 'Sugerencias.csv'.")
-    # Llamar a la función para mover los archivos
-    mover_archivos_a_carpeta('archivos generados')
 
 
 # Leer los archivos

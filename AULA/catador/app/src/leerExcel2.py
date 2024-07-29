@@ -110,9 +110,6 @@ def leer_excel(nombre_archivo):
         save_data_to_csv("materias.csv", materias_list)
         save_data_to_json("materias.json", materias_list)
 
-        # Llamar a la función para mover los archivos
-        mover_archivos_a_carpeta('archivos generados')
-
     except pd.errors.EmptyDataError:
         print("El archivo Excel está vacío.")
     except FileNotFoundError:
@@ -129,9 +126,11 @@ def save_data_to_csv(filename, data):
         for row in data:
             writer.writerow(row)
 
+
 def save_data_to_json(filename, data):
     with open(filename, 'w', encoding='utf-8') as jsonfile:
         json.dump(data, jsonfile, indent=4)
+
 
 if __name__ == "__main__":
     leer_excel(r'AULA\catador\etc\dist2cuadH.xlsx')
