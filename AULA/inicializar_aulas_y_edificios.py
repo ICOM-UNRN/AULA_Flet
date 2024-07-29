@@ -36,8 +36,8 @@ def main():
         # Insertar aulas
         aulas = [
             {"nombre": f"Aula {i+1}", "capacidad_maxima": 30,
-                "edificio": edificio_id,  # Usar el ID del edificio
-                "disponibilidad": '{"lunes": ["08-10", "10-12"], "martes": ["08-10"]}'}
+             "edificio": edificio_id,  # Usar el ID del edificio
+             "disponibilidad": '{"lunes": ["08-10", "10-12"], "martes": ["08-10"]}'}
             for i in range(7)
         ]
 
