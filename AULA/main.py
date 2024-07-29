@@ -14,6 +14,7 @@ from api.profesor.profesor import Profesor
 from api.profesor.profesor_por_materia import Profesor_por_materia
 from api.recurso.recurso import Recurso
 from api.recurso.recurso_por_aula import Recurso_por_aula
+from catador.app.src.leerExcel2 import leer_excel
 
 
 def main(page: ft.Page):
@@ -25,6 +26,19 @@ def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
 
     db = connect_to_db()
+
+
+    ###################################################################################
+    #                                  CARGAR ARCHIVOS                                #
+    ###################################################################################
+
+    def pick_files_result(e: ft.FilePickerResultEvent):
+        print("Selected files:", e.files)
+        # filename = e.files[0].name
+        path = e.files[0].path
+        leer_excel(nombre_archivo= path)
+
+
 
     ###################################################################################
     #                                FUNC VER HORARIOS                                #
@@ -91,8 +105,8 @@ def main(page: ft.Page):
 
         # {lunes: [...], martes: [...], ...}
         i = 0
-        for clave in materias_asignadas:
-            for materia in materias_asignadas[clave]:
+        for _, asignacion in materias_asignadas.items():
+            for materia in asignacion:
                 aux_fila = materia[2]
                 aux_num = int(aux_fila) - 8
                 column_visualizer.controls[1].controls[0].rows[aux_num].cells[i].content.add_item([materia[0],
@@ -100,11 +114,10 @@ def main(page: ft.Page):
                                                                                                    f"{materia[2]} a {materia[3]}",
                                                                                                    materia[4],], "green")
             i +=1
-            
 
         container_horarios.content = column_visualizer
         if not page.window.maximized:
-                page.window.width = 1600
+            page.window.width = 1600
         page.update()
 
     def load_search_bars():
@@ -156,7 +169,7 @@ def main(page: ft.Page):
         crear_visualizacion_horarios(search_bar_carrera.value, search_bar_edificio.value, search_bar_aula.value)
 
     def handle_submit(e):
-        print(f"handle_submit e.data: {e.data}")
+        # print(f"handle_submit e.data: {e.data}")
         if e.data == "":
             print(listas_busquedas[e.control.data])
             e.control.controls = listas_busquedas[e.control.data]
@@ -168,14 +181,14 @@ def main(page: ft.Page):
             for value in listas_busquedas[e.control.data]
             if re.search(e.data, value.title.value, re.IGNORECASE)
         ]
-        print(result)
+        # print(result)
         if len(result) == 1:
             e.control.close_view(result[0].title.value)
-
-        e.control.controls = result
+        else:
+            e.control.close_view(e.data)
         e.control.update()
         crear_visualizacion_horarios(search_bar_carrera.value, search_bar_edificio.value, search_bar_aula.value)
-            
+
     def handle_tap(e):
         e.control.open_view()
 
@@ -726,6 +739,24 @@ def main(page: ft.Page):
         on_click=lambda _: page.go('/ver_horarios')
     )
 
+    file_picker = ft.FilePicker(on_result=pick_files_result)
+    page.overlay.append(file_picker)
+
+    btn_main_import_excel = ft.OutlinedButton(
+        text="Importar Excel",
+        icon=ft.icons.CALENDAR_MONTH,
+        height=50,
+        width=200,
+        style=ft.ButtonStyle(
+            shape=ft.RoundedRectangleBorder(
+                radius=ft.border_radius.all(5)
+            ),
+            color="#0B5345",
+            bgcolor=ft.colors.with_opacity(0.25, "#D4EFDF"),
+        ),
+        on_click=lambda _: file_picker.pick_files(allowed_extensions=["xlsx", "xls"])
+    )
+
     column_main_text = ft.Column(
         spacing=10,
         alignment=ft.MainAxisAlignment.CENTER,
@@ -743,7 +774,8 @@ def main(page: ft.Page):
                 ),
             ),
             text_main_AULA_description,
-            btn_main_horarios
+            btn_main_horarios,
+            btn_main_import_excel
         ]
     )
 
