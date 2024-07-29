@@ -47,17 +47,17 @@ class Materia():
     def insert_materia(self, codigo_guarani: str, carrera: str, nombre: str, anio: str, cuatrimestre: str, taxonomia: str, horas_semanales: str, comisiones: str, alumnos_esperados: int):
         try:
             result = self.cursor.callproc("insert_materia", [
-                                          codigo_guarani, carrera, nombre, anio, cuatrimestre, taxonomia, horas_semanales, alumnos_esperados, comisiones])
+                                          codigo_guarani, carrera, nombre, anio, cuatrimestre, taxonomia, horas_semanales, comisiones, alumnos_esperados])
             self.conn.commit()
             return result
         except Exception as e:
             print(f"Error al insertar materia: {e}")
             return None
 
-    def update_materia(self, codigo_guarani: str, carrera: str, nombre: str, anio: str, cuatrimestre: str, taxonomia: str, horas_semanales: str, comisiones: str, alumnos_esperados: int):
+    def update_materia(self, id: int, codigo_guarani: str, carrera: str, nombre: str, anio: str, cuatrimestre: str, taxonomia: str, horas_semanales: str, comisiones: str, alumnos_esperados: int):
         try:
             result = self.cursor.callproc("update_materia", [
-                                          id, codigo_guarani, carrera, nombre, anio, cuatrimestre, taxonomia, horas_semanales, alumnos_esperados, comisiones])
+                                          id, codigo_guarani, carrera, nombre, anio, cuatrimestre, taxonomia, horas_semanales, comisiones, alumnos_esperados])
             self.conn.commit()
             if result != 0:
                 return False
