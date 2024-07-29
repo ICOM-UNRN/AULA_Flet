@@ -46,8 +46,8 @@ try:
     aulas = aula.get_aulas()
 
     print("Asignaciones:", asignaciones)
-    print("Materias:", materias)
-    print("Profesores:", profesores)
+    # print("Materias:", materias)
+    # print("Profesores:", profesores)
     print("Edificios:", edificios)
     print("Aulas:", aulas)
 
