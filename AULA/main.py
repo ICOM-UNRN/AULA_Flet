@@ -102,7 +102,7 @@ def main(page: ft.Page):
         )
 
         # {lunes: [...], martes: [...], ...}
-        i = 0
+        i = 1
         for _, asignacion in materias_asignadas.items():
             for materia in asignacion:
                 aux_fila = materia[2]
