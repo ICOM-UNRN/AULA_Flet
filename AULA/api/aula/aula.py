@@ -21,14 +21,8 @@ class Aula():
         self.conn.commit()
         return result
 
-    def insert_aula(self, nombre, capacidad_maxima, edificio, disponibilidad=None):
-        # Asegúrate de que la cantidad y tipo de parámetros coincidan con la definición de la función en la base de datos
-        if disponibilidad is None:
-            self.cursor.callproc(
-                "insert_aula", [nombre, capacidad_maxima, edificio])
-        else:
-            self.cursor.callproc(
-                "insert_aula", [nombre, capacidad_maxima, edificio, disponibilidad])
+    def insert_aula(self, edificio, nombre, capacidad):
+        self.cursor.callproc("insert_aula", [edificio, nombre, capacidad])
         self.conn.commit()
 
     def update_aula(self, id, nombre=None, edificio=None, capacidad=None):
