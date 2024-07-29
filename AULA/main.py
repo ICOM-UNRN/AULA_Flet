@@ -18,6 +18,7 @@ from api.recurso.recurso_por_aula import Recurso_por_aula
 def main(page: ft.Page):
     page.title = "AULA - Administracion Unificada de Lugares Academicos"
     page.padding = 0
+    page.window.width = 1600
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.theme_mode = ft.ThemeMode.DARK
@@ -27,46 +28,60 @@ def main(page: ft.Page):
     ###################################################################################
     #                                FUNC VER HORARIOS                                #
     ###################################################################################
-
+    def obtener_asignaciones_materias_formateadas():
+        asignaciones = Asignacion(db).get_materias_eventos_asignados()
+        datos = asignaciones["rows"]
+        lista_formateada = []
+        for linea in datos:
+            delta_horario = linea[6] - (linea[5])
+            while delta_horario > 0:
+                lista_formateada.append([linea[0],linea[1], f"{linea[5]+(delta_horario-1)} a {linea[5]+delta_horario}", linea[3]])
+                delta_horario -= 1
+        return lista_formateada
     def crear_visualizacion_horarios():
         dias = [" ", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
         intervalos_horarios = create_calendar_hours_intervals(8, 23)
+
+        # listado con la siguiente estructura [aula,materia, "{comienzo} a {fin}", profesores]
+        materias_asignadas = obtener_asignaciones_materias_formateadas()
 
         creador = ItemList_Creator(page, "ItemList_creador")
         removedor = ItemList_Remover(page, "ItemList_removedor")
         modificador = ItemList_Modifier(page, "ItemList_modoficador")
 
-        column_visualizer = ft.Column(
-            alignment= "start",
+        column_visualizer = ft.Row(
+            vertical_alignment="start",
             scroll= ft.ScrollMode.ALWAYS,
+            # expand=True,
             controls=[
-                ft.Row(
-                    vertical_alignment="start",
-                    scroll= ft.ScrollMode.ALWAYS,
+                ft.Column(
+                    scroll=ft.ScrollMode.ADAPTIVE,
+                    controls=[creador, removedor, modificador]
+                ),
+                ft.Column(
+                    scroll=ft.ScrollMode.ADAPTIVE,
+                    expand=True,
+                    alignment="start",
                     controls=[
-                        ft.Column(controls=[creador, removedor, modificador]),
-                        ft.Column(
-                            scroll=ft.ScrollMode.ADAPTIVE,
-                            expand=True,
-                            alignment="start",
-                            controls=[
-                                ft.DataTable(
-                                    columns=create_calendar_table_headers_first_row(dias),
-                                    rows=create_calendar_rows(intervalos_horarios, dias, page),
-                                    data_row_min_height = 130,
-                                    data_row_max_height = float("inf"),
-                                    bgcolor='#3A3A3A',
-                                    column_spacing=5,
-                                    heading_row_color= ft.colors.GREY_300
-                                ),
-                            ],
-                        )
+                        ft.DataTable(
+                            columns=create_calendar_table_headers_first_row(dias),
+                            rows=create_calendar_rows(intervalos_horarios, dias, page),
+                            data_row_min_height = 130,
+                            data_row_max_height = float("inf"),
+                            bgcolor='#3A3A3A',
+                            column_spacing=5,
+                            # expand=True,
+                            heading_row_color= ft.colors.GREY_300
+                        ),
                     ],
                 )
             ],
         )
-        
+
         container_horarios.content = column_visualizer
+        if not page.window.maximized:
+                page.window.width = 1600
+        page.update()
 
     def load_search_bars():
         carreras = Materia(db).get_carreras()["rows"]
@@ -478,6 +493,8 @@ def main(page: ft.Page):
             )
             container_main_window.content = dashboard_materia
             page.session.set("actual_data_table", dashboard_materia)
+            if not page.window.maximized:
+                page.window.width = 1600
             page.update()
         elif route == "/profesores":
             container_main_window.offset = ft.Offset(0, 0)
@@ -499,7 +516,8 @@ def main(page: ft.Page):
             )
             container_main_window.content = dashboard_profesor
             page.session.set("actual_data_table",dashboard_profesor)
-            page.window.width = 1000
+            if not page.window.maximized:
+                page.window.width = 1600
             page.update()
         elif route == "/profesor por materia":
             container_main_window.offset = ft.Offset(0, 0)
@@ -574,8 +592,8 @@ def main(page: ft.Page):
             listas_busquedas["search_bar_aula"].clear()
             load_search_bars()
             container_main_window.offset = ft.Offset(0, 0)
-            crear_visualizacion_horarios()
             container_main_window.content = container_vista_horarios
+            crear_visualizacion_horarios()
             page.update()
 
 
@@ -730,7 +748,7 @@ def main(page: ft.Page):
 
     columns_search_bars = ft.Column(
         controls=[
-            ft.Row(controls=[search_bar_carrera, btn_ordenar_auto]),
+            ft.Row(alignment=ft.MainAxisAlignment.SPACE_BETWEEN,controls=[search_bar_carrera, btn_ordenar_auto]),
             ft.Row(controls=[search_bar_edificio, search_bar_aula])
         ]
     )
