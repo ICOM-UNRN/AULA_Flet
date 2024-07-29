@@ -47,12 +47,13 @@ def main(page: ft.Page):
                 dicc_semana[linea[4]].append([linea[0],linea[1], linea[5]+(delta_horario-1), linea[5]+delta_horario, linea[3]])
                 delta_horario -= 1
         return dicc_semana
+    
     def crear_visualizacion_horarios():
         dias = [" ", "Lunes", "Martes", "Miercoles",
                 "Jueves", "Viernes", "Sabado", "Domingo"]
-        intervalos_horarios = create_calendar_hours_intervals(8, 23)
+        intervalos_horarios = create_calendar_hours_intervals(8, 24)
 
-        # listado con la siguiente estructura [aula,materia, "{comienzo} a {fin}", profesores]
+        # listado con la siguiente estructura [aula, materia, {comienzo} , {fin}, profesores]
         materias_asignadas = obtener_asignaciones_materias_formateadas()
 
         creador = ItemList_Creator(page, "ItemList_creador")
@@ -88,9 +89,19 @@ def main(page: ft.Page):
             ],
         )
 
-        
+        # {lunes: [...], martes: [...], ...}
+        i = 0
+        for clave in materias_asignadas:
+            for materia in materias_asignadas[clave]:
+                aux_fila = materia[2]
+                aux_num = int(aux_fila) - 8
+                column_visualizer.controls[1].controls[0].rows[aux_num].cells[i].content.add_item([materia[0],
+                                                                                                   materia[1],
+                                                                                                   f"{materia[2]} a {materia[3]}",
+                                                                                                   materia[4],], "green")
+            i +=1
+            
 
-        column_visualizer.control[1].controls[0].rows[0].cells[1].content.add_item()
         container_horarios.content = column_visualizer
         if not page.window.maximized:
                 page.window.width = 1600
