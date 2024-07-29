@@ -27,13 +27,14 @@ def main():
 
     try:
         aulas = aula_db.get_aulas()['rows']
-        materias = materia_db.get_materias()['rows']
+        materias = materia_db.get_materias()
+        depurar_materias(materias)
+        verificar_datos_materias(materias)
         profesores = profesor_db.get_profesores()['rows']
 
-        # Depuración: Verifica los datos obtenidos
-        # print("Aulas:", aulas)
-        # print("Materias:", materias)
-        # print("Profesores:", profesores)
+        columnas_materias = materias['columns']
+        materias = [dict(zip(columnas_materias, materia))
+                    for materia in materias['rows']]
 
         columnas_profesores = profesor_db.get_profesores()['columns']
         profesores = [dict(zip(columnas_profesores, profesor))
@@ -41,10 +42,6 @@ def main():
 
         columnas_aulas = aula_db.get_aulas()['columns']
         aulas = [dict(zip(columnas_aulas, aula)) for aula in aulas]
-
-        columnas_materias = materia_db.get_materias()['columns']
-        materias = [dict(zip(columnas_materias, materia))
-                    for materia in materias]
 
         # Depuración: Imprimir los diccionarios
         # print("Profesores Diccionario:", profesores)
@@ -74,6 +71,17 @@ def main():
     finally:
         if conn:
             conn.close()
+
+
+def depurar_materias(materias):
+    for materia in materias:
+        print(f"Tipo de materia: {type(materia)}")
+        if isinstance(materia, dict):
+            print(f"Claves en el diccionario de materia: {
+                  list(materia.keys())}")
+        else:
+            print(f"Advertencia: Se esperaba un diccionario, pero se obtuvo {
+                  type(materia)}")
 
 
 def organizar_horarios_profesores(profesores):
@@ -176,12 +184,12 @@ def reordenar_materias_por_alumnos(materias):
 def asignacion_helper(materias, horarios_profesores, horarios_aulas, edificio_predefinido):
     sugerencias = []
     for materia in materias:
-        if 'profesores' not in materia:
-            print(f"Advertencia: La clave 'profesores' no está en el diccionario de materia: {
+        profesores_separados = separar_profesores(materia.get(
+            'profesores', ''))  # Usa un valor por defecto vacío
+        if not profesores_separados:
+            print(f"Advertencia: La clave 'profesores' está vacía o no está presente en el diccionario de materia: {
                   materia}")
-            continue
 
-        profesores_separados = separar_profesores(materia['profesores'])
         for profesor_nombre in profesores_separados:
             aulas_con_disponibilidad = verificar_disponibilidad(
                 profesor_nombre, horarios_profesores, horarios_aulas)
@@ -206,6 +214,16 @@ def asignacion_helper(materias, horarios_profesores, horarios_aulas, edificio_pr
             else:
                 print(f"    {profesor_nombre} | No hay aulas disponibles")
     return sugerencias
+
+
+def verificar_datos_materias(materias):
+    for materia in materias:
+        if 'profesores' not in materia:
+            print(f"Advertencia: La clave 'profesores' no está presente en el diccionario de materia: {
+                  materia}")
+        else:
+            print(f"Datos de materia con 'profesores': {
+                  materia['profesores']}")
 
 
 def escribir_sugerencias(sugerencias, archivo):
