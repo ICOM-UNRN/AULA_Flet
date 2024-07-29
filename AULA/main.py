@@ -90,7 +90,7 @@ def main(page: ft.Page):
         )
 
         # {lunes: [...], martes: [...], ...}
-        i = 0
+        i = 1
         for clave in materias_asignadas:
             for materia in materias_asignadas[clave]:
                 aux_fila = materia[2]
@@ -100,7 +100,6 @@ def main(page: ft.Page):
                                                                                                    f"{materia[2]} a {materia[3]}",
                                                                                                    materia[4],], "green")
             i +=1
-            
 
         container_horarios.content = column_visualizer
         if not page.window.maximized:
@@ -804,7 +803,8 @@ def main(page: ft.Page):
     columns_search_bars = ft.Column(
         controls=[
             ft.Row(alignment=ft.MainAxisAlignment.SPACE_BETWEEN,controls=[search_bar_carrera, btn_ordenar_auto]),
-            ft.Row(controls=[search_bar_edificio, search_bar_aula])
+            ft.Row(controls=[search_bar_edificio, search_bar_aula]),
+            ft.Row(controls=[ft.TextButton("Grabar Tarjetas en la Base de Datos", disabled=True, )])
         ]
     )
 
