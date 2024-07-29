@@ -130,7 +130,6 @@ def leer_excel(nombre_archivo):
     except Exception as e:
         print(f"Error al procesar el archivo Excel: {e}")
 
-
 def save_data_to_csv(filename, data):
     with open(filename, 'w', newline='', encoding='UTF-8') as csvfile:
         fieldnames = list(data[0].keys())
@@ -143,7 +142,6 @@ def save_data_to_csv(filename, data):
 def save_data_to_json(filename, data):
     with open(filename, 'w', encoding='utf-8') as jsonfile:
         json.dump(data, jsonfile, indent=4)
-
 
 if __name__ == "__main__":
     leer_excel(r'AULA\catador\etc\dist2cuadH.xlsx')

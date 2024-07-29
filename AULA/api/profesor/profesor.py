@@ -23,8 +23,8 @@ class Profesor():
 
     def get_profesor(self, id: int = None, dni: int = None, nombre: str = None, apellido: str = None, condicion: str = None, categoria: str = None, dedicacion: str = None, periodo_a_cargo: str = None, horarios_disponibles: str = None):
         try:
-            self.cursor.callproc("get_profesor", [
-                id, dni, nombre, apellido, condicion, categoria, dedicacion, periodo_a_cargo, horarios_disponibles])
+            self.cursor.callproc("get_profesor",
+                                [id, dni, nombre, apellido, condicion, categoria, dedicacion, periodo_a_cargo, horarios_disponibles])
             self.conn.commit()
             columns = [descr.name for descr in self.cursor.description]
             rows = [row for row in self.cursor.fetchall()]
