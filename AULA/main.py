@@ -169,7 +169,7 @@ def main(page: ft.Page):
             evento.update_evento(id=data[0],nombre=data[1],descripcion=data[2],comienzo=data[3],fin=data[4])
         elif route == "/materias":
             materia = Materia(db)
-            materia.update_materia(id=data[0],codigo_guarani=data[1],carrera=data[2],nombre=data[3],anio=data[4],cuatrimestre=data[5],taxonomia=data[6],horas_semanales=data[7],comisiones=data[8])
+            materia.update_materia(id=data[0],codigo_guarani=data[1],carrera=data[2],nombre=data[3],anio=data[4],cuatrimestre=data[5],taxonomia=data[6],horas_semanales=data[7],comisiones=data[8],alumnos_esperados=data[9])
         elif route == "/profesores":
             profesor = Profesor(db)
             profesor.update_profesor(data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7],data[8])
@@ -240,7 +240,7 @@ def main(page: ft.Page):
             evento.insert_evento(nombre=data[0], descripcion=data[1], comienzo=data[2], fin=data[3])
         elif route == "/materias":
             materia = Materia(db)
-            materia.insert_materia(codigo_guarani=data[0], carrera=data[1], nombre=data[2], anio=data[3], cuatrimestre=data[4], taxonomia=data[5], horas_semanales=data[6], comisiones=data[7])
+            materia.insert_materia(codigo_guarani=data[0], carrera=data[1], nombre=data[2], anio=data[3], cuatrimestre=data[4], taxonomia=data[5], horas_semanales=data[6], comisiones=data[7], alumnos_esperados=data[8])
         elif route == "/profesores":
             profesor = Profesor(db)
             profesor.insert_profesor(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7])
@@ -349,7 +349,7 @@ def main(page: ft.Page):
         elif route == "/eventos":
             types = [number,text,text,text,text]
         elif route == "/materias":
-            types = [number,text,text,text,number,number,text,number,number]
+            types = [number,text,text,text,number,number,text,number,number,number]
         elif route == "/profesores":
             types = [number,number,text,text,text,text,text,text,text]
         elif route == "/profesore por materia":
