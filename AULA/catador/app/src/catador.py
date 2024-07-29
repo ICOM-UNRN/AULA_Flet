@@ -28,7 +28,7 @@ def main():
     try:
         # Ejecutar leerExcel.py usando subprocess
         subprocess.run(
-            ["python", r"Cata-Aulas\app\src\leerExcel2.py"], check=True
+            ["python", r"AULA/catador/app/src/leerExcel2.py"], check=True
         )
 
         # Crear el edificio
@@ -48,7 +48,7 @@ def main():
 
         # Corre el programa de asignación de materias
         subprocess.run(
-            ["python", r"Cata-Aulas\app\src\asignacion6.py"], check=True
+            ["python", r"AULA/catador/app/src/asignacion6.py"], check=True
         )
 
         # Llamar a la función para mover los archivos

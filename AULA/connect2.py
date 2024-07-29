@@ -4,6 +4,9 @@ import subprocess
 import os
 from api.asignacion.asignacion import Asignacion
 from api.materia.materia import Materia
+from api.aula.aula import Aula
+from api.edificio.edificio import Edificio
+from api.profesor.profesor import Profesor
 
 # Datos de conexión a PostgreSQL
 POSTGRES_HOST = "ep-super-mouse-a4hq4rqf-pooler.us-east-1.aws.neon.tech"
@@ -29,20 +32,24 @@ try:
 
     print("¡Conectado a la base de datos PostgreSQL!")
 
+    # Conexion y obtencion de datos db
     asignacion = Asignacion(conexion)
     materia = Materia(conexion)
+    profesor = Profesor(conexion)
+    edificio = Edificio(conexion)
+    aula = Aula(conexion)
 
-    # Ejemplos de uso de la clase Asignacion
-    # Obtener todas las asignaciones
     asignaciones = asignacion.get_asignaciones()
-    print("Asignaciones:", asignaciones)
     materias = materia.get_materias()
-    print("Materias:", materias)
+    profesores = profesor.get_profesores()
+    edificios = edificio.get_edificios()
+    aulas = aula.get_aulas()
 
-    # Insertar una nueva asignación (ejemplo)
-    # nueva_asignacion = asignacion.insert_asignacion(
-    #    'Aula 101', 'Lunes', '08:00', '10:00', 'Matemáticas')
-    # print("Nueva asignación insertada:", nueva_asignacion)
+    print("Asignaciones:", asignaciones)
+    print("Materias:", materias)
+    print("Profesores:", profesores)
+    print("Edificios:", edificios)
+    print("Aulas:", aulas)
 
     # Cerrar la conexión
     conexion.close()
