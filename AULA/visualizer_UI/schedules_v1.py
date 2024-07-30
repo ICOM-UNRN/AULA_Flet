@@ -54,7 +54,7 @@ class ItemList(UserControl):
     def create_item_name_field(self):
         return [
             TextField(
-                label="New Item Name",
+                label="Nuevo nombre de Item",
                 width=100,
                 height=50,
                 bgcolor=colors.WHITE,
@@ -66,9 +66,9 @@ class ItemList(UserControl):
         self.controls = []
         for i in self.item_name:
             self.controls.append(i)
-        self.controls.append(TextButton("Add Item", icon=icons.ADD, on_click=self.add_item_handler))
-        self.controls.append(TextButton("Delete Items on this list", icon=icons.DELETE_FOREVER, on_click=self.delete_items_handler))
-        self.controls.append(TextButton("Modify item on this list", icon=icons.SCREEN_ROTATION_ALT, on_click=self.modify_items_handler))
+        self.controls.append(TextButton("Agregar Elemento", icon=icons.ADD, on_click=self.add_item_handler))
+        self.controls.append(TextButton("Eliminar elementos de esta lista", icon=icons.DELETE_FOREVER, on_click=self.delete_items_handler))
+        self.controls.append(TextButton("Modificar elemento de esta lista", icon=icons.SCREEN_ROTATION_ALT, on_click=self.modify_items_handler))
         self.controls.append(self.items)
         self.controls.append(self.end_indicator)
 
@@ -110,12 +110,12 @@ class ItemList(UserControl):
 
     def modify_item(self):
         if len(self.items.controls) == 0:
-            print("No items to modify")
+            print("No hay elemento para modificar")
         elif len(self.items.controls) == 1:
-            print("correct number of items to modify")
-            print("but... wrong way xd")
+            print("Numero correcto de elementos para modificar")
+            print("pero... metodo incorrecto xd")
         else:
-            print("Too many items on board")
+            print("Demasiados elementos en la lista")
         self.view.update()
 
     def add_item(self, item_texts: list = None, chosen_control: Draggable = None, swap_control: Draggable = None, color=""):
@@ -135,20 +135,20 @@ class ItemList(UserControl):
 
         # rearrange (i.e. drag drop from same list)
         if ((from_index is not None) and (to_index is not None)):
-            print("rearrange: ", to_index, from_index)
+            #print("reordenamiento: ", to_index, from_index)
             self.items.controls.insert(to_index, self.items.controls.pop(from_index))
             self.set_indicator_opacity(swap_control, 0.0)
 
         # insert (drag from other list to middle of this list)
         elif (to_index is not None):
-            print("insert: ", to_index)
+            #print("insertado: ", to_index)
             new_item = Item(self, item_texts, color)
             control_to_add.controls.append(new_item.view)
             self.items.controls.insert(to_index, control_to_add)
 
         # add new (drag from other list to end of this list, or use add item button)
         else:
-            # print("create")
+            # print("creado")
             new_item = Item(self, item_texts, color)
             control_to_add.controls.append(new_item.view)
             self.items.controls.append(control_to_add)
@@ -221,7 +221,7 @@ class ItemList_Creator(ItemList):
         self.controls.append(self.item_name[1])
         self.controls.append(self.item_name[2])
         self.controls.append(self.item_name[3])
-        self.controls.append(TextButton("Add Item", icon=icons.ADD, on_click=self.add_item_handler))
+        self.controls.append(TextButton("Agregar elemento", icon=icons.ADD, on_click=self.add_item_handler))
         self.controls.append(self.items)
         self.controls.append(self.end_indicator)
 
@@ -242,20 +242,20 @@ class ItemList_Creator(ItemList):
 
         # rearrange (i.e. drag drop from same list)
         if ((from_index is not None) and (to_index is not None)):
-            print("rearrange GENERAL: ", to_index, from_index)
+            #print("reordenamiento GENERAL: ", to_index, from_index)
             self.items.controls.insert(to_index, self.items.controls.pop(from_index))
             self.set_indicator_opacity(swap_control, 0.0)
 
         # insert (drag from other list to middle of this list)
         elif (to_index is not None):
-            print("insert GENERAL: ", to_index)
+            #print("insertado GENERAL: ", to_index)
             new_item = Item(self, item_texts, color)
             control_to_add.controls.append(new_item.view)
             self.items.controls.insert(to_index, control_to_add)
 
         # add new (drag from other list to end of this list, or use add item button)
         else:
-            print("add new GENERAL: ", item_texts)
+            #print("nuevo elemento GENERAL: ", item_texts)
             if ((item_texts is not None) and (item_texts != [])):
                 new_item = Item(self, item_texts, color)
             else:
@@ -273,7 +273,7 @@ class ItemList_Creator(ItemList):
 class ItemList_Remover(ItemList):
     def init_controls(self):
         self.controls = [
-            TextButton("Delete Items on this list", icon=icons.DELETE_FOREVER, on_click=self.delete_items_handler, width=250),
+            TextButton("Eliminar elementos de esta lista", icon=icons.DELETE_FOREVER, on_click=self.delete_items_handler, width=250),
             self.items,
             self.end_indicator
         ]
@@ -294,19 +294,19 @@ class ItemList_Modifier(ItemList):
         self.controls.append(self.item_name[1])
         self.controls.append(self.item_name[2])
         self.controls.append(self.item_name[3])
-        self.controls.append(TextButton("Modify item on this list", icon=icons.SCREEN_ROTATION_ALT, on_click=None, width=250, disabled=True)),
-        self.controls.append(TextButton("Confirm Modification", icon=icons.SCREEN_ROTATION_ALT, on_click=self.modify_items_handler, width=250)),
+        self.controls.append(TextButton("Modificar elemento de esta lista", icon=icons.SCREEN_ROTATION_ALT, on_click=None, width=250, disabled=True)),
+        self.controls.append(TextButton("Confirmar Modificacion", icon=icons.SCREEN_ROTATION_ALT, on_click=self.modify_items_handler, width=250)),
         self.controls.append(self.item_name[4])
         self.controls.append(self.items),
         self.controls.append(self.end_indicator)
 
     def modify_item(self):
         if len(self.items.controls) == 0:
-            print("No items to modify")
-            self.item_name[4].value = "No items to modify"
+            #print("No hay elementos para modificar")
+            self.item_name[4].value = "No hay elementos para modificar"
         elif len(self.items.controls) == 1:
-            print("correct number of items to modify")
-            print("AND... CORRECT way xd")
+            #print("Numero correcto de elementos para modificar")
+            #print("y... metodo correcto xd")
             # self.item_name[0].value = self.items.controls[0].controls
             # self.item_name[1].value = self.items.controls[0].controls[1].content.content.content.content.controls[1].value
             # self.item_name[2].value = self.items.controls[0].controls[1].content.content.content.content.controls[2].value
@@ -323,10 +323,10 @@ class ItemList_Modifier(ItemList):
             self.item_name[1].value = ""
             self.item_name[2].value = ""
             self.item_name[3].value = ""
-            self.item_name[4].value = "Modified Successfully"
+            self.item_name[4].value = "Se ha modificado exitosamente"
         else:
-            print("Too many items on board")
-            self.item_name[4].value = "Too many items on board"
+            #print("Demasiados elementos en la lista")
+            self.item_name[4].value = "Demasiados elementos en la lista"
         self.view.update()
 
 

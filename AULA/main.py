@@ -61,8 +61,7 @@ def main(page: ft.Page):
         return dicc_semana
     
     def crear_visualizacion_horarios(carrera, edificio, aula):
-        dias = [" ", "Lunes", "Martes", "Miercoles",
-                "Jueves", "Viernes", "Sabado", "Domingo"]
+        dias = [" ", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
         intervalos_horarios = create_calendar_hours_intervals(8, 24)
 
         # listado con la siguiente estructura [aula, materia, {comienzo} , {fin}, profesores]
@@ -830,6 +829,7 @@ def main(page: ft.Page):
         on_tap=handle_tap,
         controls=listas_busquedas["search_bar_edificio"],
     )
+
 
     columns_search_bars = ft.Column(
         controls=[
