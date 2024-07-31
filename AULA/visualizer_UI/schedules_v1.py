@@ -100,7 +100,7 @@ class ItemList(UserControl):
         return self.view
 
     def get_items(self):
-        print(self.items_info_pura)
+        return self.items_info_pura
 
     def add_item_handler(self, e):
         self.add_item()
@@ -226,10 +226,10 @@ class ItemList_Days(ItemList):
 class ItemList_Creator(ItemList):
     def create_item_name_field(self):
         aux = []
+        aux.append(TextField(label="Aula", width=250, height=50, bgcolor=colors.WHITE))
         aux.append(TextField(label="Materia", width=250, height=50, bgcolor=colors.WHITE))
         aux.append(TextField(label="Horario", width=250, height=50, bgcolor=colors.WHITE))
         aux.append(TextField(label="Profesor", width=250, height=50, bgcolor=colors.WHITE))
-        aux.append(TextField(label="Tipo de clase", width=250, height=50, bgcolor=colors.WHITE))
         return aux
 
     def init_controls(self):
@@ -302,10 +302,10 @@ class ItemList_Remover(ItemList):
 class ItemList_Modifier(ItemList):
     def create_item_name_field(self):
         aux = []
+        aux.append(TextField(label="Aula", width=250, height=50, bgcolor=colors.WHITE))
         aux.append(TextField(label="Materia", width=250, height=50, bgcolor=colors.WHITE))
         aux.append(TextField(label="Horario", width=250, height=50, bgcolor=colors.WHITE))
         aux.append(TextField(label="Profesor", width=250, height=50, bgcolor=colors.WHITE))
-        aux.append(TextField(label="Tipo de clase", width=250, height=50, bgcolor=colors.WHITE))
         aux.append(Text("------------"))
         return aux
     

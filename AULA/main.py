@@ -122,11 +122,11 @@ def main(page: ft.Page):
             for materia in materias_asignadas[clave]:
                 aux_fila = materia[2]
                 aux_num = int(aux_fila) - 8
-                # column_visualizer.controls[1].controls[0].rows[aux_num].cells[i].content.add_item([materia[0],
-                #                                                                                    materia[1],
-                #                                                                                    f"{materia[2]} a {materia[3]}",
-                #                                                                                    materia[4],], "green")
-                #print(column_visualizer.controls[1].controls[0].rows[aux_num].cells[i].content.items.controls)
+                column_visualizer.controls[1].controls[0].rows[aux_num].cells[i].content.add_item([materia[0],
+                                                                                                   materia[1],
+                                                                                                   f"{materia[2]} a {materia[3]}",
+                                                                                                   materia[4],], "green")
+                print(column_visualizer.controls[1].controls[0].rows[aux_num].cells[i].content.items.controls)
             i +=1
 
         container_horarios.content = column_visualizer
@@ -811,15 +811,22 @@ def main(page: ft.Page):
         controls=listas_busquedas["search_bar_edificio"],
     )
 
-    def get_items_viernes(container_vista):
+    def get_items_all_week(container_vista):
+        result = []
         for i in range(len(container_vista.content.controls[1].content.controls[1].controls[0].rows)):
-            container_vista.content.controls[1].content.controls[1].controls[0].rows[i].cells[5].content.get_items()
+            day = []
+            for j in range(1, len(container_vista.content.controls[1].content.controls[1].controls[0].rows[i].cells) - 1):
+                day.append(container_vista.content.controls[1].content.controls[1].controls[0].rows[i].cells[j].content.get_items())
+            result.append(day)
         print("###########################################")
+        print(result)
+        print("###########################################")
+        return result
 
     btn_grabar_de_tarjetas_a_base = ft.TextButton(
         "Grabar Tarjetas actules en la Base de Datos",
         #disabled=True,
-        on_click=lambda _: get_items_viernes(container_vista_horarios))
+        on_click=lambda _: get_items_all_week(container_vista_horarios))
         #on_click=lambda _: print("Grabar tarjetas [hacer función]"))
 
     columns_search_bars = ft.Column(
