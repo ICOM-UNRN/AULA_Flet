@@ -58,15 +58,14 @@ def main():
                 # Acceder a profesores por materia
                 for p in profesores_por_materia['rows']:
                     if p[columnas_profesores_por_materia.index('id_materia')] == materia_id:
-                        profesor_en_db = profesor_db.get_profesor(
-                            id=p[columnas_profesores_por_materia.index('id_profesor')])
+                        profesor_en_db = profesor_db.get_profesor(id=p[columnas_profesores_por_materia.index('id_profesor')])
                         profesor_en_db_columns = profesor_en_db["columns"]
-                        nombre_profesor = profesor_en_db['rows'][0][profesor_en_db_columns.index(
-                            'nombre')]
+                        nombre_profesor = profesor_en_db['rows'][0][profesor_en_db_columns.index('nombre')]
                         profesores_materia.append(nombre_profesor)
                 materia_dict['profesores'] = profesores_materia.copy()
                 materias2.append(materia_dict)
                 profesores_materia.clear()
+            materias = materias2
         else:
             print(f"Advertencia: Formato inesperado de materias: {
                   type(materias)}")
