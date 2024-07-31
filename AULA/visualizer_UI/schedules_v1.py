@@ -37,6 +37,7 @@ class ItemList(UserControl):
             run_spacing=10,
             width=250
         )
+        self.items_info_pura = []
         self.end_indicator = self.create_end_indicator()
         self.item_name = self.create_item_name_field()
         self.view = ft.Container()
@@ -98,12 +99,17 @@ class ItemList(UserControl):
         )
         return self.view
 
+    def get_items(self):
+        print(self.items_info_pura)
+
     def add_item_handler(self, e):
         self.add_item()
 
     def delete_items_handler(self, e):
         self.items.controls = []
         self.view.update()
+
+        self.items_info_pura = []
 
     def modify_items_handler(self, e):
         self.modify_item()
@@ -146,12 +152,16 @@ class ItemList(UserControl):
             control_to_add.controls.append(new_item.view)
             self.items.controls.insert(to_index, control_to_add)
 
+            self.items_info_pura.append(item_texts)
+
         # add new (drag from other list to end of this list, or use add item button)
         else:
             # print("creado")
             new_item = Item(self, item_texts, color)
             control_to_add.controls.append(new_item.view)
             self.items.controls.append(control_to_add)
+
+            self.items_info_pura.append(item_texts)
 
     def set_indicator_opacity(self, item, opacity):
         controls_list = [x.controls[1] for x in self.items.controls]
@@ -162,6 +172,13 @@ class ItemList(UserControl):
         controls_list = [x.controls[1] for x in self.items.controls]
         del self.items.controls[controls_list.index(item)]
         self.view.update()
+
+        found = False
+        for i in range(len(self.items_info_pura)):
+            if (not found) and self.items_info_pura[i] == item.data.item_texts:
+                self.items_info_pura.pop(i)
+                found = True
+
 
     def drag_accept(self, e):
         src = self.page.get_control(e.src_id)
@@ -253,6 +270,8 @@ class ItemList_Creator(ItemList):
             control_to_add.controls.append(new_item.view)
             self.items.controls.insert(to_index, control_to_add)
 
+            self.items_info_pura.append(item_texts)
+
         # add new (drag from other list to end of this list, or use add item button)
         else:
             #print("nuevo elemento GENERAL: ", item_texts)
@@ -266,6 +285,8 @@ class ItemList_Creator(ItemList):
                 new_item = Item(self, aux, color)
             control_to_add.controls.append(new_item.view)
             self.items.controls.append(control_to_add)
+
+            self.items_info_pura.append(item_texts)
 
         self.view.update()
         self.page.update()
@@ -433,10 +454,17 @@ def main(page: ft.Page):
     removedor = ItemList_Remover(page, "ItemList_removedor")
     modificador = ItemList_Modifier(page, "ItemList_modoficador")
 
+    def get_items_viernes(page):
+        for i in range(len(page.controls[0].controls[0].controls[1].controls[0].rows)):
+            page.controls[0].controls[0].controls[1].controls[0].rows[i].cells[5].content.get_items()
+        print("###########################################")
+
+    btn_tester = TextButton("JUST DO IT... please :^/", on_click=lambda _:get_items_viernes())
+
     page.add(
             Column([
                 Row([
-                    Column([creador, removedor, modificador]),
+                    Column([btn_tester, creador, removedor, modificador]),
                     Column([
                         ft.DataTable(
                             columns=create_calendar_table_headers_first_row(dias),
@@ -488,6 +516,15 @@ def main(page: ft.Page):
         #     else:
         #         print(j.content.value)
         print("-----------------------")
+    
+    page.controls[0].controls[0].controls[1].controls[0].rows[1].cells[5].content.add_item(items[1][0], color=items[1][1])
+    page.controls[0].controls[0].controls[1].controls[0].rows[1].cells[5].content.view.update()
+
+    for i in range(len(page.controls[0].controls[0].controls[1].controls[0].rows)):
+        if items[i][0] != [""]:
+            page.controls[0].controls[0].controls[1].controls[0].rows[i].cells[5].content.get_items()
+    print("###########################################")
+
 
 if __name__ == "__main__":
     ft.app(target=main)

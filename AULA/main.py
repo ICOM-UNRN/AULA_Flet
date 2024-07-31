@@ -101,15 +101,23 @@ def main(page: ft.Page):
         )
 
         # {lunes: [...], martes: [...], ...}
+
+        column_visualizer.controls[1].controls[0].rows[1].cells[2].content.add_item([materias_asignadas["Martes"][0][0],
+                                                                                    materias_asignadas["Martes"][0][1],
+                                                                                    f"{materias_asignadas["Martes"][0][2]} a {materias_asignadas["Martes"][0][3]}",
+                                                                                    materias_asignadas["Martes"][0][4],], "green")
+        #print(column_visualizer.controls[1].controls[0].rows[1].cells[2].content.items.controls[0].controls)
+
         i = 1
         for clave in materias_asignadas:
             for materia in materias_asignadas[clave]:
                 aux_fila = materia[2]
                 aux_num = int(aux_fila) - 8
-                column_visualizer.controls[1].controls[0].rows[aux_num].cells[i].content.add_item([materia[0],
-                                                                                                   materia[1],
-                                                                                                   f"{materia[2]} a {materia[3]}",
-                                                                                                   materia[4],], "green")
+                # column_visualizer.controls[1].controls[0].rows[aux_num].cells[i].content.add_item([materia[0],
+                #                                                                                    materia[1],
+                #                                                                                    f"{materia[2]} a {materia[3]}",
+                #                                                                                    materia[4],], "green")
+                #print(column_visualizer.controls[1].controls[0].rows[aux_num].cells[i].content.items.controls)
             i +=1
 
         container_horarios.content = column_visualizer
@@ -830,12 +838,22 @@ def main(page: ft.Page):
         controls=listas_busquedas["search_bar_edificio"],
     )
 
+    def get_items_viernes(container_vista):
+        for i in range(len(container_vista.content.controls[1].content.controls[1].controls[0].rows)):
+            container_vista.content.controls[1].content.controls[1].controls[0].rows[i].cells[5].content.get_items()
+        print("###########################################")
+
+    btn_grabar_de_tarjetas_a_base = ft.TextButton(
+        "Grabar Tarjetas actules en la Base de Datos",
+        #disabled=True,
+        on_click=lambda _: get_items_viernes(container_vista_horarios))
+        #on_click=lambda _: print("Grabar tarjetas [hacer función]"))
 
     columns_search_bars = ft.Column(
         controls=[
             ft.Row(alignment=ft.MainAxisAlignment.SPACE_BETWEEN,controls=[search_bar_carrera, btn_ordenar_auto]),
             ft.Row(controls=[search_bar_edificio, search_bar_aula]),
-            ft.Row(controls=[ft.TextButton("Grabar Tarjetas en la Base de Datos", disabled=True, )])
+            ft.Row(controls=[btn_grabar_de_tarjetas_a_base])
         ]
     )
 
