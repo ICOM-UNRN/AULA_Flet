@@ -432,8 +432,6 @@ def main(page: ft.Page):
         elif route == "/asignaciones":
             container_main_window.offset = ft.Offset(0, 0)
             data_all_asignaciones = asignacion_db.get_asignaciones()
-            if "id_" in data_all_asignaciones["columns"]:
-                traducir_ids(data_all_asignaciones)
             bottom_sheet_asignaciones = DeleteModifyForm(
                 fields_labels=data_all_asignaciones["columns"],
                 fields_types=get_types()
