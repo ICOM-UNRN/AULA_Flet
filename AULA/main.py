@@ -25,8 +25,17 @@ def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.theme_mode = ft.ThemeMode.DARK
 
+    # VARIABLES DE LA BASE DE DATOS
     db = connect_to_db()
-
+    asignacion_db = Asignacion(conn=db)
+    aula_db = Aula(conn=db)
+    edificio_db = Edificio(conn=db)
+    evento_db = Evento(conn=db)
+    materia_db = Materia(conn=db)
+    profesor_db = Profesor(conn=db)
+    profesor_por_materia_db = Profesor_por_materia(conn=db)
+    recurso_db = Recurso(conn=db)
+    recurso_por_aula_db = Recurso_por_aula(conn=db)
 
     ###################################################################################
     #                                  CARGAR ARCHIVOS                                #
@@ -42,7 +51,7 @@ def main(page: ft.Page):
     #                                FUNC VER HORARIOS                                #
     ###################################################################################
     def obtener_asignaciones_materias_formateadas(carrera, edificio, aula) -> dict:
-        asignaciones = Asignacion(db).get_materias_eventos_asignados(carrera, edificio, aula)
+        asignaciones = asignacion_db.get_materias_eventos_asignados(carrera, edificio, aula)
         datos = asignaciones["rows"]
         dicc_semana = {
             "Lunes": [],
@@ -59,7 +68,7 @@ def main(page: ft.Page):
                 dicc_semana[linea[4]].append([linea[0],linea[1], linea[5]+(delta_horario-1), linea[5]+delta_horario, linea[3]])
                 delta_horario -= 1
         return dicc_semana
-    
+
     def crear_visualizacion_horarios(carrera, edificio, aula):
         dias = [" ", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
         intervalos_horarios = create_calendar_hours_intervals(8, 24)
@@ -118,19 +127,19 @@ def main(page: ft.Page):
         page.update()
 
     def load_search_bars():
-        carreras = Materia(db).get_carreras()["rows"]
-        edificios = Edificio(db).get_edificios()["rows"]
-        aulas = Aula(db).get_aulas()["rows"]
+        carreras = materia_db.get_carreras()["rows"]
+        edificios = edificio_db.get_edificios()["rows"]
+        aulas = aula_db.get_aulas()["rows"]
 
         for carrera in carreras:
             listas_busquedas["search_bar_carrera"].append(ft.ListTile(
                 title=ft.Text(carrera[0]), on_click=close_search_bar_carrera))
-        for edificio in edificios:
+        for data_edificio in edificios:
             listas_busquedas["search_bar_edificio"].append(ft.ListTile(
-                title=ft.Text(edificio[1]), on_click=close_search_bar_edifico))
-        for aula in aulas:
+                title=ft.Text(data_edificio[1]), on_click=close_search_bar_edifico))
+        for data_aula in aulas:
             listas_busquedas["search_bar_aula"].append(ft.ListTile(
-                title=ft.Text(aula[2]), on_click=close_search_bar_aula))
+                title=ft.Text(data_aula[2]), on_click=close_search_bar_aula))
 
     def close_search_bar_edifico(e):
         text = f"{e.control.title.value}"
@@ -211,40 +220,31 @@ def main(page: ft.Page):
         bottom_sheet = page.session.get("actual_form")
         data = bottom_sheet.get_fields_actual_data()
         if route == "/asignaciones":
-            asignacion = Asignacion(db)
-            asignacion.update_asignacion(
+            asignacion_db.update_asignacion(
                 id=data[0], aula=data[1], materia=data[2], evento=data[3], dia=data[4], comienzo=data[5], fin=data[6])
         elif route == "/aulas":
-            aula = Aula(db)
-            aula.update_aula(id=data[0], nombre=data[2],
+            aula_db.update_aula(id=data[0], nombre=data[2],
                              edificio=data[1], capacidad=data[3])
         elif route == "/edificios":
-            edificio = Edificio(db)
-            edificio.update_edificio(
-                id=data[0], nombre=data[1], calle=data[2], altura=data[3])
+            edificio_db.update_edificio(
+                id=data[0], nombre=data[1], direccion=data[2], altura=data[3])
         elif route == "/eventos":
-            evento = Evento(db)
-            evento.update_evento(
+            evento_db.update_evento(
                 id=data[0], nombre=data[1], descripcion=data[2], comienzo=data[3], fin=data[4])
         elif route == "/materias":
-            materia = Materia(db)
-            materia.update_materia(id=data[0], codigo_guarani=data[1], carrera=data[2], nombre=data[3], anio=data[4],
+            materia_db.update_materia(id=data[0], codigo_guarani=data[1], carrera=data[2], nombre=data[3], anio=data[4],
                                    cuatrimestre=data[5], taxonomia=data[6], horas_semanales=data[7], comisiones=data[8], alumnos_esperados=data[9])
         elif route == "/profesores":
-            profesor = Profesor(db)
-            profesor.update_profesor(
+            profesor_db.update_profesor(
                 data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8])
         elif route == "/profesores_por_materia":
-            profesor_por_materia = Profesor_por_materia(db)
-            profesor_por_materia.update_profesor_por_materia(
+            profesor_por_materia_db.update_profesor_por_materia(
                 id_materia=data[0], id_profesor=data[1], alumnos_esperados=data[2], tipo_clase=data[3], archivo=data[4])
         elif route == "/recursos":
-            recurso = Recurso(db)
-            recurso.update_recurso(
+            recurso_db.update_recurso(
                 id=data[0], nombre=data[1], descripcion=data[2])
         elif route == "/recursos_por_aula":
-            recurso_por_aula = Recurso_por_aula(db)
-            recurso_por_aula.update_recurso_por_aula(
+            recurso_por_aula_db.update_recurso_por_aula(
                 id_aula=data[0], id_recurso=data[1], cantidad=data[2])
 
         route_change(page)
@@ -255,33 +255,24 @@ def main(page: ft.Page):
         route = page.route
         data = page.session.get("actual_form").get_fields_data()
         if route == "/asignaciones":
-            asignacion = Asignacion(db)
-            asignacion.delete_asignacion(id=data[0])
+            asignacion_db.delete_asignacion(id=data[0])
         elif route == "/aulas":
-            aula = Aula(db)
-            aula.delete_aula(id=data[0])
+            aula_db.delete_aula(id=data[0])
         elif route == "/edificios":
-            edificio = Edificio(db)
-            edificio.delete_edificio(id=data[0])
+            edificio_db.delete_edificio(id=data[0])
         elif route == "/eventos":
-            evento = Evento(db)
-            evento.delete_evento(id=data[0])
+            evento_db.delete_evento(id=data[0])
         elif route == "/materias":
-            materia = Materia(db)
-            materia.delete_materia(id=data[0])
+            materia_db.delete_materia(id=data[0])
         elif route == "/profesores":
-            profesor = Profesor(db)
-            profesor.delete_profesor(id=data[0])
+            profesor_db.delete_profesor(id=data[0])
         elif route == "/profesores_por_materia":
-            profesor_por_materia = Profesor_por_materia(db)
-            profesor_por_materia.delete_profesor_por_materia(
+            profesor_por_materia_db.delete_profesor_por_materia(
                 id_materia=data[0], id_profesor=data[1])
         elif route == "/recursos":
-            recurso = Recurso(db)
-            recurso.delete_recurso(id=data[0])
+            recurso_db.delete_recurso(id=data[0])
         elif route == "/recursos_por_aula":
-            recurso_por_aula = Recurso_por_aula(db)
-            recurso_por_aula.delete_recurso_por_aula(
+            recurso_por_aula_db.delete_recurso_por_aula(
                 id_aula=data[0], id_recurso=data[1])
 
         route_change(page)
@@ -293,38 +284,29 @@ def main(page: ft.Page):
         bottom_sheet = page.session.get("actual_form")
         data = bottom_sheet.get_fields_actual_data()
         if route == "/asignaciones":
-            asignacion = Asignacion(db)
-            asignacion.insert_asignacion(
+            asignacion_db.insert_asignacion(
                 data[0], data[3], data[4], data[5], data[1], data[2])
         elif route == "/aulas":
-            aula = Aula(db)
-            aula.insert_aula(data[0], data[1], data[2])
+            aula_db.insert_aula(data[0], data[1], data[2])
         elif route == "/edificios":
-            edificio = Edificio(db)
-            edificio.insert_edificio(
+            edificio_db.insert_edificio(
                 nombre=data[0], direccion=data[1], altura=data[2])
         elif route == "/eventos":
-            evento = Evento(db)
-            evento.insert_evento(
+            evento_db.insert_evento(
                 nombre=data[0], descripcion=data[1], comienzo=data[2], fin=data[3])
         elif route == "/materias":
-            materia = Materia(db)
-            materia.insert_materia(codigo_guarani=data[0], carrera=data[1], nombre=data[2], anio=data[3], cuatrimestre=data[4],
+            materia_db.insert_materia(codigo_guarani=data[0], carrera=data[1], nombre=data[2], anio=data[3], cuatrimestre=data[4],
                                    taxonomia=data[5], horas_semanales=data[6], comisiones=data[7], alumnos_esperados=data[8])
         elif route == "/profesores":
-            profesor = Profesor(db)
-            profesor.insert_profesor(
+            profesor_db.insert_profesor(
                 data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7])
         elif route == "/profesores_por_materia":
-            profesor_por_materia = Profesor_por_materia(db)
-            profesor_por_materia.insert_profesor_por_materia(
+            profesor_por_materia_db.insert_profesor_por_materia(
                 materia=data[0], profesor=data[1], cant_alumnos=data[2], tipo_clase=data[3], activo=data[4])
         elif route == "/recursos":
-            recurso = Recurso(db)
-            recurso.insert_recurso(nombre=data[0], descripcion=data[1])
+            recurso_db.insert_recurso(nombre=data[0], descripcion=data[1])
         elif route == "/recursos_por_aula":
-            recurso_por_aula = Recurso_por_aula(db)
-            recurso_por_aula.insert_recurso_por_aula(
+            recurso_por_aula_db.insert_recurso_por_aula(
                 id_aula=data[0], id_recurso=data[1], cantidad=data[2])
 
         route_change(page)
@@ -334,7 +316,7 @@ def main(page: ft.Page):
         form = page.session.get("actual_form")
         form.build()
         textos_y_botones = form.get_fields_controls()
-        if page.route != "/profesores_por_materia" and page.route != "/recursos_por_aula":
+        if page.route not in ('/profesores_por_materia', '/recursos_por_aula'):
             textos_y_botones.pop(0)  # remove id field
         textos_y_botones.append(
             ft.Row(
@@ -449,8 +431,9 @@ def main(page: ft.Page):
             page.update()
         elif route == "/asignaciones":
             container_main_window.offset = ft.Offset(0, 0)
-            asignacion = Asignacion(conn=db)
-            data_all_asignaciones = asignacion.get_asignaciones()
+            data_all_asignaciones = asignacion_db.get_asignaciones()
+            if "id_" in data_all_asignaciones["columns"]:
+                traducir_ids(data_all_asignaciones)
             bottom_sheet_asignaciones = DeleteModifyForm(
                 fields_labels=data_all_asignaciones["columns"],
                 fields_types=get_types()
@@ -471,8 +454,7 @@ def main(page: ft.Page):
             page.update()
         elif route == "/aulas":
             container_main_window.offset = ft.Offset(0, 0)
-            aula = Aula(conn=db)
-            data_all_aulas = aula.get_aulas()
+            data_all_aulas = aula_db.get_aulas()
             bottom_sheet_aulas = DeleteModifyForm(
                 fields_labels=data_all_aulas["columns"],
                 fields_types=get_types()
@@ -493,8 +475,7 @@ def main(page: ft.Page):
             page.update()
         elif route == "/edificios":
             container_main_window.offset = ft.Offset(0, 0)
-            edificio = Edificio(conn=db)
-            data_all_edificios = edificio.get_edificios()
+            data_all_edificios = edificio_db.get_edificios()
             bottom_sheet_edificio = DeleteModifyForm(
                 fields_labels=data_all_edificios["columns"],
                 fields_types=get_types()
@@ -515,8 +496,7 @@ def main(page: ft.Page):
             page.update()
         elif route == "/eventos":
             container_main_window.offset = ft.Offset(0, 0)
-            evento = Evento(conn=db)
-            data_all_eventos = evento.get_eventos()
+            data_all_eventos = evento_db.get_eventos()
             bottom_sheet_evento = DeleteModifyForm(
                 fields_labels=data_all_eventos["columns"],
                 fields_types=get_types()
@@ -537,8 +517,7 @@ def main(page: ft.Page):
             page.update()
         elif route == "/materias":
             container_main_window.offset = ft.Offset(0, 0)
-            materia = Materia(conn=db)
-            data_all_materias = materia.get_materias()
+            data_all_materias = materia_db.get_materias()
             bottom_sheet_asignacion = DeleteModifyForm(
                 fields_labels=data_all_materias["columns"],
                 fields_types=get_types()
@@ -561,8 +540,7 @@ def main(page: ft.Page):
             page.update()
         elif route == "/profesores":
             container_main_window.offset = ft.Offset(0, 0)
-            profesor = Profesor(conn=db)
-            data_all_profesores = profesor.get_profesores()
+            data_all_profesores = profesor_db.get_profesores()
             bottom_sheet_profesor = DeleteModifyForm(
                 fields_labels=data_all_profesores["columns"],
                 fields_types=get_types()
@@ -584,8 +562,7 @@ def main(page: ft.Page):
             page.update()
         elif route == "/profesor por materia":
             container_main_window.offset = ft.Offset(0, 0)
-            profesor_por_materia = Profesor_por_materia(conn=db)
-            data_all_profesores_por_materias = profesor_por_materia.get_profesores_por_materia()
+            data_all_profesores_por_materias = profesor_por_materia_db.get_profesores_por_materia()
             bottom_sheet_profesor_por_materia = DeleteModifyForm(
                 fields_labels=data_all_profesores_por_materias["columns"],
                 fields_types=get_types()
@@ -607,8 +584,7 @@ def main(page: ft.Page):
             page.update()
         elif route == "/recursos":
             container_main_window.offset = ft.Offset(0, 0)
-            recurso = Recurso(conn=db)
-            data_all_recursos = recurso.get_recursos()
+            data_all_recursos = recurso_db.get_recursos()
             bottom_sheet_recursos = DeleteModifyForm(
                 fields_labels=data_all_recursos["columns"],
                 fields_types=get_types()
@@ -629,8 +605,7 @@ def main(page: ft.Page):
             page.update()
         elif route == "/recursos por aula":
             container_main_window.offset = ft.Offset(0, 0)
-            recurso_por_aula = Recurso_por_aula(conn=db)
-            data_all_recursos_por_aulas = recurso_por_aula.get_recursos_por_aula()
+            data_all_recursos_por_aulas = recurso_por_aula_db.get_recursos_por_aula()
             bottom_sheet_recurso_por_aula = DeleteModifyForm(
                 fields_labels=data_all_recursos_por_aulas["columns"],
                 fields_types=get_types()
