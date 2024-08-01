@@ -113,7 +113,7 @@ def main(page: ft.Page):
 
         column_visualizer.controls[1].controls[0].rows[1].cells[2].content.add_item([materias_asignadas["Martes"][0][0],
                                                                                     materias_asignadas["Martes"][0][1],
-                                                                                    f"{materias_asignadas["Martes"][0][2]} a {materias_asignadas["Martes"][0][3]}",
+                                                                                    f"{materias_asignadas['Martes'][0][2]} a {materias_asignadas['Martes'][0][3]}",
                                                                                     materias_asignadas["Martes"][0][4],], "green")
         #print(column_visualizer.controls[1].controls[0].rows[1].cells[2].content.items.controls[0].controls)
 
@@ -408,7 +408,6 @@ def main(page: ft.Page):
         types = []
         number = get_filter_tuple("number")
         text = get_filter_tuple(None)
-        datetime = get_filter_tuple("datetime")
         if route == "/asignaciones":
             types = [number, number, number, number, text, number, number]
         elif route == "/aulas":

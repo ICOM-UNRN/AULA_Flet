@@ -98,9 +98,14 @@ class Dashboard(ft.Container):
 
     # TODO: Hacer que solo filtre las filas
     def __input_changed(self, e):
+        search_filter = e.control.value.lower()
+        filtered_rows = [row for row in self.dashboard_data["rows"] if any(search_filter in str(cell).lower() for cell in row)]
+        self.data_table.table_rows.clear()
+        self.data_table.setRows(filtered_rows)
+        self.data_table.update()
         # search_filter= e.control.value
         # filtered_rows = list(filter(lambda x: search_filter in x, self.data_table.getRows()))
-        pass
+        #pass
 
 def main(page : ft.Page):
     page.title = "Dashboard" 
