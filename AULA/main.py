@@ -812,14 +812,20 @@ def main(page: ft.Page):
     )
 
     def get_items_all_week(container_vista):
+        day_name = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
         result = []
         for i in range(len(container_vista.content.controls[1].content.controls[1].controls[0].rows)):
             day = []
-            for j in range(1, len(container_vista.content.controls[1].content.controls[1].controls[0].rows[i].cells) - 1):
-                day.append(container_vista.content.controls[1].content.controls[1].controls[0].rows[i].cells[j].content.get_items())
+            for j in range(1, len(container_vista.content.controls[1].content.controls[1].controls[0].rows[i].cells)):
+                aux = container_vista.content.controls[1].content.controls[1].controls[0].rows[i].cells[j].content.get_items()
+                for item in aux:
+                    day.append([day_name[j-1], item])
             result.append(day)
         print("###########################################")
-        print(result)
+        for i in result:
+            for j in i:
+                print(j)
+            print("--- fin fila ---")
         print("###########################################")
         return result
 
