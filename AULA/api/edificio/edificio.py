@@ -20,12 +20,16 @@ class Edificio():
             print(f"Error al obtener edificios: {e}")
             return None
 
-    def get_edificio(self, nombre):
+    def get_edificio(self, id):
         try:
-            self.cursor.callproc("get_edificio", [nombre])
-            result = self.cursor.fetchall()
-            self.conn.commit()
-            return result
+            self.cursor.callproc("get_edificio", [id])
+            columns = [descr.name for descr in self.cursor.description]
+            rows = [row for row in self.cursor.fetchall()]
+            data = {
+                "columns": columns,
+                "rows": rows
+            }
+            return data
         except Exception as e:
             print(f"Error al obtener edificio: {e}")
             return None

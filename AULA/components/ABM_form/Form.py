@@ -124,7 +124,12 @@ class DeleteModifyForm(ft.UserControl):
         """Returns a list of each control updated TextField data"""
         result = []
         for field in self.fields_controls:
-            if field.__class__ in (ft.TextField, ft.Dropdown):
+            if field.__class__ == ft.TextField:
+                if field.data == None:
+                    result.append(field.value)
+                else:
+                    result.append(field.data)
+            elif field.__class__ == ft.Dropdown:
                 result.append(field.value)
         return result
 

@@ -32,7 +32,10 @@ class DataTableCustom():
         if (func is not None) and (e.control.selected):
             values = []
             for cell in e.control.cells:
-                values.append(cell.content.value)
+                if cell.content.data == None:
+                    values.append(cell.content.value)
+                else:
+                    values.append(cell.content.data)
             e.control.update()
             func(values)
         e.control.update()

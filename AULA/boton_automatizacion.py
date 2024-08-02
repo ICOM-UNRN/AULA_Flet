@@ -42,6 +42,7 @@ def main():
         materias = materia_db.get_materias()
         profesores = profesor_db.get_profesores()['rows']
         profesores_por_materia = profesor_por_materia_db.get_profesores_por_materia()
+        asignaciones = asignacion_db.get_asignaciones()
 
         if not profesores_por_materia:
             print("No se pudieron obtener los profesores por materia.")
@@ -58,9 +59,11 @@ def main():
                 # Acceder a profesores por materia
                 for p in profesores_por_materia['rows']:
                     if p[columnas_profesores_por_materia.index('id_materia')] == materia_id:
-                        profesor_en_db = profesor_db.get_profesor(id=p[columnas_profesores_por_materia.index('id_profesor')])
+                        profesor_en_db = profesor_db.get_profesor(
+                            id=p[columnas_profesores_por_materia.index('id_profesor')])
                         profesor_en_db_columns = profesor_en_db["columns"]
-                        nombre_profesor = profesor_en_db['rows'][0][profesor_en_db_columns.index('nombre')]
+                        nombre_profesor = profesor_en_db['rows'][0][profesor_en_db_columns.index(
+                            'nombre')] + ' ' + profesor_en_db['rows'][0][profesor_en_db_columns.index('apellido')]
                         profesores_materia.append(nombre_profesor)
                 materia_dict['profesores'] = profesores_materia.copy()
                 materias2.append(materia_dict)
@@ -83,16 +86,20 @@ def main():
 
         horarios_disponibles_profesores = organizar_horarios_profesores(
             profesores)
-        horarios_disponibles_aulas = organizar_horarios_aulas(aulas)
+        horarios_disponibles_aulas = organizar_horarios_aulas(
+            aulas, asignaciones)
 
+        for aula in horarios_disponibles_aulas:
+            print(aula, horarios_disponibles_aulas[aula])
         materias_reordenadas = reordenar_materias_por_alumnos(materias)
 
-        sugerencias_helper = asignacion_helper(
+        sugerencias_helper, fallos_asignacion = asignacion_helper(
             materias_reordenadas, horarios_disponibles_profesores, horarios_disponibles_aulas, 'Anasagasti II'
         )
 
-        escribir_sugerencias(sugerencias_helper, 'Sugerencias.csv')
-        print("Asignación automática completada. Las sugerencias se han guardado en 'Sugerencias.csv'.")
+        escribir_sugerencias(sugerencias_helper,
+                             fallos_asignacion, 'Sugerencias.csv')
+        print("Asignación automática completada. Las sugerencias y los fallos se han guardado en 'Sugerencias.csv'.")
 
         # Guardar asignaciones en la base de datos
         guardar_asignaciones_db(sugerencias_helper, asignacion_db)
@@ -162,39 +169,53 @@ def organizar_horarios_profesores(profesores):
                   profesor['nombre']}: {e}")
 
         nombre_completo = f"{profesor['nombre']} {profesor['apellido']}"
-        print(f"Horarios para el profesor {
-              nombre_completo}: {profesor_horarios}")
+        # print(f"Horarios para el profesor {
+        #       nombre_completo}: {profesor_horarios}")
         horarios_disponibles[nombre_completo] = profesor_horarios
 
     return horarios_disponibles
 
 
-def organizar_horarios_aulas(aulas):
+def organizar_horarios_aulas(aulas, asignaciones):
     horarios_disponibles_aulas = defaultdict(lambda: defaultdict(list))
 
-    # Verificar si el formato de los datos de aulas es correcto
-    if isinstance(aulas, list) and all(isinstance(aula, dict) for aula in aulas):
-        for aula in aulas:
-            aula_nombre = aula.get('nombre')
-            aula_disponibilidad = aula.get('disponibilidad', '{}')
+    # Obtener la disponibilidad total inicial para cada aula
+    for aula in aulas:
+        aula_nombre = aula.get('nombre')
+        capacidad = aula.get('capacidad', 0)
 
-            try:
-                disponibilidad_aula = json.loads(aula_disponibilidad)
-                for dia, disponibilidad_horaria in disponibilidad_aula.items():
-                    for rango in disponibilidad_horaria:
-                        horarios_disponibles_aulas[aula_nombre][dia].append(
-                            rango)
-            except json.JSONDecodeError:
-                print(f"Error al decodificar JSON en disponibilidad para aula {
-                      aula_nombre}: {aula_disponibilidad}")
-    else:
-        print("Error: El formato de datos de aulas es incorrecto.")
+        # Asumir que la disponibilidad total es de 8 AM a 8 PM (ejemplo, ajusta según necesidad)
+        horarios_disponibles_aulas[aula_nombre] = {
+            'LUN': ['08-23'],
+            'MAR': ['08-23'],
+            'MIE': ['08-23'],
+            'JUE': ['08-23'],
+            'VIE': ['08-23'],
+        }
+
+    # Restar las asignaciones ya hechas
+    if isinstance(asignaciones, dict) and 'rows' in asignaciones:
+        for asignacion in asignaciones['rows']:
+            aula_id = asignacion[1]
+            dia = asignacion[4]
+            hora_inicio = asignacion[5]
+            hora_fin = asignacion[6]
+
+            # Buscar el nombre del aula a partir del id
+            aula_nombre = next((a['nombre']
+                               for a in aulas if a['id_aula'] == aula_id), None)
+            if aula_nombre and dia in horarios_disponibles_aulas:
+                for i, rango in enumerate(horarios_disponibles_aulas[aula_nombre][dia]):
+                    rango_inicio, rango_fin = map(int, rango.split('-'))
+                    if hora_inicio >= rango_inicio and hora_fin <= rango_fin:
+                        # Eliminar el rango ocupado
+                        horarios_disponibles_aulas[aula_nombre][dia].pop(i)
+                        break
 
     return horarios_disponibles_aulas
 
 
 def convertir_datos_aulas(data):
-    # Asumiendo que data es una lista de tuplas o listas
     columnas = ['id_aula', 'id_edificio', 'nombre',
                 'capacidad']  # Ajusta según tus datos reales
     return [dict(zip(columnas, fila)) for fila in data]
@@ -211,138 +232,113 @@ def separar_horas(horas_disponibles):
 
 def separar_profesores(profesores):
     if isinstance(profesores, list):
-        # Convertir a cadenas y eliminar espacios en blanco
-        return [str(prof).strip() for prof in profesores]
+        # Aquí puedes realizar cualquier procesamiento adicional necesario en la lista de profesores
+        return profesores
     else:
-        print("Error: 'profesores' debe ser una lista.")
+        print(f"Advertencia: Se esperaba una lista de profesores, pero se obtuvo {
+              type(profesores)}")
         return []
 
 
-def verificar_disponibilidad(profesor_nombre, horarios_profesores, horarios_aulas):
-    aula_con_disponibilidad = []
+def asignacion_helper(materias, horarios_disponibles_profesores, horarios_disponibles_aulas, nombre_edificio):
+    asignaciones_realizadas = []
+    fallos_asignacion = []
 
-    profesor_nombre_normalizado = normalizar_nombre(profesor_nombre)
+    for materia in materias:
+        materia_id = materia.get('id')
+        profesores = materia.get('profesores', [])
+        alumnos_esperados = materia.get('alumnos_esperados', 0)
 
-    if profesor_nombre_normalizado not in [normalizar_nombre(n) for n in horarios_profesores.keys()]:
-        print(f"Advertencia: El profesor {
-              profesor_nombre} no tiene horarios disponibles.")
-        return aula_con_disponibilidad
-
-    horarios_profesor = horarios_profesores[profesor_nombre]
-    print(f"Horarios del profesor {profesor_nombre}: {horarios_profesor}")
-
-    for dia, horas_disponibles in horarios_profesor.items():
-        horas_separadas = separar_horas(horas_disponibles)
-        print(f"Verificando disponibilidad para el día {dia} y horas {
-              horas_separadas} del profesor {profesor_nombre}.")
-        for hora_inicio, hora_fin in horas_separadas:
-            for aula, aulas_disponibles in horarios_aulas.items():
-                if dia in aulas_disponibles:
-                    for rango_aula in aulas_disponibles[dia]:
-                        hora_inicio_aula, hora_fin_aula = map(
-                            int, rango_aula.split('-'))
-                        if hora_inicio >= hora_inicio_aula and hora_fin <= hora_fin_aula:
-                            aula_con_disponibilidad.append({
-                                "Aula": aula,
-                                "Dia": dia,
-                                "Hora Inicio": hora_inicio,
-                                "Hora Fin": hora_fin
-                            })
-                            print(f"Encontrada disponibilidad para el aula {
-                                  aula} en el día {dia} y hora {hora_inicio}-{hora_fin}.")
+        for profesor in profesores:
+            horarios_profesor = horarios_disponibles_profesores.get(
+                profesor, {})
+            for dia, rangos in horarios_profesor.items():
+                for rango in rangos:
+                    hora_inicio, hora_fin = map(int, rango.split('-'))
+                    for aula_nombre, disponibilidad in horarios_disponibles_aulas.items():
+                        if dia in disponibilidad:
+                            for aula_rango in disponibilidad[dia]:
+                                aula_inicio, aula_fin = map(
+                                    int, aula_rango.split('-'))
+                                if aula_inicio <= hora_inicio and aula_fin >= hora_fin:
+                                    asignaciones_realizadas.append([
+                                        materia.get('carrera'),
+                                        materia.get('codigo_guarani'),
+                                        materia.get('nombre'),
+                                        profesor,
+                                        aula_nombre,
+                                        dia,
+                                        hora_inicio,
+                                        hora_fin
+                                    ])
+                                    # Marcar el aula como ocupada
+                                    disponibilidad[dia].remove(aula_rango)
+                                    break
+                            else:
+                                continue
                             break
-    return aula_con_disponibilidad
+                    else:
+                        continue
+                    break
+                else:
+                    continue
+                break
+            else:
+                fallos_asignacion.append([
+                    materia.get('codigo_guarani'),
+                    materia.get('nombre'),
+                    profesor,
+                    'No se pudo asignar aula',
+                    dia,
+                    hora_inicio,
+                    hora_fin
+                ])
+
+    return asignaciones_realizadas, fallos_asignacion
 
 
 def reordenar_materias_por_alumnos(materias):
-    """
-    Reordena la lista de materias por el número de alumnos esperados en orden descendente.
-    """
-    try:
-        if not isinstance(materias, list):
-            raise TypeError("El parámetro 'materias' debe ser una lista.")
-
-        # Verificar que cada elemento en la lista es un diccionario
-        for materia in materias:
-            if not isinstance(materia, dict):
-                raise TypeError(
-                    "Cada elemento en la lista de materias debe ser un diccionario.")
-
-        materias_reordenadas = sorted(materias, key=lambda materia: int(
-            materia.get('alumnos_esperados', 0)), reverse=True)
-        return materias_reordenadas
-
-    except Exception as e:
-        print(f"Error al reordenar materias por número de alumnos: {e}")
-        return materias
+    # Implementa la lógica para reordenar materias según el número de alumnos esperados
+    return sorted(materias, key=lambda x: x.get('alumnos_esperados', 0), reverse=True)
 
 
-def asignacion_helper(materias, horarios_profesores, horarios_aulas, edificio_predefinido):
-    sugerencias = []
-    for materia in materias:
-        profesores_separados = separar_profesores(materia.get(
-            'profesores', []))  # Usa un valor por defecto vacío
-        if not profesores_separados:
-            print(f"Advertencia: La clave 'profesores' está vacía o no está presente en el diccionario de materia: {
-                  materia}")
+def escribir_sugerencias(asignaciones_realizadas, fallos_asignacion, nombre_archivo):
+    with open(nombre_archivo, 'w', newline='') as archivo_csv:
+        writer = csv.writer(archivo_csv)
+        writer.writerow(['Carrera', 'Código Guarani', 'Materia', 'Profesor',
+                        'Aula', 'Día', 'Hora Inicio', 'Hora Fin', 'Estado'])
 
-        for profesor_nombre in profesores_separados:
-            aulas_con_disponibilidad = verificar_disponibilidad(
-                profesor_nombre, horarios_profesores, horarios_aulas)
-            if aulas_con_disponibilidad:
-                for aula in aulas_con_disponibilidad:
-                    aula_nombre = aula['Aula']
-                    aula_edificio = next(
-                        (a['id_edificio'] for a in aulas if a['nombre'] == aula_nombre), None)
-                    if aula_edificio == edificio_predefinido:
-                        sugerencias.append({
-                            'Carrera': materia['carrera'],
-                            'Codigo Guarani': materia['codigo_guarani'],
-                            'Materia': materia['nombre'],
-                            'Profesor': profesor_nombre,
-                            'Edificio': aula_edificio,
-                            'Aula': aula['Aula'],
-                            'Dia': aula['Dia'],
-                            'Hora inicio': aula['Hora Inicio'],
-                            'Hora fin': aula['Hora Fin']
-                        })
-                        break
-            else:
-                print(f"    {profesor_nombre} | No hay aulas disponibles")
-    return sugerencias
+        for asignacion in asignaciones_realizadas:
+            writer.writerow(asignacion + ['Asignación realizada'])
 
-
-def escribir_sugerencias(sugerencias, archivo):
-    with open(archivo, 'w', newline='', encoding='ISO-8859-1') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow(['Carrera', 'Codigo Guarani', 'Materia', 'Edificio',
-                        'Profesor', 'Aula', 'Dia', 'Hora inicio', 'Hora fin'])
-        for sugerencia in sugerencias:
-            writer.writerow([
-                sugerencia.get('Carrera', ''),
-                sugerencia.get('Codigo Guarani', ''),
-                sugerencia.get('Materia', ''),
-                sugerencia.get('Edificio', ''),
-                sugerencia.get('Profesor', ''),
-                sugerencia.get('Aula', ''),
-                sugerencia.get('Dia', ''),
-                sugerencia.get('Hora inicio', ''),
-                sugerencia.get('Hora fin', '')
-            ])
+        for fallo in fallos_asignacion:
+            writer.writerow(fallo + ['Fallo en asignación'])
 
 
 def guardar_asignaciones_db(sugerencias, asignacion_db):
     for sugerencia in sugerencias:
-        aula = sugerencia['Aula']
-        dia = sugerencia['Dia']
-        comienzo = sugerencia['Hora inicio']
-        fin = sugerencia['Hora fin']
-        materia = sugerencia['Materia']
-        evento = None  # Ajusta según tu lógica
+        # Asegúrate de que la sugerencia tenga la longitud correcta antes de acceder a los índices
+        if len(sugerencia) < 8:
+            print(f"Advertencia: Datos de asignación incompletos: {
+                  sugerencia}")
+            continue
 
-        # Insertar asignación en la base de datos
+        # Asegúrate de que los índices se correspondan con la estructura de tu sugerencia
+        # Asumiendo que la columna 'Aula' está en la posición 4
+        aula = sugerencia[3]
+        # Asumiendo que la columna 'Materia' está en la posición 2
+        materia = sugerencia[1]
+        # Asumiendo que la columna 'Día' está en la posición 5
+        dia = sugerencia[4]
+        # Asumiendo que la columna 'Hora Inicio' está en la posición 6
+        hora_inicio = sugerencia[5]
+        # Asumiendo que la columna 'Hora Fin' está en la posición 7
+        hora_fin = sugerencia[6]
+
+        # Inserta en la base de datos usando la función insert_asignacion
         asignacion_db.insert_asignacion(
-            aula, dia, comienzo, fin, materia, evento)
+            aula, dia, hora_inicio, hora_fin, materia
+        )
 
 
 if __name__ == "__main__":
