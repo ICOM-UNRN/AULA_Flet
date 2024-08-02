@@ -1,5 +1,34 @@
 from typing import Callable
 import flet as ft
+#from components.ABM_form.Form import DeleteModifyForm
+import os
+import sys
+
+# Agregar la ruta relativa al sys.path
+ruta_relativa = os.path.join(os.path.dirname(__file__), '..','..')
+sys.path.insert(0, ruta_relativa)
+
+from api.db import connect_to_db
+from api.asignacion.asignacion import Asignacion
+from api.aula.aula import Aula
+from api.materia.materia import Materia
+from api.profesor.profesor import Profesor
+# from api.edificio.edificio import Edificio
+# from api.evento.evento import Evento
+# from api.profesor.profesor_por_materia import Profesor_por_materia
+# from api.recurso.recurso import Recurso
+# from api.recurso.recurso_por_aula import Recurso_por_aula
+
+db = connect_to_db()
+asignacion_db = Asignacion(conn=db)
+aula_db = Aula(conn=db)
+materia_db = Materia(conn=db)
+profesor_db = Profesor(conn=db)
+# edificio_db = Edificio(conn=db)
+# evento_db = Evento(conn=db)
+# recurso_por_aula_db = Recurso_por_aula(conn=db)
+# recurso_db = Recurso(conn=db)
+# profesor_por_materia_db = Profesor_por_materia(conn=db)
 
 class Custom_Card(ft.Container):
     def __init__(self, func_on_click: Callable = None,materia: str = "", horario_comienzo: int = 8, horario_fin: int = 9, profesor: str = "", aula: str = "", dia: str = "", *args: list, **kwargs: dict):
@@ -38,6 +67,9 @@ class Custom_Card(ft.Container):
         """
         self.data = data
     
+    def set_on_click(self, func):
+        self.on_click = func
+
     def build(self):
         return self
 
@@ -75,11 +107,14 @@ def modificar_celda(tabla: ft.DataTable = None, fila: int = 0, columna: int = 0,
     if (tabla is not None) and isinstance(tabla, ft.DataTable):
         tabla.rows[fila].cells[columna].content = contenido
 
-def crear_tabla():
+def crear_tabla(page):
     def click_card(e: ft.ControlEvent):
         card = e.control
         data_card = card.get_card_data()
         print(data_card)
+        page.overlay[0].open = True
+        page.update()
+        cargar_valores_a_textfields(page, data_card)
 
     tabla = ft.DataTable(
         data_row_max_height=float("inf"),
@@ -128,7 +163,7 @@ def crear_tabla():
         bg_color_card = bgcolor_segun_materia.get(materia, "#FFFFFF")
         modificar_celda(
             tabla=tabla,
-            fila= data_asignacion[4] - 7,
+            fila= data_asignacion[4] - 8,
             columna= dias[data_asignacion[3]],
             contenido= Custom_Card(
                 bgcolor = bg_color_card,
@@ -144,14 +179,152 @@ def crear_tabla():
 
     return tabla
 
+# (deprecated xd) -----------------------------------------------------------------------------------
+# def injectar_funcion_bottomsheet_onclick_on_cell(page: ft.Page, table: ft.DataTable):
+    
+#     def mostrar_bottom_sheet(page, table, row, column):
+#         print(f"{page.route}")
+#         print(f"...[{i}][{j}]")
+#         #print(f"...[{i}][{j}]|{table.rows[i].cells[j].content.get_card_data()}")
+#         # page.overlay[0].open = True
+#         # page.update()
+    
+#     for i in range(len(table.rows)):
+#         print(f"-----------------|{i}|-----------------")
+#         for j in range(0, len(table.rows[i].cells)):
+#             if isinstance(table.rows[i].cells[j].content, Custom_Card):
+#                 print(f"[{i}][{j}]|{table.rows[i].cells[j].content.get_card_data()}")
+#                 aux = copy.copy(i)
+#                 #print(table.rows[i].cells[j].content.content.controls[0].value)
+#                 table.rows[i].cells[j].content.set_on_click(lambda e: mostrar_bottom_sheet(page, table, aux, j))
+#             else:
+#                 #print(table.rows[i].cells[j].content.value)
+#                 pass
+# ---------------------------------------------------------------------------------------------------
+
+
+# Función para guardar los valores y vaciar los campos de texto
+def guardar_y_vaciar_campos(page, campos):
+    valores = {
+        "campo1": campos[0].value,
+        "campo2": campos[1].value,
+        "campo3": campos[2].value
+    }
+    print("Valores guardados:", valores)
+    campos[0].value = ""
+    campos[1].value = ""
+    campos[2].value = ""
+    page.overlay[0].open = False
+    page.update()
+
+def cargar_valores_a_textfields(page, valores):
+    print(f"||||||||||||||||||||||{page.overlay[0].content.content.controls[0].controls[0].value} vs {valores['aula'][1]}")
+    page.overlay[0].content.content.controls[0].controls[0].value = valores['materia'][0]
+    page.overlay[0].content.content.controls[0].controls[0].update()
+    page.overlay[0].content.content.controls[0].controls[1].value = valores['aula'][1]
+    page.overlay[0].content.content.controls[0].controls[2].value = valores['profesor'][1]
+    page.overlay[0].content.content.controls[0].controls[3].value = valores['horario_comienzo']
+    page.update()
+    
+
+    # result = []
+    # for aux in :
+    #     result.append(ft.dropdown.Option(aux[], text=aux[]))
+    # return result
+
+############################################################################################################################
+# DROPDOWNS PARA LOS BOTTOMSHEETS DE LAS CARTAS, PARA PODER MODIFICARLAS SOLO CON VALORES YA EXISTENTES EN LA BASE DE DATOS
+############################################################################################################################
+
+def get_dropdown_materias():
+    result = []
+    for aux in materia_db.get_materias()["rows"]:
+        result.append(ft.dropdown.Option(aux[0], text=aux[3]))
+    return result
+
+def get_dropdown_aulas():
+    result = []
+    for aux in aula_db.get_aulas()["rows"]:
+        result.append(ft.dropdown.Option(aux[0], text=aux[2]))
+    return result
+
+def get_dropdown_profesores():
+    result = []
+    for aux in profesor_db.get_profesores()["rows"]:
+        nombre_apellido = aux[2]+" "+aux[3]
+        result.append(ft.dropdown.Option(aux[0], text=nombre_apellido))
+    return result
+
+# def get_dropdown_asignaciones():
+#     print(asignacion_db.get_asignaciones()["rows"])
+
+# get_dropdown_asignaciones()
+############################################################################################################################
+
+
+def habilitar_modificación_horario(page):
+    page.overlay[0].content.content.controls[0].controls[3].disabled = False
+    page.update()
+
+def crear_bottomsheet(page):
+    # Campos de texto
+    campos = [
+        ft.Dropdown(
+            options=get_dropdown_materias(),
+            label = "Materia",
+        ),
+        ft.Dropdown(
+            options=get_dropdown_aulas(),
+            label = "Aula",
+        ),
+        ft.Dropdown(
+            options=get_dropdown_profesores(),
+            label = "Profesor",
+        ),
+        ft.Dropdown(
+            options=[],
+            label = "Horario Comienzo",
+            disabled=True
+        ),
+    ]
+
+    # Contenido del BottomSheet
+    bottom_sheet_content = ft.Container(
+        content=ft.Column([
+            ft.Column(campos),
+            ft.Row([
+                ft.ElevatedButton("Guardar Cambios", on_click=lambda e: guardar_y_vaciar_campos(page, campos)),
+                ft.ElevatedButton("Borrar Asignación", on_click=lambda e: guardar_y_vaciar_campos(page, campos)),
+            ]),
+            ft.Row([
+                ft.ElevatedButton("Cambiar Dia de la Asignación", on_click=lambda e: guardar_y_vaciar_campos(page, campos)),
+                ft.ElevatedButton("Cambiar Horario de la Asignación", on_click=lambda e: habilitar_modificación_horario(page)),
+            ])
+            
+        ]),
+        padding=20,
+        margin=20,
+    )
+
+    return ft.BottomSheet(content=bottom_sheet_content)
+
 def main(page : ft.Page):
-    tabla = crear_tabla()
+    tabla = crear_tabla(page)
     page.add(
         ft.Container(
             expand=True,
             content=tabla,
             alignment=ft.alignment.center,
         )
+    )
+
+    # Añade el BottomSheet a la página
+    bottom_sheet = crear_bottomsheet(page)
+    page.overlay.append(bottom_sheet)
+
+    # Añade botón para agregar asignaciones manualmente
+    page.add(
+        ft.ElevatedButton("Agregar Asignación Manualmente [falta aplicar función]", on_click=lambda e: print(e))#mostrar_bottom_sheet(page, tabla, 0, 0)
     )
 
 
