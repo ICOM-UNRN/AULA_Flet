@@ -15,6 +15,16 @@ class Asignacion():
             "rows": rows
         }
         return data
+    
+    def get_asignaciones_edificios(self):
+        self.cursor.execute('select asi.*, au.id_edificio from asignacion asi inner join aula au on (au.id_aula = asi.id_aula)')
+        colums = [descr.name for descr in self.cursor.description]
+        rows = [row for row in self.cursor.fetchall()]
+        data = {
+            "columns": colums,
+            "rows": rows
+        }
+        return data
 
     def get_asignacion(self, aula):
         result = self.cursor.callproc("get_asignacion", [aula])
