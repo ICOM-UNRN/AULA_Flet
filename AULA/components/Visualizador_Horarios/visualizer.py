@@ -142,7 +142,17 @@ def crear_tabla():
     )
 
     test_data = [
-        [(5, "B102"),(2,"Fisica 2"),(40, "CATERINA"), "Lunes",8,9]
+        [(6, "B142"),(5,"Defensa Contra las Artes Obscuras"),(40, "CATERINA"), "Lunes",8,9],
+        [(5, "Aula 102"),(2,"Fisica 2"),("Profesor 1", 40), "Lunes",8,9],
+        [(10, "Aula 102"),(3,"Matematica"),("Profesor 2", 40), "Lunes",9,10],
+        [(24, "Aula 142"),(5,"Defensa Contra las Artes Obscuras"),("Profesor 3", 40), "Lunes",10,11],
+        [(3, "Aula 101"),(4,"Programacion"),("Profesor 4", 30), "Martes",11,12],
+        [(9, "Aula 101"),(1,"Algebra"),("Profesor 5", 30), "Martes",12,13],
+        [(2, "Aula 141"),(6,"Estadistica"),("Profesor 6", 30), "Martes",13,14],
+        [(7, "Aula 103"),(8,"Informatica"),("Profesor 7", 25), "Miercoles",14,15],
+        [(4, "Aula 105"),(7,"Filosofia"),("Profesor 8", 25), "Miercoles",15,16],
+        [(1, "Aula 143"),(9,"Historia"),("Profesor 9", 25), "Miercoles",16,17],
+        [(8, "Aula 104"),(10,"Sociologia"),("Profesor 10", 18), "Jueves",17,18]
     ]
 
     dias = {
@@ -159,17 +169,22 @@ def crear_tabla():
         "Fisica 2": ft.colors.BLUE,
         "Matematica": ft.colors.RED,
         "Geometria": ft.colors.GREEN,
-        "Defensa contra las artes oscuras": ft.colors.PINK,
-        "Ingenieria de Software": ft.colors.ORANGE
+        "Defensa Contra las Artes Obscuras": ft.colors.PINK,
+        "Ingenieria de Software": ft.colors.ORANGE,
+        "Historia": ft.colors.RED_600,
+        "Programacion": ft.colors.LIGHT_BLUE,
+        "Estadistica": ft.colors.LIGHT_GREEN_900
     }
 
     for data_asignacion in test_data:
+        materia = data_asignacion[1][1]
+        bg_color_card = bgcolor_segun_materia.get(materia, "#FFFFFF")
         modificar_celda(
             tabla=tabla,
             fila= data_asignacion[4] - 7,
             columna= dias[data_asignacion[3]],
             contenido= Custom_Card(
-                bgcolor = bgcolor_segun_materia[data_asignacion[1][1]],
+                bgcolor = bg_color_card,
                 aula= data_asignacion[0],
                 materia= data_asignacion[1],
                 profesor= data_asignacion[2],
