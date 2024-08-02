@@ -76,24 +76,39 @@ class DeleteModifyForm(ft.UserControl):
         if len(self.fields_labels)>0:
             if len(self.fields_data)>0:
                 for label, data, _type in zip(self.fields_labels, self.fields_data, self.fields_types):
-                    self.fields_controls.append(
-                        ft.TextField(
-                            label= label,
-                            col={"md": 1},
-                            value=data,
-                            keyboard_type=_type[0],
-                            input_filter=_type[1]
+                    if _type[0] == "id":
+                        self.fields_controls.append(
+                            ft.Dropdown(
+                                label= label,
+                                value= data
+                            )
                         )
+                    else:
+                        self.fields_controls.append(
+                            ft.TextField(
+                                label= label,
+                                col={"md": 1},
+                                value=data,
+                                keyboard_type=_type[0],
+                                input_filter=_type[1]
+                            )
                     )
             else:
                 for label, _type in zip(self.fields_labels,self.fields_types):
-                    self.fields_controls.append(
-                        ft.TextField(
-                            label= label,
-                            col={"md": 1},
-                            keyboard_type=_type[0],
-                            input_filter=_type[1]
+                    if _type[0] == "id":
+                        self.fields_controls.append(
+                            ft.Dropdown(
+                                label= label
+                            )
                         )
+                    else:
+                        self.fields_controls.append(
+                            ft.TextField(
+                                label= label,
+                                col={"md": 1},
+                                keyboard_type=_type[0],
+                                input_filter=_type[1]
+                            )
                     )
         return self.fields_controls
 
@@ -109,8 +124,8 @@ class DeleteModifyForm(ft.UserControl):
         """Returns a list of each control updated TextField data"""
         result = []
         for field in self.fields_controls:
-            if field.__class__ is ft.TextField:
-                result.append(field.value)      
+            if field.__class__ in (ft.TextField, ft.Dropdown):
+                result.append(field.value)
         return result
 
 

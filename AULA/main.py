@@ -111,10 +111,10 @@ def main(page: ft.Page):
 
         # {lunes: [...], martes: [...], ...}
 
-        column_visualizer.controls[1].controls[0].rows[1].cells[2].content.add_item([materias_asignadas["Martes"][0][0],
-                                                                                    materias_asignadas["Martes"][0][1],
-                                                                                    f"{materias_asignadas['Martes'][0][2]} a {materias_asignadas['Martes'][0][3]}",
-                                                                                    materias_asignadas["Martes"][0][4],], "green")
+        # column_visualizer.controls[1].controls[0].rows[1].cells[2].content.add_item([materias_asignadas["Martes"][0][0],
+        #                                                                             materias_asignadas["Martes"][0][1],
+        #                                                                             f"{materias_asignadas['Martes'][0][2]} a {materias_asignadas['Martes'][0][3]}",
+        #                                                                             materias_asignadas["Martes"][0][4],], "green")
         #print(column_visualizer.controls[1].controls[0].rows[1].cells[2].content.items.controls[0].controls)
 
         i = 1
@@ -188,6 +188,7 @@ def main(page: ft.Page):
             print(listas_busquedas[e.control.data])
             e.control.controls = listas_busquedas[e.control.data]
             e.control.update()
+            crear_visualizacion_horarios(search_bar_carrera.value, search_bar_edificio.value, search_bar_aula.value)
             return
 
         result = [
@@ -205,10 +206,14 @@ def main(page: ft.Page):
 
     def handle_tap(e):
         e.control.open_view()
+    
+    #def grabar_tarjetas
 
     ###################################################################################
     #                                  CAMBIO DE RUTAS                                #
     ###################################################################################
+    
+    
 
     def navigation_change(e):
         destination = e.control.destinations[int(e.data)].label
@@ -245,13 +250,13 @@ def main(page: ft.Page):
         elif route == "/profesores":
             profesor_db.update_profesor(
                 data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8])
-        elif route == "/profesores_por_materia":
+        elif route == "/profesor por materia":
             profesor_por_materia_db.update_profesor_por_materia(
                 id_materia=data[0], id_profesor=data[1], alumnos_esperados=data[2], tipo_clase=data[3], archivo=data[4])
         elif route == "/recursos":
             recurso_db.update_recurso(
                 id=data[0], nombre=data[1], descripcion=data[2])
-        elif route == "/recursos_por_aula":
+        elif route == "/recursos por aula":
             recurso_por_aula_db.update_recurso_por_aula(
                 id_aula=data[0], id_recurso=data[1], cantidad=data[2])
 
@@ -274,12 +279,12 @@ def main(page: ft.Page):
             materia_db.delete_materia(id=data[0])
         elif route == "/profesores":
             profesor_db.delete_profesor(id=data[0])
-        elif route == "/profesores_por_materia":
+        elif route == "/profesor por materia":
             profesor_por_materia_db.delete_profesor_por_materia(
                 id_materia=data[0], id_profesor=data[1])
         elif route == "/recursos":
             recurso_db.delete_recurso(id=data[0])
-        elif route == "/recursos_por_aula":
+        elif route == "/recursos por aula":
             recurso_por_aula_db.delete_recurso_por_aula(
                 id_aula=data[0], id_recurso=data[1])
 
@@ -308,12 +313,12 @@ def main(page: ft.Page):
         elif route == "/profesores":
             profesor_db.insert_profesor(
                 data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7])
-        elif route == "/profesores_por_materia":
+        elif route == "/profesor por materia":
             profesor_por_materia_db.insert_profesor_por_materia(
                 materia=data[0], profesor=data[1], cant_alumnos=data[2], tipo_clase=data[3], activo=data[4])
         elif route == "/recursos":
             recurso_db.insert_recurso(nombre=data[0], descripcion=data[1])
-        elif route == "/recursos_por_aula":
+        elif route == "/recursos por aula":
             recurso_por_aula_db.insert_recurso_por_aula(
                 id_aula=data[0], id_recurso=data[1], cantidad=data[2])
 
@@ -323,8 +328,10 @@ def main(page: ft.Page):
     def add_row_func(_):
         form = page.session.get("actual_form")
         form.build()
+        if page.route in ('/asignaciones', '/profesor por materia', '/aulas', '/recursos por aula'):
+            populate_dropdowns(form)
         textos_y_botones = form.get_fields_controls()
-        if page.route not in ('/profesores_por_materia', '/recursos_por_aula'):
+        if page.route not in ('/profesor por materia', '/recursos por aula'):
             textos_y_botones.pop(0)  # remove id field
         textos_y_botones.append(
             ft.Row(
@@ -358,8 +365,11 @@ def main(page: ft.Page):
         delete_modify_form = page.session.get("actual_form")
         delete_modify_form.set_fields_data(data)
         delete_modify_form.build()
-        id_field = delete_modify_form.get_fields_controls()[0]
-        id_field.read_only = True
+        if page.route not in ('/profesor por materia', '/recursos por aula'):
+            id_field = delete_modify_form.get_fields_controls()[0]
+            id_field.read_only = True
+        if page.route in ('/asignaciones', '/profesor por materia', '/aulas', '/recursos por aula'):
+            populate_dropdowns(delete_modify_form)
 
         textos_y_botones = delete_modify_form.get_fields_controls()
         textos_y_botones.append(
@@ -400,6 +410,8 @@ def main(page: ft.Page):
             return [None, ft.InputFilter(allow=True, regex_string=r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}", replacement_string="")]
         elif _type == "date":
             return [None, ft.InputFilter(allow=True, regex_string=r"\d{4}-\d{2}-\d{2}", replacement_string="")]
+        elif _type == "id":
+            return ["id", None]
         else:
             return [None, None]
 
@@ -408,10 +420,11 @@ def main(page: ft.Page):
         types = []
         number = get_filter_tuple("number")
         text = get_filter_tuple(None)
+        id = get_filter_tuple("id")
         if route == "/asignaciones":
-            types = [number, number, number, number, text, number, number]
+            types = [number, id, id, number, text, number, number]
         elif route == "/aulas":
-            types = [number, number, text, number]
+            types = [number, id, text, number]
         elif route == "/edificios":
             types = [number, text, text, number]
         elif route == "/eventos":
@@ -421,13 +434,42 @@ def main(page: ft.Page):
                      number, text, number, number, number]
         elif route == "/profesores":
             types = [number, number, text, text, text, text, text, text, text]
-        elif route == "/profesore por materia":
-            types = [number, number, number, text, text]
+        elif route == "/profesor por materia":
+            types = [id, id, number, text, text]
         elif route == "/recursos":
             types = [number, text, text]
         elif route == "/recursos por aula":
-            types = [number, number, number]
+            types = [id, id, number]
         return types
+    
+    def populate_dropdowns(delete_modify_form):
+        route = page.route
+        controls = delete_modify_form.get_fields_controls()
+        if route == "/asignaciones":
+            aulas = aula_db.get_aulas_edificios()
+            materias = materia_db.get_materias()
+            for aula in aulas["rows"]:
+                controls[1].options.append(ft.dropdown.Option(key=aula[0],text=f"{aula[1]} - {aula[2]}"))
+            for materia in materias["rows"]:
+                controls[2].options.append(ft.dropdown.Option(key=materia[0],text=f"{materia[1]} - {materia[3]}"))
+        elif route == "/aulas":
+            edificios = edificio_db.get_edificios()
+            for edificio in edificios["rows"]:
+                controls[1].options.append(ft.dropdown.Option(key=edificio[0],text=edificio[1]))
+        elif route == "/profesor por materia":
+            materias = materia_db.get_materias()
+            profesores = profesor_db.get_profesores()
+            for materia in materias["rows"]:
+                controls[0].options.append(ft.dropdown.Option(key=materia[0],text=f"{materia[1]} - {materia[3]}"))
+            for profesor in profesores["rows"]:
+                controls[1].options.append(ft.dropdown.Option(key=profesor[0],text=f"{profesor[3]}, {profesor[2]}"))
+        elif route == "/recursos por aula":
+            aulas = aula_db.get_aulas_edificios()
+            recursos = recurso_db.get_recursos()
+            for aula in aulas["rows"]:
+                controls[0].options.append(ft.dropdown.Option(key=aula[0],text=f"{aula[1]} - {aula[2]}"))
+            for recurso in recursos["rows"]:
+                controls[1].options.append(ft.dropdown.Option(key=recurso[0],text=recurso[1]))
 
     def route_change(e):
         route = e.route
@@ -729,7 +771,7 @@ def main(page: ft.Page):
                 radius=ft.border_radius.all(5)
             ),
             color="#0B5345",
-            bgcolor=ft.colors.with_opacity(0.25, "#D4EFDF"),
+            bgcolor=ft.colors.with_opacity(0.75, "#D4EFDF"),
         ),
         on_click=lambda _: file_picker.pick_files(allowed_extensions=["xlsx", "xls"])
     )
@@ -817,8 +859,8 @@ def main(page: ft.Page):
             day = []
             for j in range(1, len(container_vista.content.controls[1].content.controls[1].controls[0].rows[i].cells)):
                 aux = container_vista.content.controls[1].content.controls[1].controls[0].rows[i].cells[j].content.get_items()
-                for item in aux:
-                    day.append([day_name[j-1], item])
+                #for item in aux:
+                day.append([day_name[j-1], aux])
             result.append(day)
         print("###########################################")
         for i in result:

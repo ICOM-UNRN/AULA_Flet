@@ -15,6 +15,16 @@ class Aula():
             "rows": rows
         }
         return data
+    
+    def get_aulas_edificios(self):
+        self.cursor.execute('select au.id_aula, ed.nombre, au.nombre from aula au inner join edificio ed on (ed.id = au.id_edificio)')
+        columns = [descr.name for descr in self.cursor.description]
+        rows = [row for row in self.cursor.fetchall()]
+        data = {
+            "columns": columns,
+            "rows": rows
+        }
+        return data
 
     def get_aula(self, nombre):
         result = self.cursor.callproc("get_aula", [nombre])
