@@ -1,27 +1,27 @@
 Carrera,Código Guarani,Materia,Profesor,Aula,Día,Hora Inicio,Hora Fin,Estado
-B6003,Programación I,Miguel MARIGUIN,No se pudo asignar aula,VIE,16,20,Fallo en asignación
-B6003,Programación I,MARTIN RENE VILUGRON,No se pudo asignar aula,VIE,14,18,Fallo en asignación
-B6003,Programación I,MAURO ALEJANDRO FERMIN,No se pudo asignar aula,VIE,16,20,Fallo en asignación
-B6003,Programación I,DANIEL EDUARDO TEIRA,No se pudo asignar aula,VIE,14,18,Fallo en asignación
-B6003,Programación I,NICOLÁS LUCIANO BERTOLO,No se pudo asignar aula,VIE,16,20,Fallo en asignación
-B6003,Programación I,IVAN PEDRO NOMDEDEU,No se pudo asignar aula,VIE,16,20,Fallo en asignación
-B6004,Electrónica Digital,JUAN PABLO CALDO,No se pudo asignar aula,VIE,14,18,Fallo en asignación
-B6004,Electrónica Digital,LAUTARO ACHA,No se pudo asignar aula,VIE,14,18,Fallo en asignación
-B6005,Química,GASTON EDUARDO DI BONIS,No se pudo asignar aula,VIE,16,20,Fallo en asignación
-B6005,Química,RAFAEL FERNANDO RUANO,No se pudo asignar aula,VIE,16,20,Fallo en asignación
-B6002,Física General I,LORENA LUISA BAEZ,No se pudo asignar aula,VIE,16,20,Fallo en asignación
-B6002,Física General I,CATERINA LAMPERTI,No se pudo asignar aula,VIE,14,18,Fallo en asignación
-B6002,Física General I,MARÍA DE LOS ÁNGELE DA FONSECA,No se pudo asignar aula,VIE,16,20,Fallo en asignación
-B5638,Inglés Técnico,MONICA DELIA LORENZO DE MAGOIA,No se pudo asignar aula,VIE,14,18,Fallo en asignación
-B6017,Seguridad Ambiental y Laboral,VANINA ESTELA RIBERI,No se pudo asignar aula,VIE,14,18,Fallo en asignación
-B6017,Seguridad Ambiental y Laboral,MONICA DELIA LORENZO DE MAGOIA,No se pudo asignar aula,VIE,14,18,Fallo en asignación
-B6012,Análisis de Circuitos,MARIANO SANTAYA,No se pudo asignar aula,VIE,14,18,Fallo en asignación
-B6012,Análisis de Circuitos,GRETEL VICTORIA  LASCANO WARNES,No se pudo asignar aula,VIE,14,18,Fallo en asignación
-B6019,Señales y Sistemas,GUILLERMO ENRIQUE GOMEZ,No se pudo asignar aula,VIE,14,18,Fallo en asignación
-B6020,Redes de Área Local y Extendida,IGNACIO ENRIQUE CATALANO,No se pudo asignar aula,VIE,16,20,Fallo en asignación
-B6018,Sistemas Operativos I,CARLOS GERMÁN TEJERO,No se pudo asignar aula,VIE,14,18,Fallo en asignación
-B6011,Física General II,CATERINA LAMPERTI,No se pudo asignar aula,VIE,14,18,Fallo en asignación
-B6011,Física General II,LORENA LUISA BAEZ,No se pudo asignar aula,VIE,16,20,Fallo en asignación
-B6010,Matemática III,CATERINA LAMPERTI,No se pudo asignar aula,VIE,14,18,Fallo en asignación
-B6010,Matemática III,FABIAN EDUARDO GIANA,No se pudo asignar aula,VIE,16,20,Fallo en asignación
-B6025,Inteligencia Artificial,WALTER FABIAN AGÜERO,No se pudo asignar aula,VIE,16,20,Fallo en asignación
+Ingeniería en Computación,B6003,Programación I,Miguel MARIGUIN,Aula 1,LUN,10,14,Asignación realizada
+Ingeniería en Computación,B6003,Programación I,MARTIN RENE VILUGRON,Aula 2,LUN,8,12,Asignación realizada
+Ingeniería en Computación,B6003,Programación I,MAURO ALEJANDRO FERMIN,Aula 3,LUN,10,14,Asignación realizada
+Ingeniería en Computación,B6003,Programación I,DANIEL EDUARDO TEIRA,Aula 4,LUN,10,14,Asignación realizada
+Ingeniería en Computación,B6003,Programación I,NICOLÁS LUCIANO BERTOLO,Aula 5,LUN,8,12,Asignación realizada
+Ingeniería en Computación,B6003,Programación I,IVAN PEDRO NOMDEDEU,Aula 6,LUN,10,14,Asignación realizada
+Ingeniería en Computación,B6004,Electrónica Digital,JUAN PABLO CALDO,Aula 7,LUN,8,12,Asignación realizada
+Ingeniería en Computación,B6004,Electrónica Digital,LAUTARO ACHA,Aula 1,MAR,8,12,Asignación realizada
+Ingeniería en Computación,B6005,Química,GASTON EDUARDO DI BONIS,Aula 2,MAR,8,12,Asignación realizada
+Ingeniería en Computación,B6005,Química,RAFAEL FERNANDO RUANO,Aula 3,MAR,8,12,Asignación realizada
+Ingeniería en Computación,B6002,Física General I,LORENA LUISA BAEZ,Aula 4,MAR,10,14,Asignación realizada
+Ingeniería en Computación,B6002,Física General I,CATERINA LAMPERTI,Aula 5,MAR,8,12,Asignación realizada
+Ingeniería en Computación,B6002,Física General I,MARÍA DE LOS ÁNGELE DA FONSECA,Aula 6,MAR,8,12,Asignación realizada
+Ingeniería en Computación,B5638,Inglés Técnico,MONICA DELIA LORENZO DE MAGOIA,Aula 7,MAR,8,12,Asignación realizada
+Ingeniería en Computación,B6017,Seguridad Ambiental y Laboral,VANINA ESTELA RIBERI,Aula 1,MIE,10,14,Asignación realizada
+Ingeniería en Computación,B6017,Seguridad Ambiental y Laboral,MONICA DELIA LORENZO DE MAGOIA,Aula 2,MIE,8,12,Asignación realizada
+Ingeniería en Computación,B6012,Análisis de Circuitos,MARIANO SANTAYA,Aula 3,MIE,8,12,Asignación realizada
+Ingeniería en Computación,B6012,Análisis de Circuitos,GRETEL VICTORIA  LASCANO WARNES,Aula 4,MIE,8,12,Asignación realizada
+Ingeniería en Computación,B6019,Señales y Sistemas,GUILLERMO ENRIQUE GOMEZ,Aula 5,MIE,10,14,Asignación realizada
+Ingeniería en Computación,B6020,Redes de Área Local y Extendida,IGNACIO ENRIQUE CATALANO,Aula 6,MIE,8,12,Asignación realizada
+Ingeniería en Computación,B6018,Sistemas Operativos I,CARLOS GERMÁN TEJERO,Aula 7,MIE,8,12,Asignación realizada
+Ingeniería en Computación,B6011,Física General II,CATERINA LAMPERTI,Aula 1,JUE,10,14,Asignación realizada
+Ingeniería en Computación,B6011,Física General II,LORENA LUISA BAEZ,Aula 2,JUE,10,14,Asignación realizada
+Ingeniería en Computación,B6010,Matemática III,CATERINA LAMPERTI,Aula 3,JUE,10,14,Asignación realizada
+Ingeniería en Computación,B6010,Matemática III,FABIAN EDUARDO GIANA,Aula 4,JUE,8,12,Asignación realizada
+Ingeniería en Computación,B6025,Inteligencia Artificial,WALTER FABIAN AGÜERO,Aula 5,JUE,10,14,Asignación realizada

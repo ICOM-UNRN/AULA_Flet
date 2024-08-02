@@ -186,13 +186,11 @@ def organizar_horarios_aulas(aulas, asignaciones):
 
         # Asumir que la disponibilidad total es de 8 AM a 8 PM (ejemplo, ajusta según necesidad)
         horarios_disponibles_aulas[aula_nombre] = {
-            'Lunes': ['08-23'],
-            'Martes': ['08-23'],
-            'Miércoles': ['08-23'],
-            'Jueves': ['08-23'],
-            'Viernes': ['08-23'],
-            'Sábado': ['08-23'],
-            'Domingo': ['08-23']
+            'LUN': ['08-23'],
+            'MAR': ['08-23'],
+            'MIE': ['08-23'],
+            'JUE': ['08-23'],
+            'VIE': ['08-23'],
         }
 
     # Restar las asignaciones ya hechas
@@ -264,6 +262,7 @@ def asignacion_helper(materias, horarios_disponibles_profesores, horarios_dispon
                                     int, aula_rango.split('-'))
                                 if aula_inicio <= hora_inicio and aula_fin >= hora_fin:
                                     asignaciones_realizadas.append([
+                                        materia.get('carrera'),
                                         materia.get('codigo_guarani'),
                                         materia.get('nombre'),
                                         profesor,
@@ -318,19 +317,28 @@ def escribir_sugerencias(asignaciones_realizadas, fallos_asignacion, nombre_arch
 
 def guardar_asignaciones_db(sugerencias, asignacion_db):
     for sugerencia in sugerencias:
-        # Asumiendo que la columna 'Aula' está en la posición 4
-        aula = sugerencia[4]
-        # Asumiendo que la columna 'Materia' está en la posición 2
-        materia = sugerencia[2]
-        # Asumiendo que la columna 'Día' está en la posición 5
-        dia = sugerencia[5]
-        # Asumiendo que la columna 'Hora Inicio' está en la posición 6
-        hora_inicio = sugerencia[6]
-        # Asumiendo que la columna 'Hora Fin' está en la posición 7
-        hora_fin = sugerencia[7]
+        # Asegúrate de que la sugerencia tenga la longitud correcta antes de acceder a los índices
+        if len(sugerencia) < 8:
+            print(f"Advertencia: Datos de asignación incompletos: {
+                  sugerencia}")
+            continue
 
-        asignacion_db.insert_asignacion_card(
-            aula, materia, dia, hora_inicio, hora_fin)
+        # Asegúrate de que los índices se correspondan con la estructura de tu sugerencia
+        # Asumiendo que la columna 'Aula' está en la posición 4
+        aula = sugerencia[3]
+        # Asumiendo que la columna 'Materia' está en la posición 2
+        materia = sugerencia[1]
+        # Asumiendo que la columna 'Día' está en la posición 5
+        dia = sugerencia[4]
+        # Asumiendo que la columna 'Hora Inicio' está en la posición 6
+        hora_inicio = sugerencia[5]
+        # Asumiendo que la columna 'Hora Fin' está en la posición 7
+        hora_fin = sugerencia[6]
+
+        # Inserta en la base de datos usando la función insert_asignacion
+        asignacion_db.insert_asignacion(
+            aula, dia, hora_inicio, hora_fin, materia
+        )
 
 
 if __name__ == "__main__":
