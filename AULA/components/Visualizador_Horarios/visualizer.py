@@ -218,19 +218,21 @@ def guardar_y_vaciar_campos(page, campos):
     page.update()
 
 def cargar_valores_a_textfields(page, valores):
-    print(f"||||||||||||||||||||||{page.overlay[0].content.content.controls[0].controls[0].value} vs {valores['aula'][1]}")
+    print(f"||||{valores}|||")
     page.overlay[0].content.content.controls[0].controls[0].value = valores['materia'][0]
     page.overlay[0].content.content.controls[0].controls[0].update()
-    page.overlay[0].content.content.controls[0].controls[1].value = valores['aula'][1]
+    page.overlay[0].content.content.controls[0].controls[1].value = valores['aula'][0]
+    page.overlay[0].content.content.controls[0].controls[1].update()
     page.overlay[0].content.content.controls[0].controls[2].value = valores['profesor'][1]
-    page.overlay[0].content.content.controls[0].controls[3].value = valores['horario_comienzo']
+    page.overlay[0].content.content.controls[0].controls[2].update()
+    page.overlay[0].content.content.controls[0].controls[3].value = valores['dia']
+    page.overlay[0].content.content.controls[0].controls[3].update()
+    page.overlay[0].content.content.controls[0].controls[4].value = valores['horario_comienzo']
+    page.overlay[0].content.content.controls[0].controls[4].update()
+    page.overlay[0].content.content.controls[0].controls[5].value = valores['horario_fin']
+    page.overlay[0].content.content.controls[0].controls[5].update()
     page.update()
-    
 
-    # result = []
-    # for aux in :
-    #     result.append(ft.dropdown.Option(aux[], text=aux[]))
-    # return result
 
 ############################################################################################################################
 # DROPDOWNS PARA LOS BOTTOMSHEETS DE LAS CARTAS, PARA PODER MODIFICARLAS SOLO CON VALORES YA EXISTENTES EN LA BASE DE DATOS
@@ -255,10 +257,21 @@ def get_dropdown_profesores():
         result.append(ft.dropdown.Option(aux[0], text=nombre_apellido))
     return result
 
-# def get_dropdown_asignaciones():
-#     print(asignacion_db.get_asignaciones()["rows"])
+def get_dropdown_dias():
+    dias = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo",]
+    result = []
+    for aux in dias:
+        result.append(ft.dropdown.Option(aux, text=aux))
+    return result
 
-# get_dropdown_asignaciones()
+def get_dropdown_horas_posibles():
+    result = []
+    for i in range(8, 23):
+        result.append(ft.dropdown.Option(i, text=i))
+    return result
+
+print(asignacion_db.get_asignaciones()["rows"])
+
 ############################################################################################################################
 
 
@@ -282,8 +295,17 @@ def crear_bottomsheet(page):
             label = "Profesor",
         ),
         ft.Dropdown(
-            options=[],
+            options=get_dropdown_dias(),
+            label = "Dia",
+        ),
+        ft.Dropdown(
+            options=get_dropdown_horas_posibles(),
             label = "Horario Comienzo",
+            disabled=True
+        ),
+        ft.Dropdown(
+            options=get_dropdown_horas_posibles(),
+            label = "Horario Fin",
             disabled=True
         ),
     ]
@@ -301,14 +323,18 @@ def crear_bottomsheet(page):
                 ft.ElevatedButton("Cambiar Horario de la Asignación", on_click=lambda e: habilitar_modificación_horario(page)),
             ])
             
-        ]),
+        ],height=900),
         padding=20,
         margin=20,
     )
 
-    return ft.BottomSheet(content=bottom_sheet_content)
+    return ft.BottomSheet(content=bottom_sheet_content, is_scroll_controlled=True)
 
 def main(page : ft.Page):
+    # Añade el BottomSheet a la página
+    bottom_sheet = crear_bottomsheet(page)
+    page.overlay.append(bottom_sheet)
+
     tabla = crear_tabla(page)
     page.add(
         ft.Container(
@@ -317,10 +343,6 @@ def main(page : ft.Page):
             alignment=ft.alignment.center,
         )
     )
-
-    # Añade el BottomSheet a la página
-    bottom_sheet = crear_bottomsheet(page)
-    page.overlay.append(bottom_sheet)
 
     # Añade botón para agregar asignaciones manualmente
     page.add(
