@@ -16,8 +16,14 @@ class Recurso():
         return data
 
     def get_recurso(self, id_recurso):
-        result = self.cursor.callproc("get_recurso", [id_recurso])
-        return result
+        self.cursor.callproc("get_recurso", [id_recurso])
+        colums = [descr.name for descr in self.cursor.description]
+        rows = [row for row in self.cursor.fetchall()]
+        data = {
+            "columns" : colums,
+            "rows" : rows
+        }
+        return data
 
     def insert_recurso(self, nombre : str, descripcion : str):
         result = self.cursor.callproc("insert_recurso", [nombre, descripcion])

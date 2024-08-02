@@ -206,14 +206,10 @@ def main(page: ft.Page):
 
     def handle_tap(e):
         e.control.open_view()
-    
-    #def grabar_tarjetas
 
     ###################################################################################
     #                                  CAMBIO DE RUTAS                                #
     ###################################################################################
-    
-    
 
     def navigation_change(e):
         destination = e.control.destinations[int(e.data)].label
@@ -442,23 +438,28 @@ def main(page: ft.Page):
             types = [id, id, number]
         return types
     
-    def populate_dropdowns(delete_modify_form):
+    def populate_dropdowns(bottom_sheet):
         route = page.route
-        controls = delete_modify_form.get_fields_controls()
+        controls = bottom_sheet.get_fields_controls()
         if route == "/asignaciones":
             aulas = aula_db.get_aulas_edificios()
             materias = materia_db.get_materias()
+            controls[1].label = "Aula"
+            controls[2].label = "Materia"
             for aula in aulas["rows"]:
                 controls[1].options.append(ft.dropdown.Option(key=aula[0],text=f"{aula[1]} - {aula[2]}"))
             for materia in materias["rows"]:
                 controls[2].options.append(ft.dropdown.Option(key=materia[0],text=f"{materia[1]} - {materia[3]}"))
         elif route == "/aulas":
             edificios = edificio_db.get_edificios()
+            controls[1].label = "Edificio"
             for edificio in edificios["rows"]:
                 controls[1].options.append(ft.dropdown.Option(key=edificio[0],text=edificio[1]))
         elif route == "/profesor por materia":
             materias = materia_db.get_materias()
             profesores = profesor_db.get_profesores()
+            controls[0].label = "Materia"
+            controls[1].label = "Profesor"
             for materia in materias["rows"]:
                 controls[0].options.append(ft.dropdown.Option(key=materia[0],text=f"{materia[1]} - {materia[3]}"))
             for profesor in profesores["rows"]:
@@ -466,11 +467,80 @@ def main(page: ft.Page):
         elif route == "/recursos por aula":
             aulas = aula_db.get_aulas_edificios()
             recursos = recurso_db.get_recursos()
+            controls[0].label = "Aula"
+            controls[1].label = "Recurso"
             for aula in aulas["rows"]:
                 controls[0].options.append(ft.dropdown.Option(key=aula[0],text=f"{aula[1]} - {aula[2]}"))
             for recurso in recursos["rows"]:
                 controls[1].options.append(ft.dropdown.Option(key=recurso[0],text=recurso[1]))
-
+                
+    def reemplazar_ids():
+        route = page.route
+        dashboard =  page.session.get("actual_data_table")
+        if route == "/asignaciones":
+            aulas = aula_db.get_aulas_edificios()["rows"]
+            materias = materia_db.get_materias()["rows"]
+            for row in dashboard.data_table.table_rows:
+                id_actual_aula = row.cells[1].content.value
+                for aula in aulas:
+                    if aula[0] == id_actual_aula:
+                        row.cells[1].content.value = f"{aula[1]} - {aula[2]}"
+                        break
+                row.cells[1].content.data = id_actual_aula
+                
+                id_actual_materia = row.cells[2].content.value
+                for materia in materias:
+                    if materia[0] == id_actual_materia:
+                        row.cells[2].content.value = f"{materia[1]} - {materia[3]}"
+                        break
+                row.cells[2].content.data = id_actual_materia
+                
+        elif route == "/aulas":
+            edificios = edificio_db.get_edificios()["rows"]
+            for row in dashboard.data_table.table_rows:
+                id_edificio_actual = row.cells[1].content.value
+                for edificio in edificios:
+                    if edificio[0] == id_edificio_actual:
+                        row.cells[1].content.value = edificio[1]
+                        break
+                row.cells[1].content.data = id_edificio_actual
+                
+        elif route == "/profesor por materia":
+            materias = materia_db.get_materias()["rows"]
+            profesores = profesor_db.get_profesores()["rows"]
+            for row in dashboard.data_table.table_rows:
+                id_actual_materia = row.cells[0].content.value
+                for materia in materias:
+                    if materia[0] == id_actual_materia:
+                        row.cells[0].content.value = f"{materia[1]} - {materia[3]}"
+                        break
+                row.cells[0].content.data = id_actual_materia
+                
+                id_actual_profesor = row.cells[1].content.value
+                for profesor in profesores:
+                    if profesor[0] == id_actual_profesor:
+                        row.cells[1].content.value = f"{profesor[3]}, {profesor[2]}"
+                        break
+                row.cells[1].content.data = id_actual_profesor
+                
+        elif route == "/recursos por aula":
+            aulas = aula_db.get_aulas_edificios()["rows"]
+            recursos = recurso_db.get_recursos()["rows"]
+            for row in dashboard.data_table.table_rows:
+                id_actual_aula = row.cells[0].content.value
+                for aula in aulas:
+                    if aula[0] == id_actual_aula:
+                        row.cells[0].content.value = f"{aula[1]} - {aula[2]}"
+                        break
+                row.cells[0].content.data = id_actual_aula
+                
+                id_actual_recurso = row.cells[1].content.value
+                for recurso in recursos:
+                    if recurso[0] == id_actual_recurso:
+                        row.cells[1].content.value = recurso[1]
+                        break
+                row.cells[1].content.data = id_actual_recurso
+                
     def route_change(e):
         route = e.route
         if route == "/":
@@ -498,6 +568,7 @@ def main(page: ft.Page):
             )
             container_main_window.content = dashboard_asignacion
             page.session.set("actual_data_table", dashboard_asignacion)
+            reemplazar_ids()
             page.update()
         elif route == "/aulas":
             container_main_window.offset = ft.Offset(0, 0)
@@ -519,6 +590,7 @@ def main(page: ft.Page):
             )
             container_main_window.content = dashboard_aula
             page.session.set("actual_data_table", dashboard_aula)
+            reemplazar_ids()
             page.update()
         elif route == "/edificios":
             container_main_window.offset = ft.Offset(0, 0)
@@ -628,6 +700,7 @@ def main(page: ft.Page):
             container_main_window.content = dashboard_profesor_por_materia
             page.session.set("actual_data_table",
                              dashboard_profesor_por_materia)
+            reemplazar_ids()
             page.update()
         elif route == "/recursos":
             container_main_window.offset = ft.Offset(0, 0)
@@ -670,6 +743,7 @@ def main(page: ft.Page):
             )
             container_main_window.content = dashboard_recurso_por_aula
             page.session.set("actual_data_table", dashboard_recurso_por_aula)
+            reemplazar_ids()
             page.update()
 
         elif route == "/ver_horarios":

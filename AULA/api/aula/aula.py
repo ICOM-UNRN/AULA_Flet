@@ -26,10 +26,25 @@ class Aula():
         }
         return data
 
-    def get_aula(self, nombre):
-        result = self.cursor.callproc("get_aula", [nombre])
-        self.conn.commit()
-        return result
+    def get_aula(self, id):
+        self.cursor.callproc("get_aula", [id])
+        columns = [descr.name for descr in self.cursor.description]
+        rows = [row for row in self.cursor.fetchall()]
+        data = {
+            "columns": columns,
+            "rows": rows
+        }
+        return data
+    
+    def get_aula_edificio(self, id):
+        self.cursor.callproc("get_aula_edificio", [id])
+        columns = [descr.name for descr in self.cursor.description]
+        rows = [row for row in self.cursor.fetchall()]
+        data = {
+            "columns": columns,
+            "rows": rows
+        }
+        return data
 
     def insert_aula(self, edificio, nombre, capacidad):
         self.cursor.callproc("insert_aula", [edificio, nombre, capacidad])

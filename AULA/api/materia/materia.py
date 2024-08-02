@@ -35,11 +35,16 @@ class Materia():
             print(f"Error al obtener carreras: {e}")
             return None
 
-    def get_materia(self, codigo_guarani):
+    def get_materia(self, id):
         try:
-            self.cursor.callproc("get_materia", [codigo_guarani])
-            result = self.cursor.fetchall()
-            return result
+            self.cursor.callproc("get_materia", [id])
+            columns = [descr.name for descr in self.cursor.description]
+            rows = [row for row in self.cursor.fetchall()]
+            data = {
+                "columns": columns,
+                "rows": rows
+            }
+            return data
         except Exception as e:
             print(f"Error al obtener materia: {e}")
             return None
