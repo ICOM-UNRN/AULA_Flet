@@ -41,7 +41,7 @@ class Custom_Card(ft.Container):
     def build(self):
         return self
 
-def generar_rows(texto_primera_columna: str = ""):
+def generar_cells_of_rows(texto_primera_columna: str = ""):
     result = []
     result.append(ft.DataCell(ft.Text(f"{texto_primera_columna}", width=100), data="Horario"))
     result.append(ft.DataCell(ft.Text("---"), data= "Lunes"),)
@@ -51,6 +51,24 @@ def generar_rows(texto_primera_columna: str = ""):
     result.append(ft.DataCell(ft.Text("---"), data="Viernes"),)
     result.append(ft.DataCell(ft.Text("---"), data="Sabado"),)
     result.append(ft.DataCell(ft.Text("---"), data="Domingo"),)
+    return result
+
+def generar_row_of_columns():
+    result = []
+    result.append(ft.DataColumn(ft.Text("", text_align=ft.TextAlign.CENTER), data="Horarios"),)
+    result.append(ft.DataColumn(ft.Text("Lunes", text_align=ft.TextAlign.CENTER), data="Lunes"),)
+    result.append(ft.DataColumn(ft.Text("Martes", text_align=ft.TextAlign.CENTER), data="Martes"),)
+    result.append(ft.DataColumn(ft.Text("Miercoles", text_align=ft.TextAlign.CENTER), data="Miercoles"),)
+    result.append(ft.DataColumn(ft.Text("Jueves", text_align=ft.TextAlign.CENTER), data="Jueves"),)
+    result.append(ft.DataColumn(ft.Text("Viernes", text_align=ft.TextAlign.CENTER), data="Viernes"),)
+    result.append(ft.DataColumn(ft.Text("Sabado", text_align=ft.TextAlign.CENTER), data="Sabado"),)
+    result.append(ft.DataColumn(ft.Text("Domingo", text_align=ft.TextAlign.CENTER), data="Domingo"),)
+    return result
+
+def generar_all_rows():
+    result = []
+    for i in range(8, 23):
+        result.append(ft.DataRow(data=f"{i}>{i+1}", cells=generar_cells_of_rows(f"{i}-{i+1}")))
     return result
 
 def modificar_celda(tabla: ft.DataTable = None, fila: int = 0, columna: int = 0, contenido: ft.Container = None):
@@ -66,79 +84,8 @@ def crear_tabla():
     tabla = ft.DataTable(
         data_row_max_height=float("inf"),
         expand=True,
-        columns=[
-            ft.DataColumn(ft.Text("", text_align=ft.TextAlign.CENTER), data="Horarios"),
-            ft.DataColumn(ft.Text("Lunes", text_align=ft.TextAlign.CENTER), data="Lunes"),
-            ft.DataColumn(ft.Text("Martes", text_align=ft.TextAlign.CENTER), data="Martes"),
-            ft.DataColumn(ft.Text("Miercoles", text_align=ft.TextAlign.CENTER), data="Miercoles"),
-            ft.DataColumn(ft.Text("Jueves", text_align=ft.TextAlign.CENTER), data="Jueves"),
-            ft.DataColumn(ft.Text("Viernes", text_align=ft.TextAlign.CENTER), data="Viernes"),
-            ft.DataColumn(ft.Text("Sabado", text_align=ft.TextAlign.CENTER), data="Sabado"),
-            ft.DataColumn(ft.Text("Domingo", text_align=ft.TextAlign.CENTER), data="Domingo"),
-
-        ],
-        rows=[
-            ft.DataRow(
-                data="8>9",
-                cells=generar_rows("8-9")
-            ),
-            ft.DataRow(
-                data="9>10",
-                cells=generar_rows("9-10")
-            ),
-            ft.DataRow(
-                data="10>11",
-                cells=generar_rows("10-11")
-            ),
-            ft.DataRow(
-                data="11>12",
-                cells=generar_rows("11-12")
-            ),
-            ft.DataRow(
-                data="12>13",
-                cells=generar_rows("12-13")
-            ),
-            ft.DataRow(
-                data="13>14",
-                cells=generar_rows("13-14")
-            ),
-            ft.DataRow(
-                data="14>15",
-                cells=generar_rows("14-15")
-            ),
-            ft.DataRow(
-                data="15>16",
-                cells=generar_rows("15-16")
-            ),
-            ft.DataRow(
-                data="16>17",
-                cells=generar_rows("16-17")
-            ),
-            ft.DataRow(
-                data="17>18",
-                cells=generar_rows("17-18")
-            ),
-            ft.DataRow(
-                data="18>19",
-                cells=generar_rows("18-19")
-            ),
-            ft.DataRow(
-                data="19>20",
-                cells=generar_rows("19-20")
-            ),
-            ft.DataRow(
-                data="20>21",
-                cells=generar_rows("20-21")
-            ),
-            ft.DataRow(
-                data="21>22",
-                cells=generar_rows("21-22")
-            ),
-            ft.DataRow(
-                data="22>23",
-                cells=generar_rows("22-23")
-            )
-        ],
+        columns=generar_row_of_columns(),
+        rows=generar_all_rows()
     )
 
     test_data = [
