@@ -1,1 +1,27 @@
-Carrera,Codigo Guarani,Materia,Edificio,Profesor,Aula,Dia,Hora inicio,Hora fin
+Carrera,Código Guarani,Materia,Profesor,Aula,Día,Hora Inicio,Hora Fin,Estado
+B6003,Programación I,Miguel MARIGUIN,No se pudo asignar aula,VIE,16,20,Fallo en asignación
+B6003,Programación I,MARTIN RENE VILUGRON,No se pudo asignar aula,VIE,14,18,Fallo en asignación
+B6003,Programación I,MAURO ALEJANDRO FERMIN,No se pudo asignar aula,VIE,16,20,Fallo en asignación
+B6003,Programación I,DANIEL EDUARDO TEIRA,No se pudo asignar aula,VIE,14,18,Fallo en asignación
+B6003,Programación I,NICOLÁS LUCIANO BERTOLO,No se pudo asignar aula,VIE,16,20,Fallo en asignación
+B6003,Programación I,IVAN PEDRO NOMDEDEU,No se pudo asignar aula,VIE,16,20,Fallo en asignación
+B6004,Electrónica Digital,JUAN PABLO CALDO,No se pudo asignar aula,VIE,14,18,Fallo en asignación
+B6004,Electrónica Digital,LAUTARO ACHA,No se pudo asignar aula,VIE,14,18,Fallo en asignación
+B6005,Química,GASTON EDUARDO DI BONIS,No se pudo asignar aula,VIE,16,20,Fallo en asignación
+B6005,Química,RAFAEL FERNANDO RUANO,No se pudo asignar aula,VIE,16,20,Fallo en asignación
+B6002,Física General I,LORENA LUISA BAEZ,No se pudo asignar aula,VIE,16,20,Fallo en asignación
+B6002,Física General I,CATERINA LAMPERTI,No se pudo asignar aula,VIE,14,18,Fallo en asignación
+B6002,Física General I,MARÍA DE LOS ÁNGELE DA FONSECA,No se pudo asignar aula,VIE,16,20,Fallo en asignación
+B5638,Inglés Técnico,MONICA DELIA LORENZO DE MAGOIA,No se pudo asignar aula,VIE,14,18,Fallo en asignación
+B6017,Seguridad Ambiental y Laboral,VANINA ESTELA RIBERI,No se pudo asignar aula,VIE,14,18,Fallo en asignación
+B6017,Seguridad Ambiental y Laboral,MONICA DELIA LORENZO DE MAGOIA,No se pudo asignar aula,VIE,14,18,Fallo en asignación
+B6012,Análisis de Circuitos,MARIANO SANTAYA,No se pudo asignar aula,VIE,14,18,Fallo en asignación
+B6012,Análisis de Circuitos,GRETEL VICTORIA  LASCANO WARNES,No se pudo asignar aula,VIE,14,18,Fallo en asignación
+B6019,Señales y Sistemas,GUILLERMO ENRIQUE GOMEZ,No se pudo asignar aula,VIE,14,18,Fallo en asignación
+B6020,Redes de Área Local y Extendida,IGNACIO ENRIQUE CATALANO,No se pudo asignar aula,VIE,16,20,Fallo en asignación
+B6018,Sistemas Operativos I,CARLOS GERMÁN TEJERO,No se pudo asignar aula,VIE,14,18,Fallo en asignación
+B6011,Física General II,CATERINA LAMPERTI,No se pudo asignar aula,VIE,14,18,Fallo en asignación
+B6011,Física General II,LORENA LUISA BAEZ,No se pudo asignar aula,VIE,16,20,Fallo en asignación
+B6010,Matemática III,CATERINA LAMPERTI,No se pudo asignar aula,VIE,14,18,Fallo en asignación
+B6010,Matemática III,FABIAN EDUARDO GIANA,No se pudo asignar aula,VIE,16,20,Fallo en asignación
+B6025,Inteligencia Artificial,WALTER FABIAN AGÜERO,No se pudo asignar aula,VIE,16,20,Fallo en asignación

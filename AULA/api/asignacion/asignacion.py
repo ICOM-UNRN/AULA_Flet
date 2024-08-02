@@ -15,9 +15,10 @@ class Asignacion():
             "rows": rows
         }
         return data
-    
+
     def get_asignaciones_edificios(self):
-        self.cursor.execute('select asi.*, au.id_edificio from asignacion asi inner join aula au on (au.id_aula = asi.id_aula)')
+        self.cursor.execute(
+            'select asi.*, au.id_edificio from asignacion asi inner join aula au on (au.id_aula = asi.id_aula)')
         colums = [descr.name for descr in self.cursor.description]
         rows = [row for row in self.cursor.fetchall()]
         data = {
@@ -38,7 +39,8 @@ class Asignacion():
             edificio = None
         if aula == "":
             aula = None
-        self.cursor.callproc("get_materias_eventos_asignados", [carrera, edificio, aula])
+        self.cursor.callproc("get_materias_eventos_asignados", [
+                             carrera, edificio, aula])
         self.conn.commit()
         colums = [descr.name for descr in self.cursor.description]
         rows = [row for row in self.cursor.fetchall()]
@@ -57,7 +59,7 @@ class Asignacion():
             "insert_asignacion", [aula, dia, comienzo, fin, materia, evento])
         self.conn.commit()
         return result
-    
+
     def insert_asignacion_card(self, aula, materia, dia, hora_inicio, hora_fin):
         result = self.cursor.callproc(
             "insert_asignacion_card", [aula, materia, dia, hora_inicio, hora_fin])
