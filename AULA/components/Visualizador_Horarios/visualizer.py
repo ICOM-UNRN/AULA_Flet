@@ -31,7 +31,7 @@ profesor_db = Profesor(conn=db)
 # profesor_por_materia_db = Profesor_por_materia(conn=db)
 
 class Custom_Card(ft.Container):
-    def __init__(self, func_on_click: Callable = None,materia: str = "", horario_comienzo: int = 8, horario_fin: int = 9, profesor: str = "", aula: str = "", dia: str = "", *args: list, **kwargs: dict):
+    def __init__(self, func_on_click: Callable = None,materia: str = "", horario_comienzo: int = 8, horario_fin: int = 9, profesor: str = "", aula: str = "", dia: str = "", id_asignacion: int = None, *args: list, **kwargs: dict):
         super().__init__(*args, **kwargs)
         self.data= {
             "materia": materia,
@@ -39,7 +39,8 @@ class Custom_Card(ft.Container):
             "horario_fin": horario_fin,
             "profesor": profesor,
             "aula": aula,
-            "dia": dia
+            "dia": dia,
+            "id_asignacion": id_asignacion
         }
         self.width=150
         self.expand=True
@@ -53,7 +54,7 @@ class Custom_Card(ft.Container):
         self.on_click= func_on_click
         self.border_radius=10
         self.padding=10
-
+    
     def get_card_data(self) -> dict:
         """Returns de card actual data"""
         return self.data
@@ -72,6 +73,18 @@ class Custom_Card(ft.Container):
 
     def build(self):
         return self
+
+
+def establecer_asignaciones_materias(carrera, edificio, aula) -> dict:
+    asignaciones = asignacion_db.get_materias_eventos_asignados(carrera, edificio, aula)
+    datos = asignaciones["rows"]
+    data = []
+    for linea in datos:
+        delta_horario = linea[9] - (linea[8])
+        while delta_horario > 0:
+            data.append([(linea[0],linea[1]),(linea[2],linea[3]),linea[6],linea[7],linea[8]+(delta_horario-1), linea[8]+delta_horario,linea[10]])
+            delta_horario -= 1
+    return data
 
 def generar_cells_of_rows(texto_primera_columna: str = ""):
     result = []
@@ -123,19 +136,20 @@ def crear_tabla(page):
         rows=generar_all_rows()
     )
 
-    test_data = [
-        [(6, "B142"),(5,"Defensa Contra las Artes Obscuras"),(40, "CATERINA"), "Lunes",8,9],
-        [(5, "Aula 102"),(2,"Fisica 2"),("Profesor 1", 40), "Lunes",8,9],
-        [(10, "Aula 102"),(3,"Matematica"),("Profesor 2", 40), "Lunes",9,10],
-        [(24, "Aula 142"),(5,"Defensa Contra las Artes Obscuras"),("Profesor 3", 40), "Lunes",10,11],
-        [(3, "Aula 101"),(4,"Programacion"),("Profesor 4", 30), "Martes",11,12],
-        [(9, "Aula 101"),(1,"Algebra"),("Profesor 5", 30), "Martes",12,13],
-        [(2, "Aula 141"),(6,"Estadistica"),("Profesor 6", 30), "Martes",13,14],
-        [(7, "Aula 103"),(8,"Informatica"),("Profesor 7", 25), "Miercoles",14,15],
-        [(4, "Aula 105"),(7,"Filosofia"),("Profesor 8", 25), "Miercoles",15,16],
-        [(1, "Aula 143"),(9,"Historia"),("Profesor 9", 25), "Miercoles",16,17],
-        [(8, "Aula 104"),(10,"Sociologia"),("Profesor 10", 18), "Jueves",17,18]
-    ]
+    test_data = establecer_asignaciones_materias(None,None,None)
+    # [
+    #     [(6, "B142"),(5,"Defensa Contra las Artes Obscuras"),(40, "CATERINA"), "Lunes",8,9],
+    #     [(5, "Aula 102"),(2,"Fisica 2"),("Profesor 1", 40), "Lunes",8,9],
+    #     [(10, "Aula 102"),(3,"Matematica"),("Profesor 2", 40), "Lunes",9,10],
+    #     [(24, "Aula 142"),(5,"Defensa Contra las Artes Obscuras"),("Profesor 3", 40), "Lunes",10,11],
+    #     [(3, "Aula 101"),(4,"Programacion"),("Profesor 4", 30), "Martes",11,12],
+    #     [(9, "Aula 101"),(1,"Algebra"),("Profesor 5", 30), "Martes",12,13],
+    #     [(2, "Aula 141"),(6,"Estadistica"),("Profesor 6", 30), "Martes",13,14],
+    #     [(7, "Aula 103"),(8,"Informatica"),("Profesor 7", 25), "Miercoles",14,15],
+    #     [(4, "Aula 105"),(7,"Filosofia"),("Profesor 8", 25), "Miercoles",15,16],
+    #     [(1, "Aula 143"),(9,"Historia"),("Profesor 9", 25), "Miercoles",16,17],
+    #     [(8, "Aula 104"),(10,"Sociologia"),("Profesor 10", 18), "Jueves",17,18]
+    # ]
 
     dias = {
         "Lunes": 1,
@@ -173,6 +187,7 @@ def crear_tabla(page):
                 dia= data_asignacion[3],
                 horario_comienzo= data_asignacion[4],
                 horario_fin= data_asignacion[5],
+                id_asignacion= data_asignacion[6],
                 func_on_click= click_card
             )
         )
@@ -201,36 +216,73 @@ def crear_tabla(page):
 #                 #print(table.rows[i].cells[j].content.value)
 #                 pass
 # ---------------------------------------------------------------------------------------------------
+def eliminar_asignacion(page, campos):
+    asignacion_db.delete_asignacion(campos[0].value)
+    
+    page.session.get("main_container").content = crear_tabla(page)    
+    page.overlay[0].open = False
+    page.update()
 
-
+def insertar_asignacion(page, campos):
+    valores = {
+        "id_asignacion": campos[0].value,
+        "id_aula": campos[2].value,
+        "id_materia": campos[1].value,
+        "dia": campos[3].value,
+        "horario_inicio": campos[4].value,
+        "hora_fin":campos[5].value
+    }
+    asignacion_db.insert_asignacion(valores["id_aula"],valores["dia"],valores["horario_inicio"],valores["hora_fin"],valores["id_materia"])
+    
+    campos[0].value=""
+    campos[1].value=""
+    campos[2].value=""
+    campos[3].value=""
+    campos[4].value=""
+    campos[5].value=""
+    
+    page.session.get("main_container").content = crear_tabla(page)    
+    page.overlay[1].open = False
+    page.update()
+    
 # Función para guardar los valores y vaciar los campos de texto
 def guardar_y_vaciar_campos(page, campos):
     valores = {
-        "campo1": campos[0].value,
-        "campo2": campos[1].value,
-        "campo3": campos[2].value
+        "id_asignacion": campos[0].value,
+        "id_aula": campos[2].value,
+        "id_materia": campos[1].value,
+        "dia": campos[3].value,
+        "horario_inicio": campos[4].value,
+        "hora_fin":campos[5].value
     }
     print("Valores guardados:", valores)
-    campos[0].value = ""
-    campos[1].value = ""
-    campos[2].value = ""
+    asignacion_db.update_asignacion(valores["id_asignacion"],valores["id_aula"],valores["id_materia"],None,valores["dia"],valores["horario_inicio"],valores["hora_fin"])
+    page.session.get("main_container").content = crear_tabla(page)
+    # campos[0].value = ""
+    # campos[1].value = ""
+    # campos[2].value = ""
+    
     page.overlay[0].open = False
     page.update()
 
 def cargar_valores_a_textfields(page, valores):
     print(f"||||{valores}|||")
-    page.overlay[0].content.content.controls[0].controls[0].value = valores['materia'][0]
-    page.overlay[0].content.content.controls[0].controls[0].update()
-    page.overlay[0].content.content.controls[0].controls[1].value = valores['aula'][0]
-    page.overlay[0].content.content.controls[0].controls[1].update()
-    page.overlay[0].content.content.controls[0].controls[2].value = valores['profesor'][1]
-    page.overlay[0].content.content.controls[0].controls[2].update()
-    page.overlay[0].content.content.controls[0].controls[3].value = valores['dia']
-    page.overlay[0].content.content.controls[0].controls[3].update()
-    page.overlay[0].content.content.controls[0].controls[4].value = valores['horario_comienzo']
-    page.overlay[0].content.content.controls[0].controls[4].update()
-    page.overlay[0].content.content.controls[0].controls[5].value = valores['horario_fin']
-    page.overlay[0].content.content.controls[0].controls[5].update()
+    valores_db = asignacion_db.get_asignacion_por_id(valores['id_asignacion'])["rows"][0]
+    controles = page.overlay[0].content.content.controls[0]
+    controles.controls[0].value = valores['id_asignacion']
+    controles.controls[0].update()
+    controles.controls[1].value = valores_db[1]
+    controles.controls[1].update()
+    controles.controls[2].value = valores_db[0]
+    controles.controls[2].update()
+    # page.overlay[0].content.content.controls[0].controls[3].value = valores['profesor']
+    # page.overlay[0].content.content.controls[0].controls[3].update()
+    controles.controls[3].value = valores_db[2]
+    controles.controls[3].update()
+    controles.controls[4].value = valores_db[3]
+    controles.controls[4].update()
+    controles.controls[5].value = valores_db[4]
+    controles.controls[5].update()
     page.update()
 
 
@@ -264,24 +316,40 @@ def get_dropdown_dias():
         result.append(ft.dropdown.Option(aux, text=aux))
     return result
 
-def get_dropdown_horas_posibles():
+def get_dropdown_horas_posibles(inicio: bool = False):
     result = []
-    for i in range(8, 23):
+    for i in range(8, 24):
+        if inicio and i==23:
+            break
         result.append(ft.dropdown.Option(i, text=i))
     return result
 
-print(asignacion_db.get_asignaciones()["rows"])
-
 ############################################################################################################################
+def cerrar_bottom_sheet_insertar(page,campos):
+    campos[0].value=""
+    campos[1].value=""
+    campos[2].value=""
+    campos[3].value=""
+    campos[4].value=""
+    campos[5].value=""
+    page.overlay[1].open = False
+    page.update()
 
+def nueva_asignacion(page):
+    page.overlay[1].open = True
+    page.update()
 
 def habilitar_modificación_horario(page):
     page.overlay[0].content.content.controls[0].controls[3].disabled = False
     page.update()
 
-def crear_bottomsheet(page):
+def crear_bottomsheet(page, insert: bool):
     # Campos de texto
     campos = [
+        ft.TextField(
+            label="ID asignacion",
+            disabled=True
+            ),
         ft.Dropdown(
             options=get_dropdown_materias(),
             label = "Materia",
@@ -290,63 +358,79 @@ def crear_bottomsheet(page):
             options=get_dropdown_aulas(),
             label = "Aula",
         ),
-        ft.Dropdown(
-            options=get_dropdown_profesores(),
-            label = "Profesor",
-        ),
+        # ft.Dropdown(
+        #     options=get_dropdown_profesores(),
+        #     label = "Profesor",
+        # ),
         ft.Dropdown(
             options=get_dropdown_dias(),
             label = "Dia",
         ),
         ft.Dropdown(
-            options=get_dropdown_horas_posibles(),
+            options=get_dropdown_horas_posibles(True),
             label = "Horario Comienzo",
-            disabled=True
+            # disabled=True
         ),
         ft.Dropdown(
             options=get_dropdown_horas_posibles(),
             label = "Horario Fin",
-            disabled=True
+            # disabled=True
         ),
     ]
-
-    # Contenido del BottomSheet
-    bottom_sheet_content = ft.Container(
+    
+    if insert :
+        bottom_sheet_content = ft.Container(
         content=ft.Column([
             ft.Column(campos),
             ft.Row([
-                ft.ElevatedButton("Guardar Cambios", on_click=lambda e: guardar_y_vaciar_campos(page, campos)),
-                ft.ElevatedButton("Borrar Asignación", on_click=lambda e: guardar_y_vaciar_campos(page, campos)),
+                ft.ElevatedButton(text="Guardar", bgcolor=ft.colors.BLUE_400,
+                                      color=ft.colors.BLACK, icon=ft.icons.SAVE, on_click=lambda e: insertar_asignacion(page, campos)),
+                ft.ElevatedButton(text="Cancelar", bgcolor=ft.colors.RED_400, color=ft.colors.BLACK,
+                                      icon=ft.icons.CANCEL, on_click=lambda e: cerrar_bottom_sheet_insertar(page,campos)),
             ]),
-            ft.Row([
-                ft.ElevatedButton("Cambiar Dia de la Asignación", on_click=lambda e: guardar_y_vaciar_campos(page, campos)),
-                ft.ElevatedButton("Cambiar Horario de la Asignación", on_click=lambda e: habilitar_modificación_horario(page)),
-            ])
             
-        ],height=900),
+        ]),
         padding=20,
         margin=20,
     )
+    else:
+        # Contenido del BottomSheet
+        bottom_sheet_content = ft.Container(
+            content=ft.Column([
+                ft.Column(campos),
+                ft.Row([
+                    ft.ElevatedButton("Guardar Cambios", bgcolor=ft.colors.AMBER_400,
+                                        color=ft.colors.BLACK, icon=ft.icons.EDIT, on_click=lambda e: guardar_y_vaciar_campos(page, campos)),
+                    ft.ElevatedButton("Borrar Asignación", bgcolor=ft.colors.RED_400,
+                                        color=ft.colors.BLACK, icon=ft.icons.DELETE, on_click=lambda e: eliminar_asignacion(page, campos)),
+                ]),
+                
+            ]),
+            padding=20,
+            margin=20,
+        )
 
     return ft.BottomSheet(content=bottom_sheet_content, is_scroll_controlled=True)
 
 def main(page : ft.Page):
     # Añade el BottomSheet a la página
-    bottom_sheet = crear_bottomsheet(page)
+    bottom_sheet = crear_bottomsheet(page,False)
+    bottom_sheet_insertar = crear_bottomsheet(page,True)
     page.overlay.append(bottom_sheet)
+    page.overlay.append(bottom_sheet_insertar)
 
     tabla = crear_tabla(page)
-    page.add(
-        ft.Container(
-            expand=True,
-            content=tabla,
-            alignment=ft.alignment.center,
-        )
-    )
+    main_container = ft.Container(
+                        expand=True,
+                        content=tabla,
+                        alignment=ft.alignment.center,
+                    )
+    page.add(main_container)
+    page.session.set("main_container", main_container)
 
     # Añade botón para agregar asignaciones manualmente
     page.add(
-        ft.ElevatedButton("Agregar Asignación Manualmente [falta aplicar función]", on_click=lambda e: print(e))#mostrar_bottom_sheet(page, tabla, 0, 0)
+        ft.ElevatedButton("Agregar Asignación Manualmente", on_click=lambda e: nueva_asignacion(page))#mostrar_bottom_sheet(page, tabla, 0, 0)
     )
 
 
