@@ -15,6 +15,7 @@ from api.profesor.profesor_por_materia import Profesor_por_materia
 from api.recurso.recurso import Recurso
 from api.recurso.recurso_por_aula import Recurso_por_aula
 from catador.app.src.leerExcel2 import leer_excel
+from components.Visualizador_Horarios.visualizer import main_er
 
 
 def main(page: ft.Page):
@@ -63,7 +64,7 @@ def main(page: ft.Page):
             "Domingo": [],
         }
         for linea in datos:
-            delta_horario = linea[6] - (linea[5])
+            delta_horario = linea[9] - (linea[8])
             while delta_horario > 0:
                 dicc_semana[linea[4]].append([linea[0],linea[1], linea[5]+(delta_horario-1), linea[5]+delta_horario, linea[3]])
                 delta_horario -= 1
@@ -1083,6 +1084,22 @@ def main(page: ft.Page):
             ]
         )
     )
+
+    def ir_a_pagina_horarios(page):
+        page.controls.clear()
+        page.overlay.clear()
+        main_er(page)
+        
+        def ir_a_pagina_principal(page):
+            page.controls.clear()
+            page.overlay.clear()
+            main(page)
+        
+        btn_schedulesscreen = ft.TextButton("volver a la pagina principal", on_click=lambda _:ir_a_pagina_principal(page))
+        page.add(btn_schedulesscreen)
+        
+    btn_schedulesscreen = ft.TextButton("ir a horarios", on_click=lambda _:ir_a_pagina_horarios(page))
+    page.add(btn_schedulesscreen)
 
     page.on_route_change = route_change
     page.go("/")

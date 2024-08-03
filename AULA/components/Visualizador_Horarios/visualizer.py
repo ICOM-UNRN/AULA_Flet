@@ -412,7 +412,7 @@ def crear_bottomsheet(page, insert: bool):
 
     return ft.BottomSheet(content=bottom_sheet_content, is_scroll_controlled=True)
 
-def main(page : ft.Page):
+def main_er(page : ft.Page):
     # Añade el BottomSheet a la página
     bottom_sheet = crear_bottomsheet(page,False)
     bottom_sheet_insertar = crear_bottomsheet(page,True)
@@ -435,4 +435,4 @@ def main(page : ft.Page):
 
 
 if __name__ == '__main__':
-    ft.app(target=main)
+    ft.app(target=main_er)
