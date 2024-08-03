@@ -935,23 +935,23 @@ def main(page: ft.Page):
         controls=listas_busquedas["search_bar_edificio"],
     )
 
-    def get_items_all_week(container_vista):
-        day_name = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
-        result = []
-        for i in range(len(container_vista.content.controls[1].content.controls[1].controls[0].rows)):
-            day = []
-            for j in range(1, len(container_vista.content.controls[1].content.controls[1].controls[0].rows[i].cells)):
-                aux = container_vista.content.controls[1].content.controls[1].controls[0].rows[i].cells[j].content.get_items()
-                #for item in aux:
-                day.append([day_name[j-1], aux])
-            result.append(day)
-        print("###########################################")
-        for i in result:
-            for j in i:
-                print(j)
-            print("--- fin fila ---")
-        print("###########################################")
-        return result
+    # def get_items_all_week(container_vista):
+    #     day_name = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
+    #     result = []
+    #     for i in range(len(container_vista.content.controls[1].content.controls[1].controls[0].rows)):
+    #         day = []
+    #         for j in range(1, len(container_vista.content.controls[1].content.controls[1].controls[0].rows[i].cells)):
+    #             aux = container_vista.content.controls[1].content.controls[1].controls[0].rows[i].cells[j].content.get_items()
+    #             #for item in aux:
+    #             day.append([day_name[j-1], aux])
+    #         result.append(day)
+    #     print("###########################################")
+    #     for i in result:
+    #         for j in i:
+    #             print(j)
+    #         print("--- fin fila ---")
+    #     print("###########################################")
+    #     return result
 
     # btn_grabar_de_tarjetas_a_base = ft.TextButton(
     #     "Grabar Tarjetas actules en la Base de Datos",
@@ -979,7 +979,7 @@ def main(page: ft.Page):
         padding=10,
         content=ft.Column(
             controls=[columns_search_bars,
-                      container_horarios]
+                      ft.Column(controls=container_horarios,scroll=ft.ScrollMode.AUTO)]
         ),
     )
 
@@ -1094,18 +1094,18 @@ def main(page: ft.Page):
         )
     )
 
-    def ir_a_pagina_horarios(page):
-        page.controls.clear()
-        page.overlay.clear()
-        main_er(page)
+    # def ir_a_pagina_horarios(page):
+    #     page.controls.clear()
+    #     page.overlay.clear()
+    #     main_er(page)
         
-        def ir_a_pagina_principal(page):
-            page.controls.clear()
-            page.overlay.clear()
-            main(page)
+    #     def ir_a_pagina_principal(page):
+    #         page.controls.clear()
+    #         page.overlay.clear()
+    #         main(page)
         
-        btn_schedulesscreen = ft.TextButton("volver a la pagina principal", on_click=lambda _:ir_a_pagina_principal(page))
-        page.add(btn_schedulesscreen)
+    #     btn_schedulesscreen = ft.TextButton("volver a la pagina principal", on_click=lambda _:ir_a_pagina_principal(page))
+    #     page.add(btn_schedulesscreen)
         
     # btn_schedulesscreen = ft.TextButton("ir a horarios", on_click=lambda _:ir_a_pagina_horarios(page))
     # page.add(btn_schedulesscreen)
