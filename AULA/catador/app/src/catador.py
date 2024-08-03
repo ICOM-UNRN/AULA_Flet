@@ -24,11 +24,11 @@ def mover_archivos_a_carpeta(carpeta_destino):
             print(f"Archivo '{archivo}' movido a '{carpeta_destino}'.")
 
 
-def main(nombre_archivo):
+def main():
     try:
         # Ejecutar leerExcel.py usando subprocess
         subprocess.run(
-            ["python", nombre_archivo], check=True
+            ["python", r"AULA/catador/app/src/leerExcel2.py"], check=True
         )
 
         # Crear el edificio
