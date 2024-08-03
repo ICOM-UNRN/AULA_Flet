@@ -81,7 +81,7 @@ def main(page: ft.Page):
         # removedor = ItemList_Remover(page, "ItemList_removedor")
         # modificador = ItemList_Modifier(page, "ItemList_modoficador")
 
-        column_visualizer = main_er(page)
+        column_visualizer = main_er(page, carrera, edificio, aula)
         # ft.Row(
         #     vertical_alignment="start",
         #     scroll= ft.ScrollMode.ALWAYS,
@@ -761,7 +761,8 @@ def main(page: ft.Page):
             load_search_bars()
             container_main_window.offset = ft.Offset(0, 0)
             container_main_window.content = container_vista_horarios
-            crear_visualizacion_horarios(None, None, None)
+            search_bar_aula.value = search_bar_aula.controls[0].title.value
+            crear_visualizacion_horarios(None, None, search_bar_aula.controls[0].title.value)
             page.update()
 
     ###################################################################################

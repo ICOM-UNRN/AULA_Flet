@@ -246,7 +246,8 @@ def insertar_asignacion(page, campos):
     campos[4].value=""
     campos[5].value=""
     
-    page.session.get("main_container").content = crear_tabla(page)    
+    aula = aula_db.get_aula(valores["id_aula"])["rows"][0][2]
+    page.session.get("main_container").content = crear_tabla(page,None,None,aula) 
     page.overlay[2].open = False
     page.update()
     
@@ -262,7 +263,8 @@ def guardar_y_vaciar_campos(page, campos):
     }
     print("Valores guardados:", valores)
     asignacion_db.update_asignacion(valores["id_asignacion"],valores["id_aula"],valores["id_materia"],None,valores["dia"],valores["horario_inicio"],valores["hora_fin"])
-    page.session.get("main_container").content = crear_tabla(page)
+    aula = aula_db.get_aula(valores["id_aula"])["rows"][0][2]
+    page.session.get("main_container").content = crear_tabla(page,None,None,aula)
     # campos[0].value = ""
     # campos[1].value = ""
     # campos[2].value = ""
@@ -417,14 +419,14 @@ def crear_bottomsheet(page, insert: bool):
 
     return ft.BottomSheet(content=bottom_sheet_content, is_scroll_controlled=True)
 
-def main_er(page : ft.Page):
+def main_er(page : ft.Page, carrera = None, edificio = None, aula = None):
     # Añade el BottomSheet a la página
     bottom_sheet = crear_bottomsheet(page,False)
     bottom_sheet_insertar = crear_bottomsheet(page,True)
     page.overlay.append(bottom_sheet)
     page.overlay.append(bottom_sheet_insertar)
 
-    tabla = crear_tabla(page)
+    tabla = crear_tabla(page,carrera,edificio,aula)
     main_container = ft.Container(
                         expand=True,
                         content=tabla,
