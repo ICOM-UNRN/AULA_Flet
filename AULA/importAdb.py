@@ -126,8 +126,8 @@ def main():
     profesor_db = Profesor(conn)
     materia_db = Materia(conn)
     profesor_por_materia_db = Profesor_por_materia(conn)
-
-    main_catador()
+    nombre_archivo = path
+    main_catador(nombre_archivo)
     archivo_profesores = 'AULA/archivos_generados/profesores.json'
     archivo_materias = 'AULA/archivos_generados/materias.json'
     archivo_profesor_por_materia = 'AULA/archivos_generados/profesor_por_materia.json'
