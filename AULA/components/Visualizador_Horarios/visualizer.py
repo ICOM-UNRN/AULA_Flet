@@ -120,12 +120,12 @@ def modificar_celda(tabla: ft.DataTable = None, fila: int = 0, columna: int = 0,
     if (tabla is not None) and isinstance(tabla, ft.DataTable):
         tabla.rows[fila].cells[columna].content = contenido
 
-def crear_tabla(page):
+def crear_tabla(page, carrera = None, edificio = None, aula = None):
     def click_card(e: ft.ControlEvent):
         card = e.control
         data_card = card.get_card_data()
         print(data_card)
-        page.overlay[0].open = True
+        page.overlay[1].open = True
         page.update()
         cargar_valores_a_textfields(page, data_card)
 
@@ -133,10 +133,10 @@ def crear_tabla(page):
         data_row_max_height=float("inf"),
         expand=True,
         columns=generar_row_of_columns(),
-        rows=generar_all_rows()
+        rows=generar_all_rows(),
     )
 
-    test_data = establecer_asignaciones_materias(None,None,None)
+    test_data = establecer_asignaciones_materias(carrera,edificio,aula)
     # [
     #     [(6, "B142"),(5,"Defensa Contra las Artes Obscuras"),(40, "CATERINA"), "Lunes",8,9],
     #     [(5, "Aula 102"),(2,"Fisica 2"),("Profesor 1", 40), "Lunes",8,9],
@@ -174,7 +174,7 @@ def crear_tabla(page):
 
     for data_asignacion in test_data:
         materia = data_asignacion[1][1]
-        bg_color_card = bgcolor_segun_materia.get(materia, "#FFFFFF")
+        bg_color_card = bgcolor_segun_materia.get(materia, "#9B6B6B")
         modificar_celda(
             tabla=tabla,
             fila= data_asignacion[4] - 8,
@@ -201,7 +201,7 @@ def crear_tabla(page):
 #         print(f"{page.route}")
 #         print(f"...[{i}][{j}]")
 #         #print(f"...[{i}][{j}]|{table.rows[i].cells[j].content.get_card_data()}")
-#         # page.overlay[0].open = True
+#         # page.overlay[1].open = True
 #         # page.update()
     
 #     for i in range(len(table.rows)):
@@ -220,7 +220,7 @@ def eliminar_asignacion(page, campos):
     asignacion_db.delete_asignacion(campos[0].value)
     
     page.session.get("main_container").content = crear_tabla(page)    
-    page.overlay[0].open = False
+    page.overlay[1].open = False
     page.update()
 
 def insertar_asignacion(page, campos):
@@ -242,7 +242,7 @@ def insertar_asignacion(page, campos):
     campos[5].value=""
     
     page.session.get("main_container").content = crear_tabla(page)    
-    page.overlay[1].open = False
+    page.overlay[2].open = False
     page.update()
     
 # Función para guardar los valores y vaciar los campos de texto
@@ -262,21 +262,21 @@ def guardar_y_vaciar_campos(page, campos):
     # campos[1].value = ""
     # campos[2].value = ""
     
-    page.overlay[0].open = False
+    page.overlay[1].open = False
     page.update()
 
 def cargar_valores_a_textfields(page, valores):
     print(f"||||{valores}|||")
     valores_db = asignacion_db.get_asignacion_por_id(valores['id_asignacion'])["rows"][0]
-    controles = page.overlay[0].content.content.controls[0]
+    controles = page.overlay[1].content.content.controls[0]
     controles.controls[0].value = valores['id_asignacion']
     controles.controls[0].update()
     controles.controls[1].value = valores_db[1]
     controles.controls[1].update()
     controles.controls[2].value = valores_db[0]
     controles.controls[2].update()
-    # page.overlay[0].content.content.controls[0].controls[3].value = valores['profesor']
-    # page.overlay[0].content.content.controls[0].controls[3].update()
+    # page.overlay[1].content.content.controls[0].controls[3].value = valores['profesor']
+    # page.overlay[1].content.content.controls[0].controls[3].update()
     controles.controls[3].value = valores_db[2]
     controles.controls[3].update()
     controles.controls[4].value = valores_db[3]
@@ -332,15 +332,15 @@ def cerrar_bottom_sheet_insertar(page,campos):
     campos[3].value=""
     campos[4].value=""
     campos[5].value=""
-    page.overlay[1].open = False
+    page.overlay[2].open = False
     page.update()
 
 def nueva_asignacion(page):
-    page.overlay[1].open = True
+    page.overlay[2].open = True
     page.update()
 
 def habilitar_modificación_horario(page):
-    page.overlay[0].content.content.controls[0].controls[3].disabled = False
+    page.overlay[1].content.content.controls[0].controls[3].disabled = False
     page.update()
 
 def crear_bottomsheet(page, insert: bool):
@@ -425,13 +425,13 @@ def main_er(page : ft.Page):
                         content=tabla,
                         alignment=ft.alignment.center,
                     )
-    page.add(main_container)
     page.session.set("main_container", main_container)
+    return(main_container)
 
-    # Añade botón para agregar asignaciones manualmente
-    page.add(
-        ft.ElevatedButton("Agregar Asignación Manualmente", on_click=lambda e: nueva_asignacion(page))#mostrar_bottom_sheet(page, tabla, 0, 0)
-    )
+    # # Añade botón para agregar asignaciones manualmente
+    # page.add(
+    #     ft.ElevatedButton("Agregar Asignación Manualmente", on_click=lambda e: nueva_asignacion(page))#mostrar_bottom_sheet(page, tabla, 0, 0)
+    # )
 
 
 if __name__ == '__main__':

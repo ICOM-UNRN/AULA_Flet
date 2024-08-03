@@ -15,7 +15,7 @@ from api.profesor.profesor_por_materia import Profesor_por_materia
 from api.recurso.recurso import Recurso
 from api.recurso.recurso_por_aula import Recurso_por_aula
 from catador.app.src.leerExcel2 import leer_excel
-from components.Visualizador_Horarios.visualizer import main_er
+from components.Visualizador_Horarios.visualizer import main_er, crear_tabla, nueva_asignacion
 
 
 def main(page: ft.Page):
@@ -71,44 +71,45 @@ def main(page: ft.Page):
         return dicc_semana
 
     def crear_visualizacion_horarios(carrera, edificio, aula):
-        dias = [" ", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
-        intervalos_horarios = create_calendar_hours_intervals(8, 24)
+        # dias = [" ", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
+        # intervalos_horarios = create_calendar_hours_intervals(8, 24)
 
         # listado con la siguiente estructura [aula, materia, {comienzo} , {fin}, profesores]
-        materias_asignadas = obtener_asignaciones_materias_formateadas(carrera, edificio, aula)
+        # materias_asignadas = obtener_asignaciones_materias_formateadas(carrera, edificio, aula)
 
-        creador = ItemList_Creator(page, "ItemList_creador")
-        removedor = ItemList_Remover(page, "ItemList_removedor")
-        modificador = ItemList_Modifier(page, "ItemList_modoficador")
+        # creador = ItemList_Creator(page, "ItemList_creador")
+        # removedor = ItemList_Remover(page, "ItemList_removedor")
+        # modificador = ItemList_Modifier(page, "ItemList_modoficador")
 
-        column_visualizer = ft.Row(
-            vertical_alignment="start",
-            scroll= ft.ScrollMode.ALWAYS,
-            # expand=True,
-            controls=[
-                ft.Column(
-                    scroll=ft.ScrollMode.ADAPTIVE,
-                    controls=[creador, removedor, modificador]
-                ),
-                ft.Column(
-                    scroll=ft.ScrollMode.ADAPTIVE,
-                    expand=True,
-                    alignment="start",
-                    controls=[
-                        ft.DataTable(
-                            columns=create_calendar_table_headers_first_row(dias),
-                            rows=create_calendar_rows(intervalos_horarios, dias, page),
-                            data_row_min_height = 130,
-                            data_row_max_height = float("inf"),
-                            bgcolor='#3A3A3A',
-                            column_spacing=5,
-                            # expand=True,
-                            heading_row_color= ft.colors.GREY_300
-                        ),
-                    ],
-                )
-            ],
-        )
+        column_visualizer = main_er(page)
+        # ft.Row(
+        #     vertical_alignment="start",
+        #     scroll= ft.ScrollMode.ALWAYS,
+        #     # expand=True,
+        #     controls=[
+        #         ft.Column(
+        #             scroll=ft.ScrollMode.ADAPTIVE,
+        #             controls=[creador, removedor, modificador]
+        #         ),
+        #         ft.Column(
+        #             scroll=ft.ScrollMode.ADAPTIVE,
+        #             expand=True,
+        #             alignment="start",
+        #             controls=[
+        #                 ft.DataTable(
+        #                     columns=create_calendar_table_headers_first_row(dias),
+        #                     rows=create_calendar_rows(intervalos_horarios, dias, page),
+        #                     data_row_min_height = 130,
+        #                     data_row_max_height = float("inf"),
+        #                     bgcolor='#3A3A3A',
+        #                     column_spacing=5,
+        #                     # expand=True,
+        #                     heading_row_color= ft.colors.GREY_300
+        #                 ),
+        #             ],
+        #         )
+        #     ],
+        # )
 
         # {lunes: [...], martes: [...], ...}
 
@@ -118,17 +119,17 @@ def main(page: ft.Page):
         #                                                                             materias_asignadas["Martes"][0][4],], "green")
         #print(column_visualizer.controls[1].controls[0].rows[1].cells[2].content.items.controls[0].controls)
 
-        i = 1
-        for clave in materias_asignadas:
-            for materia in materias_asignadas[clave]:
-                aux_fila = materia[2]
-                aux_num = int(aux_fila) - 8
-                column_visualizer.controls[1].controls[0].rows[aux_num].cells[i].content.add_item([materia[0],
-                                                                                                   materia[1],
-                                                                                                   f"{materia[2]} a {materia[3]}",
-                                                                                                   materia[4],], "green")
-                print(column_visualizer.controls[1].controls[0].rows[aux_num].cells[i].content.items.controls)
-            i +=1
+        # i = 1
+        # for clave in materias_asignadas:
+        #     for materia in materias_asignadas[clave]:
+        #         aux_fila = materia[2]
+        #         aux_num = int(aux_fila) - 8
+        #         column_visualizer.controls[1].controls[0].rows[aux_num].cells[i].content.add_item([materia[0],
+        #                                                                                            materia[1],
+        #                                                                                            f"{materia[2]} a {materia[3]}",
+        #                                                                                            materia[4],], "green")
+        #         print(column_visualizer.controls[1].controls[0].rows[aux_num].cells[i].content.items.controls)
+        #     i +=1
 
         container_horarios.content = column_visualizer
         if not page.window.maximized:
@@ -181,7 +182,9 @@ def main(page: ft.Page):
         print(result)
         e.control.controls = result
         e.control.update()
-        crear_visualizacion_horarios(search_bar_carrera.value, search_bar_edificio.value, search_bar_aula.value)
+        #crear_visualizacion_horarios(search_bar_carrera.value, search_bar_edificio.value, search_bar_aula.value)
+        page.session.get("main_container").content = crear_tabla(page,search_bar_carrera.value, search_bar_edificio.value, search_bar_aula.value)
+        page.update()
 
     def handle_submit(e):
         # print(f"handle_submit e.data: {e.data}")
@@ -189,7 +192,9 @@ def main(page: ft.Page):
             print(listas_busquedas[e.control.data])
             e.control.controls = listas_busquedas[e.control.data]
             e.control.update()
-            crear_visualizacion_horarios(search_bar_carrera.value, search_bar_edificio.value, search_bar_aula.value)
+            #crear_visualizacion_horarios(search_bar_carrera.value, search_bar_edificio.value, search_bar_aula.value)
+            page.session.get("main_container").content = crear_tabla(page,search_bar_carrera.value, search_bar_edificio.value, search_bar_aula.value)
+            page.update()
             return
 
         result = [
@@ -203,7 +208,9 @@ def main(page: ft.Page):
         else:
             e.control.close_view(e.data)
         e.control.update()
-        crear_visualizacion_horarios(search_bar_carrera.value, search_bar_edificio.value, search_bar_aula.value)
+        #crear_visualizacion_horarios(search_bar_carrera.value, search_bar_edificio.value, search_bar_aula.value)
+        page.session.get("main_container").content = crear_tabla(page,search_bar_carrera.value, search_bar_edificio.value, search_bar_aula.value)
+        page.update()
 
     def handle_tap(e):
         e.control.open_view()
@@ -884,8 +891,9 @@ def main(page: ft.Page):
     }
 
     btn_ordenar_auto = ft.ElevatedButton(
-        text="Ordenar automaticamente",
-        on_click=lambda _: print("Ordenar automaticamente [hacer funcion]")
+        text="Asignar espacios automaticamente",
+        on_click=lambda _: print("Ordenar automaticamente [hacer funcion]"),
+        disabled=True
     )
 
     search_bar_carrera = ft.SearchBar(
@@ -945,17 +953,18 @@ def main(page: ft.Page):
         print("###########################################")
         return result
 
-    btn_grabar_de_tarjetas_a_base = ft.TextButton(
-        "Grabar Tarjetas actules en la Base de Datos",
-        #disabled=True,
-        on_click=lambda _: get_items_all_week(container_vista_horarios))
-        #on_click=lambda _: print("Grabar tarjetas [hacer función]"))
+    # btn_grabar_de_tarjetas_a_base = ft.TextButton(
+    #     "Grabar Tarjetas actules en la Base de Datos",
+    #     #disabled=True,
+    #     on_click=lambda _: get_items_all_week(container_vista_horarios))
+    #     #on_click=lambda _: print("Grabar tarjetas [hacer función]"))
 
     columns_search_bars = ft.Column(
         controls=[
-            ft.Row(alignment=ft.MainAxisAlignment.SPACE_BETWEEN,controls=[search_bar_carrera, btn_ordenar_auto]),
-            ft.Row(controls=[search_bar_edificio, search_bar_aula]),
-            ft.Row(controls=[btn_grabar_de_tarjetas_a_base])
+            ft.Row(alignment=ft.MainAxisAlignment.SPACE_BETWEEN,controls=[search_bar_carrera,search_bar_edificio, search_bar_aula]),
+            #ft.Row(controls=[search_bar_edificio, search_bar_aula]),
+            #ft.Row(controls=[btn_grabar_de_tarjetas_a_base]),
+            ft.Row(controls=[ft.ElevatedButton("Asignar Espacio Manualmente", on_click=lambda e: nueva_asignacion(page)),btn_ordenar_auto])#mostrar_bottom_sheet(page, tabla, 0, 0))
         ]
     )
 
@@ -1098,8 +1107,8 @@ def main(page: ft.Page):
         btn_schedulesscreen = ft.TextButton("volver a la pagina principal", on_click=lambda _:ir_a_pagina_principal(page))
         page.add(btn_schedulesscreen)
         
-    btn_schedulesscreen = ft.TextButton("ir a horarios", on_click=lambda _:ir_a_pagina_horarios(page))
-    page.add(btn_schedulesscreen)
+    # btn_schedulesscreen = ft.TextButton("ir a horarios", on_click=lambda _:ir_a_pagina_horarios(page))
+    # page.add(btn_schedulesscreen)
 
     page.on_route_change = route_change
     page.go("/")
