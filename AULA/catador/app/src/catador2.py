@@ -28,10 +28,9 @@ def mover_archivos_a_carpeta(carpeta_destino):
 def main():
     try:
         leerExcel2.leer_excel(r'AULA\catador\etc\dist2cuadH.xlsx')
-        )
 
-            # Llamar a la función para mover los archivos
-            mover_archivos_a_carpeta('AULA/archivos_generados')
+        # Llamar a la función para mover los archivos
+        mover_archivos_a_carpeta('AULA/archivos_generados')
 
-        except Exception as e:
-            print(f"Error: {e}")
+    except Exception as e:
+        print(f"Error: {e}")

@@ -6,7 +6,7 @@ from api.profesor.profesor_por_materia import Profesor_por_materia
 import psycopg2
 import re
 import sys
-from AULA.catador.app.src.catador import main as main_catador
+from AULA.catador.app.src.catador2 import main as main_catador
 
 sys.stdout.reconfigure(encoding='ISO-8859-1')
 # Conexión a la base de datos
