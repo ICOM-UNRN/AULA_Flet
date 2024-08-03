@@ -1,8 +1,9 @@
-import subprocess
-from categorias.Edificio import Edificio
-import os
-import shutil
 from AULA.catador.app.src import leerExcel2
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(
+    os.path.dirname(__file__), '../../../..')))
 
 
 def mover_archivos_a_carpeta(carpeta_destino):
@@ -34,3 +35,9 @@ def main(ruta_archivo):
 
     except Exception as e:
         print(f"Error: {e}")
+
+
+if __name__ == "__main__":
+    # Cambia esto por la ruta real del archivo
+    ruta_archivo = "ruta/al/archivo.xlsx"
+    main(ruta_archivo)
