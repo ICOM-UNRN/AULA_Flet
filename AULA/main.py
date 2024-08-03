@@ -1,9 +1,9 @@
 import re
 import flet as ft
+from boton_automatizacion import main as main_automatizacion
 from components.dashboard.Dashboard import Dashboard
 # from components.RailBar.Railbar import RailBarCustom
 from components.ABM_form.Form import DeleteModifyForm
-from visualizer_UI.schedules_v1 import create_calendar_table_headers_first_row, create_calendar_rows, create_calendar_hours_intervals, ItemList_Creator, ItemList_Remover, ItemList_Modifier
 from api.db import connect_to_db
 from api.aula.aula import Aula
 from api.materia.materia import Materia
@@ -14,7 +14,7 @@ from api.profesor.profesor import Profesor
 from api.profesor.profesor_por_materia import Profesor_por_materia
 from api.recurso.recurso import Recurso
 from api.recurso.recurso_por_aula import Recurso_por_aula
-from catador.app.src.leerExcel2 import leer_excel
+from importAdb import main as main_import_db
 from components.Visualizador_Horarios.visualizer import main_er, crear_tabla, nueva_asignacion
 
 
@@ -43,10 +43,11 @@ def main(page: ft.Page):
     ###################################################################################
 
     def pick_files_result(e: ft.FilePickerResultEvent):
-        print("Selected files:", e.files)
-        # filename = e.files[0].name
-        path = e.files[0].path
-        leer_excel(nombre_archivo= path)
+        if e.files:
+            print("Selected files:", e.files)
+            # filename = e.files[0].name
+            file_path = e.files[0].path
+            main_import_db(path= file_path)
 
     ###################################################################################
     #                                FUNC VER HORARIOS                                #
@@ -163,11 +164,13 @@ def main(page: ft.Page):
 
     def close_search_bar_carrera(e):
         text = f"{e.control.title.value}"
-        print(text)
+        # print(text)
         search_bar_carrera.close_view(text)
+        page.session.get("main_container").content = crear_tabla(page,search_bar_carrera.value, search_bar_edificio.value, search_bar_aula.value)
+        page.update()
 
     def handle_change(e):
-        print(f"handle_change e.data: {e.data}")
+        # print(f"handle_change e.data: {e.data}")
         if e.data == "":
             print(listas_busquedas[e.control.data])
             e.control.controls = listas_busquedas[e.control.data]
@@ -179,7 +182,7 @@ def main(page: ft.Page):
             for value in listas_busquedas[e.control.data]
             if re.search(e.data, value.title.value, re.IGNORECASE)
         ]
-        print(result)
+        # print(result)
         e.control.controls = result
         e.control.update()
         #crear_visualizacion_horarios(search_bar_carrera.value, search_bar_edificio.value, search_bar_aula.value)
@@ -189,7 +192,7 @@ def main(page: ft.Page):
     def handle_submit(e):
         # print(f"handle_submit e.data: {e.data}")
         if e.data == "":
-            print(listas_busquedas[e.control.data])
+            # print(listas_busquedas[e.control.data])
             e.control.controls = listas_busquedas[e.control.data]
             e.control.update()
             #crear_visualizacion_horarios(search_bar_carrera.value, search_bar_edificio.value, search_bar_aula.value)
@@ -893,8 +896,7 @@ def main(page: ft.Page):
 
     btn_ordenar_auto = ft.ElevatedButton(
         text="Asignar espacios automaticamente",
-        on_click=lambda _: print("Ordenar automaticamente [hacer funcion]"),
-        disabled=True
+        on_click=lambda _: main_automatizacion(),
     )
 
     search_bar_carrera = ft.SearchBar(

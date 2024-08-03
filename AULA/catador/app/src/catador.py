@@ -1,7 +1,9 @@
 import subprocess
-from categorias.Edificio import Edificio
+from .categorias.Edificio import Edificio
+from .asignacion6 import main as main_asignacion
 import os
 import shutil
+from catador.app.src.leerExcel2 import leer_excel
 
 
 def mover_archivos_a_carpeta(carpeta_destino):
@@ -47,12 +49,12 @@ def main():
         edificio.guardar_aulas_json("aulas.json")
 
         # Corre el programa de asignación de materias
-        subprocess.run(
-            ["python", r"AULA/catador/app/src/asignacion6.py"], check=True
-        )
-
+        # subprocess.run(
+        #     ["python", r"catador/app/src/asignacion6.py"], check=True
+        # )
+        main_asignacion()
         # Llamar a la función para mover los archivos
-        mover_archivos_a_carpeta('AULA/archivos_generados')
+        mover_archivos_a_carpeta('archivos_generados')
 
     except Exception as e:
         print(f"Error: {e}")

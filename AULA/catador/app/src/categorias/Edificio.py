@@ -1,4 +1,4 @@
-from categorias.Aula import Aula
+from .Aula import Aula
 import csv
 import json
 

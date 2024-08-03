@@ -49,13 +49,17 @@ class Custom_Card(ft.Container):
             expand=True,
             expand_loose=True,
             controls=[
-                ft.Text(materia[1]),
+                ft.Text(
+                    materia[1],
+                    size=14,
+                    color=ft.colors.WHITE,
+                ),
             ]
         )
         self.on_click= func_on_click
         self.border_radius=10
         self.padding=10
-    
+
     def get_card_data(self) -> dict:
         """Returns de card actual data"""
         return self.data

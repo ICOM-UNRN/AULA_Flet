@@ -1,4 +1,4 @@
-from AULA.catador.app.src import leerExcel2
+from . import leerExcel2
 import sys
 import os
 

@@ -1,12 +1,10 @@
 import json
-import os
+import sys
+import psycopg2
 from api.materia.materia import Materia
 from api.profesor.profesor import Profesor
 from api.profesor.profesor_por_materia import Profesor_por_materia
-import psycopg2
-import re
-import sys
-from AULA.catador.app.src.catador2 import main as main_catador
+from catador.app.src.catador2 import main as main_catador
 
 sys.stdout.reconfigure(encoding='ISO-8859-1')
 # Conexión a la base de datos
@@ -118,7 +116,7 @@ def importar_profesor_por_materia(profesor_por_materia_db, archivo_profesor_por_
         print(f"Error al importar asignaciones profesor por materia: {e}")
 
 
-def main():
+def main(path : str):
     conn = connect_db()
     if conn is None:
         return
@@ -128,9 +126,9 @@ def main():
     profesor_por_materia_db = Profesor_por_materia(conn)
     nombre_archivo = path
     main_catador(nombre_archivo)
-    archivo_profesores = 'AULA/archivos_generados/profesores.json'
-    archivo_materias = 'AULA/archivos_generados/materias.json'
-    archivo_profesor_por_materia = 'AULA/archivos_generados/profesor_por_materia.json'
+    archivo_profesores = 'archivos_generados/profesores.json'
+    archivo_materias = 'archivos_generados/materias.json'
+    archivo_profesor_por_materia = 'archivos_generados/profesor_por_materia.json'
 
     importar_profesores(profesor_db, archivo_profesores)
     importar_materias(materia_db, archivo_materias)
@@ -139,7 +137,7 @@ def main():
     )
 
     conn.close()
-
+    print("Se terminaron de importar los datos.")
 
 if __name__ == "__main__":
     main()
