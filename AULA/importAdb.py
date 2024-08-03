@@ -6,6 +6,7 @@ from api.profesor.profesor_por_materia import Profesor_por_materia
 import psycopg2
 import re
 import sys
+from AULA.catador.app.src.catador import main as main_catador
 
 sys.stdout.reconfigure(encoding='ISO-8859-1')
 # Conexión a la base de datos
@@ -126,6 +127,7 @@ def main():
     materia_db = Materia(conn)
     profesor_por_materia_db = Profesor_por_materia(conn)
 
+    main_catador()
     archivo_profesores = 'AULA/archivos_generados/profesores.json'
     archivo_materias = 'AULA/archivos_generados/materias.json'
     archivo_profesor_por_materia = 'AULA/archivos_generados/profesor_por_materia.json'

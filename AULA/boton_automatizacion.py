@@ -88,14 +88,14 @@ def main():
         horarios_disponibles_profesores = organizar_horarios_profesores(
             profesores)
         horarios_disponibles_aulas = organizar_horarios_aulas(
-            aulas, asignaciones)
+            aulas.values(), asignaciones)
 
         for aula in horarios_disponibles_aulas:
             print(aula, horarios_disponibles_aulas[aula])
         materias_reordenadas = reordenar_materias_por_alumnos(materias)
 
         sugerencias_helper, fallos_asignacion = asignacion_helper(
-            materias_reordenadas, horarios_disponibles_profesores, horarios_disponibles_aulas, 'Anasagasti II'
+            aulas, materias_reordenadas, horarios_disponibles_profesores, horarios_disponibles_aulas, 'Anasagasti II'
         )
 
         escribir_sugerencias(sugerencias_helper,
@@ -192,6 +192,8 @@ def organizar_horarios_aulas(aulas, asignaciones):
             'MIE': ['08-23'],
             'JUE': ['08-23'],
             'VIE': ['08-23'],
+            'SAB': ['08-23'],
+            'DOM': ['08-23'],
         }
 
     # Restar las asignaciones ya hechas
@@ -219,7 +221,8 @@ def organizar_horarios_aulas(aulas, asignaciones):
 def convertir_datos_aulas(data):
     columnas = ['id_aula', 'id_edificio', 'nombre',
                 'capacidad']  # Ajusta según tus datos reales
-    return [dict(zip(columnas, fila)) for fila in data]
+    # Usamos el nombre del aula como clave
+    return {fila[2]: dict(zip(columnas, fila)) for fila in data}
 
 
 def separar_horas(horas_disponibles):
@@ -241,7 +244,7 @@ def separar_profesores(profesores):
         return []
 
 
-def asignacion_helper(materias, horarios_disponibles_profesores, horarios_disponibles_aulas, nombre_edificio):
+def asignacion_helper(aulas, materias, horarios_disponibles_profesores, horarios_disponibles_aulas, nombre_edificio):
     asignaciones_realizadas = []
     fallos_asignacion = []
 
@@ -269,7 +272,7 @@ def asignacion_helper(materias, horarios_disponibles_profesores, horarios_dispon
                                         materia_id,
                                         profesor,
                                         aula_nombre,
-                                        aula.get('id_aula'),
+                                        aulas.get(aula_nombre).get('id_aula'),
                                         dia,
                                         hora_inicio,
                                         hora_fin
@@ -308,8 +311,8 @@ def reordenar_materias_por_alumnos(materias):
 def escribir_sugerencias(asignaciones_realizadas, fallos_asignacion, nombre_archivo):
     with open(nombre_archivo, 'w', newline='') as archivo_csv:
         writer = csv.writer(archivo_csv)
-        writer.writerow(['Carrera', 'Código Guarani', 'Materia', 'Profesor',
-                        'Aula', 'Día', 'Hora Inicio', 'Hora Fin', 'Estado'])
+        writer.writerow(['Carrera', 'Código Guarani', 'Materia', 'Materia ID', 'Profesor',
+                        'Aula', 'Aula ID', 'Día', 'Hora Inicio', 'Hora Fin', 'Estado'])
 
         for asignacion in asignaciones_realizadas:
             writer.writerow(asignacion + ['Asignación realizada'])
@@ -328,15 +331,15 @@ def guardar_asignaciones_db(sugerencias, asignacion_db):
 
         # Asegúrate de que los índices se correspondan con la estructura de tu sugerencia
         # Asumiendo que la columna 'Aula' está en la posición 4
-        aula = sugerencia[4]
+        aula = sugerencia[6]
         # Asumiendo que la columna 'Materia' está en la posición 2
-        materia = sugerencia[2]
+        materia = sugerencia[3]
         # Asumiendo que la columna 'Día' está en la posición 5
-        dia = sugerencia[5]
+        dia = sugerencia[7]
         # Asumiendo que la columna 'Hora Inicio' está en la posición 6
-        hora_inicio = sugerencia[6]
+        hora_inicio = sugerencia[8]
         # Asumiendo que la columna 'Hora Fin' está en la posición 7
-        hora_fin = sugerencia[7]
+        hora_fin = sugerencia[9]
 
         # Inserta en la base de datos usando la función insert_asignacion
         asignacion_db.insert_asignacion(
