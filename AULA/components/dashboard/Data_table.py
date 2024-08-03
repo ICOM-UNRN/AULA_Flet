@@ -109,7 +109,7 @@ class DataTableCustom():
             self.table_columns.append(
                 DataColumn(
                     label=Text(
-                        value=header.replace("id_", ""),
+                        value=header,
                         weight="bold",
                         size=20,
                         color= "#C4C4C4",
