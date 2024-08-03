@@ -26,6 +26,16 @@ class Asignacion():
             "rows": rows
         }
         return data
+    
+    def get_asignacion_por_id(self, id_asignacion):
+        self.cursor.callproc("get_asignacion_por_id", [id_asignacion])
+        colums = [descr.name for descr in self.cursor.description]
+        rows = [row for row in self.cursor.fetchall()]
+        data = {
+            "columns": colums,
+            "rows": rows
+        }
+        return data
 
     def get_asignacion(self, aula):
         result = self.cursor.callproc("get_asignacion", [aula])
@@ -56,7 +66,7 @@ class Asignacion():
         if materia == "":
             materia = None
         result = self.cursor.callproc(
-            "insert_asignacion", [aula, dia, comienzo, fin, materia, evento])
+            "insert_asignacion", [aula, dia, int(comienzo), int(fin), materia, evento])
         self.conn.commit()
         return result
 
@@ -72,7 +82,7 @@ class Asignacion():
         if materia == "":
             materia = None
         result = self.cursor.callproc(
-            "update_asignacion", [id, aula, materia, evento, dia, comienzo, fin])
+            "update_asignacion", [id, aula, materia, evento, dia, int(comienzo), int(fin)])
         self.conn.commit()
         if (result != 0):
             return False
