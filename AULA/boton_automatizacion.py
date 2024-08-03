@@ -2,6 +2,7 @@ import json
 import csv
 import unicodedata
 from collections import defaultdict
+from arrow import get
 import psycopg2
 from api.materia.materia import Materia
 from api.profesor.profesor import Profesor
@@ -265,8 +266,10 @@ def asignacion_helper(materias, horarios_disponibles_profesores, horarios_dispon
                                         materia.get('carrera'),
                                         materia.get('codigo_guarani'),
                                         materia.get('nombre'),
+                                        materia_id,
                                         profesor,
                                         aula_nombre,
+                                        aula.get('id_aula'),
                                         dia,
                                         hora_inicio,
                                         hora_fin
@@ -325,15 +328,15 @@ def guardar_asignaciones_db(sugerencias, asignacion_db):
 
         # Asegúrate de que los índices se correspondan con la estructura de tu sugerencia
         # Asumiendo que la columna 'Aula' está en la posición 4
-        aula = sugerencia[3]
+        aula = sugerencia[4]
         # Asumiendo que la columna 'Materia' está en la posición 2
-        materia = sugerencia[1]
+        materia = sugerencia[2]
         # Asumiendo que la columna 'Día' está en la posición 5
-        dia = sugerencia[4]
+        dia = sugerencia[5]
         # Asumiendo que la columna 'Hora Inicio' está en la posición 6
-        hora_inicio = sugerencia[5]
+        hora_inicio = sugerencia[6]
         # Asumiendo que la columna 'Hora Fin' está en la posición 7
-        hora_fin = sugerencia[6]
+        hora_fin = sugerencia[7]
 
         # Inserta en la base de datos usando la función insert_asignacion
         asignacion_db.insert_asignacion(
