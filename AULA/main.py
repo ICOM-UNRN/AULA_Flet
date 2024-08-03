@@ -980,7 +980,7 @@ def main(page: ft.Page):
         padding=10,
         content=ft.Column(
             controls=[columns_search_bars,
-                      ft.Column(controls=container_horarios,scroll=ft.ScrollMode.AUTO)]
+                      container_horarios]
         ),
     )
 
