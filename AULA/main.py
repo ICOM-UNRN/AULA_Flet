@@ -969,8 +969,7 @@ def main(page: ft.Page):
     )
 
     container_horarios = ft.Container(
-        expand=True,
-        bgcolor=ft.colors.GREY_800,
+        expand=True
     )
 
     container_vista_horarios = ft.Container(
@@ -978,6 +977,7 @@ def main(page: ft.Page):
         bgcolor=ft.colors.with_opacity(0.75, "#3A3A3A"),
         padding=10,
         content=ft.Column(
+            alignment=ft.MainAxisAlignment.START,
             controls=[columns_search_bars,
                       container_horarios]
         ),

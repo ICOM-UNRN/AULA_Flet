@@ -3,6 +3,7 @@ import flet as ft
 #from components.ABM_form.Form import DeleteModifyForm
 import os
 import sys
+import random
 
 # Agregar la ruta relativa al sys.path
 ruta_relativa = os.path.join(os.path.dirname(__file__), '..','..')
@@ -100,14 +101,14 @@ def generar_cells_of_rows(texto_primera_columna: str = ""):
 
 def generar_row_of_columns():
     result = []
-    result.append(ft.DataColumn(ft.Text("", text_align=ft.TextAlign.CENTER), data="Horarios"),)
-    result.append(ft.DataColumn(ft.Text("Lunes", text_align=ft.TextAlign.CENTER), data="Lunes"),)
-    result.append(ft.DataColumn(ft.Text("Martes", text_align=ft.TextAlign.CENTER), data="Martes"),)
-    result.append(ft.DataColumn(ft.Text("Miercoles", text_align=ft.TextAlign.CENTER), data="Miercoles"),)
-    result.append(ft.DataColumn(ft.Text("Jueves", text_align=ft.TextAlign.CENTER), data="Jueves"),)
-    result.append(ft.DataColumn(ft.Text("Viernes", text_align=ft.TextAlign.CENTER), data="Viernes"),)
-    result.append(ft.DataColumn(ft.Text("Sabado", text_align=ft.TextAlign.CENTER), data="Sabado"),)
-    result.append(ft.DataColumn(ft.Text("Domingo", text_align=ft.TextAlign.CENTER), data="Domingo"),)
+    result.append(ft.DataColumn(ft.Text("", text_align=ft.TextAlign.CENTER, size=20), data="Horarios"),)
+    result.append(ft.DataColumn(ft.Text("Lunes", text_align=ft.TextAlign.CENTER, size=20), data="Lunes"),)
+    result.append(ft.DataColumn(ft.Text("Martes", text_align=ft.TextAlign.CENTER, size=20), data="Martes"),)
+    result.append(ft.DataColumn(ft.Text("Miercoles", text_align=ft.TextAlign.CENTER, size=20), data="Miercoles"),)
+    result.append(ft.DataColumn(ft.Text("Jueves", text_align=ft.TextAlign.CENTER, size=20), data="Jueves"),)
+    result.append(ft.DataColumn(ft.Text("Viernes", text_align=ft.TextAlign.CENTER, size=20), data="Viernes"),)
+    result.append(ft.DataColumn(ft.Text("Sabado", text_align=ft.TextAlign.CENTER, size=20), data="Sabado"),)
+    result.append(ft.DataColumn(ft.Text("Domingo", text_align=ft.TextAlign.CENTER, size=20), data="Domingo"),)
     return result
 
 def generar_all_rows():
@@ -119,6 +120,13 @@ def generar_all_rows():
 def modificar_celda(tabla: ft.DataTable = None, fila: int = 0, columna: int = 0, contenido: ft.Container = None):
     if (tabla is not None) and isinstance(tabla, ft.DataTable):
         tabla.rows[fila].cells[columna].content = contenido
+
+def generar_codigo_hexadecimal():
+    caracteres = "0123456789ABCDEF"
+    codigo = "#"
+    for _ in range(6):
+        codigo += random.choice(caracteres)
+    return codigo
 
 def crear_tabla(page, carrera = None, edificio = None, aula = None):
     def click_card(e: ft.ControlEvent):
@@ -162,19 +170,16 @@ def crear_tabla(page, carrera = None, edificio = None, aula = None):
     }
 
     bgcolor_segun_materia = {
-        "Fisica 2": ft.colors.BLUE,
-        "Matematica": ft.colors.RED,
-        "Geometria": ft.colors.GREEN,
-        "Defensa Contra las Artes Obscuras": ft.colors.PINK,
-        "Ingenieria de Software": ft.colors.ORANGE,
-        "Historia": ft.colors.RED_600,
-        "Programacion": ft.colors.LIGHT_BLUE,
-        "Estadistica": ft.colors.LIGHT_GREEN_900
     }
 
     for data_asignacion in test_data:
         materia = data_asignacion[1][1]
-        bg_color_card = bgcolor_segun_materia.get(materia, "#9B6B6B")
+        if not bgcolor_segun_materia.get(materia, None):
+            color = generar_codigo_hexadecimal()
+            bgcolor_segun_materia[materia] = color
+            bg_color_card = color
+        else:
+            bg_color_card = bgcolor_segun_materia.get(materia, "#9B6B6B")
         modificar_celda(
             tabla=tabla,
             fila= data_asignacion[4] - 8,
@@ -423,7 +428,10 @@ def main_er(page : ft.Page):
     main_container = ft.Container(
                         expand=True,
                         content=tabla,
+                        bgcolor= ft.colors.with_opacity(0.90, "#3A3A3A"),
+                        border_radius=20,
                         alignment=ft.alignment.center,
+                        # scale=0.75
                     )
     page.session.set("main_container", main_container)
     return(main_container)
