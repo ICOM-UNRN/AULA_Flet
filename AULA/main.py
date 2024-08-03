@@ -17,7 +17,6 @@ from api.recurso.recurso_por_aula import Recurso_por_aula
 from catador.app.src.leerExcel2 import leer_excel
 from components.Visualizador_Horarios.visualizer import main_er, crear_tabla, nueva_asignacion
 
-
 def main(page: ft.Page):
     page.title = "AULA - Administracion Unificada de Lugares Academicos"
     page.padding = 0
@@ -891,9 +890,11 @@ def main(page: ft.Page):
     }
 
     btn_ordenar_auto = ft.ElevatedButton(
-        text="Asignar espacios automaticamente",
-        on_click=lambda _: print("Ordenar automaticamente [hacer funcion]"),
-        disabled=True
+        text="Auto-Asignar Espacios",
+        on_click=lambda _: print("Auto-Asignar Espacios todavia esta en desarrollo"),
+        tooltip="En desarrollo",
+        disabled=True,
+        bgcolor= ft.colors.GREY_200,
     )
 
     search_bar_carrera = ft.SearchBar(
